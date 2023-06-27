@@ -17,7 +17,7 @@
 mono_crash.*
 
 # Build results
-ArtifactDB
+Library/ArtifactDB
 [Dd]ebug/
 [Dd]ebugPublic/
 [Rr]elease/
