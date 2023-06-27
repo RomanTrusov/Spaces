@@ -19,7 +19,7 @@ MonoBehaviour:
     width: 2560
     height: 1007
   m_ShowMode: 4
-  m_Title: Scene
+  m_Title: Project
   m_RootView: {fileID: 6}
   m_MinSize: {x: 875, y: 300}
   m_MaxSize: {x: 10000, y: 10000}
@@ -317,21 +317,21 @@ MonoBehaviour:
     m_SkipHidden: 0
     m_SearchArea: 1
     m_Folders:
-    - Assets/Materials
+    - Assets/Scenes
     m_Globs: []
     m_OriginalText: 
   m_ViewMode: 1
   m_StartGridSize: 64
   m_LastFolders:
-  - Assets/Materials
+  - Assets/Scenes
   m_LastFoldersGridSize: -1
   m_LastProjectPath: D:\Projects\BlackHole\BlackHolePrototype
   m_LockTracker:
     m_IsLocked: 0
   m_FolderTreeState:
     scrollPos: {x: 0, y: 0}
-    m_SelectedIDs: ea460000
-    m_LastClickedID: 18154
+    m_SelectedIDs: ec460000
+    m_LastClickedID: 18156
     m_ExpandedIDs: 00000000e646000000ca9a3b
     m_RenameOverlay:
       m_UserAcceptedRename: 0
@@ -387,7 +387,7 @@ MonoBehaviour:
   m_ListAreaState:
     m_SelectedInstanceIDs: 
     m_LastClickedInstanceID: 0
-    m_HadKeyboardFocusLastEvent: 0
+    m_HadKeyboardFocusLastEvent: 1
     m_ExpandedInstanceIDs: c623000000000000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
@@ -481,9 +481,9 @@ MonoBehaviour:
   m_SceneHierarchy:
     m_TreeViewState:
       scrollPos: {x: 0, y: 0}
-      m_SelectedIDs: ae460000
-      m_LastClickedID: 18094
-      m_ExpandedIDs: 50fbffff94460000
+      m_SelectedIDs: 40470000
+      m_LastClickedID: 0
+      m_ExpandedIDs: 0af7ffff50fbffff94460000
       m_RenameOverlay:
         m_UserAcceptedRename: 0
         m_Name: 
@@ -594,7 +594,7 @@ MonoBehaviour:
   m_Rotation:
     m_Target: {x: -0.0618113, y: 0.9381882, z: -0.24036816, w: -0.24125756}
     speed: 2
-    m_Value: {x: -0.061450686, y: 0.93854916, z: -0.24046063, w: -0.23985004}
+    m_Value: {x: -0.06181131, y: 0.9381883, z: -0.24036819, w: -0.2412576}
   m_Size:
     m_Target: 5.9927254
     speed: 2
