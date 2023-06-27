@@ -3,6 +3,8 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
+/[Ll]ibrary/
+
 # User-specific files
 *.rsuser
 *.suo
@@ -17,7 +19,6 @@
 mono_crash.*
 
 # Build results
-Library/ArtifactDB
 [Dd]ebug/
 [Dd]ebugPublic/
 [Rr]elease/
