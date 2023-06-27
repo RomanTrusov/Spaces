@@ -403,3 +403,6 @@ Library/PackageCache/
 Temp/
 Library/ShaderCache/
 Library/StateCache/
+Library/ArtifactDB
+Library/EditorInstance.json
+Library/SourceAssetDB
