@@ -292,7 +292,7 @@ public class PlayerMovement : MonoBehaviour
         //apply jump velocity
 
         velocityToSet = CalculateJumpVelocity(transform.position, targetPosition, trajectoryHeight);
-        Invoke(nameof(SetVelocity), 0.1f);
+        Invoke(nameof(SetVelocity), 0.05f);
     }
 
     // apply grappling jump after some delay
@@ -333,7 +333,7 @@ public class PlayerMovement : MonoBehaviour
         Vector3 velocityY = Vector3.up * Mathf.Sqrt(-2 * gravity * trajectoryHeight);
         Vector3 velocityXZ = displacementXZ / (Mathf.Sqrt(-2 * trajectoryHeight / gravity) + Mathf.Sqrt(2 * (displacementY - trajectoryHeight) / gravity));
 
-        return (velocityXZ + velocityY) + new Vector3(0f, 3f, 0f);
+        return (velocityXZ + velocityY) + new Vector3(0f, 0f, 0f);
 
     }
 
