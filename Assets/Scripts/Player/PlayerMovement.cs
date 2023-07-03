@@ -9,6 +9,7 @@ public class PlayerMovement : MonoBehaviour
     private float moveSpeed;
     public float walkSpeed;
     public float sprintSpeed;
+    public float dashSpeed;
 
     // reduce sliding
     public float groundDrag;
@@ -24,6 +25,7 @@ public class PlayerMovement : MonoBehaviour
     [Header("Keybinds")]
     public KeyCode jumpKey = KeyCode.Space;
     public KeyCode sprintKey = KeyCode.LeftShift;
+    public KeyCode reserKey = KeyCode.R;
 
     [Header("Ground check")]
     public float playerHeight;
@@ -52,9 +54,11 @@ public class PlayerMovement : MonoBehaviour
     {
         walking,
         sprinting,
+        dashing,
         air
     }
 
+    public bool dashing;
 
     private void Start()
     {
@@ -67,14 +71,18 @@ public class PlayerMovement : MonoBehaviour
     {
 
         //ground check with raycast down to the ground
-        grounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.2f, whatIsGround);
+        grounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.3f, whatIsGround);
 
         MyInput();
         SpeedControl();
         StateHandler();
 
         // make drag
-        if (grounded) rb.drag = groundDrag; else rb.drag = 0;
+        if (state == MovementStates.walking || state == MovementStates.sprinting)
+        {
+            rb.drag = groundDrag;
+        }
+        else rb.drag = 0;
 
     }
 
@@ -100,11 +108,27 @@ public class PlayerMovement : MonoBehaviour
             Invoke(nameof(ResetJump), jumpCooldown);
         }
 
+        // reset players position and velocity
+        if (Input.GetKey(reserKey))
+        {
+            rb.position = new Vector3(0, 2.5f, 0);
+            rb.velocity = new Vector3(0, 0, 0);
+        }
+
     }
+
 
     //State handler
     private void StateHandler ()
     {
+
+        // if dashinng
+        if (dashing)
+        {
+            state = MovementStates.dashing;
+            moveSpeed = dashSpeed;
+        }
+        else 
         // if sprinting
         if (grounded && Input.GetKey(sprintKey))
         {
@@ -120,6 +144,7 @@ public class PlayerMovement : MonoBehaviour
         else
         {
             state = MovementStates.air;
+            moveSpeed = walkSpeed;
         }
     }
 
@@ -132,7 +157,7 @@ public class PlayerMovement : MonoBehaviour
         //If player on slope add slope speeed
         if (OnSlope() && !exitingSlope)
         {
-            rb.AddForce(GetSlopeMoveDirection() * moveSpeed * 10f, ForceMode.Force);
+            rb.AddForce(GetSlopeMoveDirection() * moveSpeed * 4f, ForceMode.Force);
 
             // fix for little jumps on slopees
             if (rb.velocity.y > 0)
@@ -147,14 +172,20 @@ public class PlayerMovement : MonoBehaviour
             rb.AddForce(moveDirection * moveSpeed * 10f, ForceMode.Force);
         }
 
+        //TEST reduce Y velocity while falling
         else if (!grounded)
         {
+            if (rb.velocity.y < 0)
+            {
+                rb.AddForce(moveDirection * moveSpeed * 10f * airMultiplier - new Vector3(0, 15f, 0), ForceMode.Force);
+            } else
             rb.AddForce(moveDirection * moveSpeed * 10f * airMultiplier, ForceMode.Force);
         }
 
         //turn off gravity when slope
         rb.useGravity = !OnSlope();
-       
+
+
     }
 
 
@@ -163,24 +194,30 @@ public class PlayerMovement : MonoBehaviour
     {
         //limit speed on slopes
 
-        if (OnSlope() && !exitingSlope)
-        {
-            if (rb.velocity.magnitude > moveSpeed)
-            {
-                rb.velocity = rb.velocity.normalized * moveSpeed;
-            }
-        }
+ 
 
-        else
-        {
-            Vector3 flatVel = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
-
-            if (flatVel.magnitude > moveSpeed)
+            if (OnSlope() && !exitingSlope)
             {
-                Vector3 limitVel = flatVel.normalized * moveSpeed;
-                rb.velocity = new Vector3(limitVel.x, rb.velocity.y, limitVel.z);
+
+                if (rb.velocity.magnitude > moveSpeed)
+                {
+                    rb.velocity = rb.velocity.normalized * moveSpeed;
+                }
             }
-        }
+
+            else
+            {
+                Vector3 flatVel = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
+
+                if (flatVel.magnitude > moveSpeed)
+                {
+                    Vector3 limitVel = flatVel.normalized * moveSpeed;
+                    rb.velocity = new Vector3(limitVel.x, rb.velocity.y, limitVel.z);
+                }
+            }
+
+            
+        
         
     }
 
