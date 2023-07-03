@@ -15,11 +15,15 @@ public class PlayerMovement : MonoBehaviour
     public float groundDrag;
 
     // for jumps
+    [Header("Jumps")]
     public float jumpForce;
     public float jumpCooldown;
     public float airMultiplier;
     [SerializeField]
     bool readyToJump = true;
+
+    [Header("DoubleJump")]
+    public bool readyForDoubleJump;
 
     //jump, sprint button
     [Header("Keybinds")]
@@ -86,6 +90,7 @@ public class PlayerMovement : MonoBehaviour
                 rb.drag = groundDrag;
             else rb.drag = 2 * groundDrag;
             rb.useGravity = true;
+            ResetDoubleJump();
         }
         
         else rb.drag = 0;
@@ -105,13 +110,19 @@ public class PlayerMovement : MonoBehaviour
         verticalInput = Input.GetAxisRaw("Vertical");
 
         //if ready to jump
-        if (Input.GetKey(jumpKey) && readyToJump && grounded)
+        if (Input.GetKeyDown(jumpKey) && readyToJump)
         {
-            readyToJump = false;
+            if (grounded)
+            {
+                readyToJump = false;
 
-            Jump();
-            // cooldown over time
-            Invoke(nameof(ResetJump), jumpCooldown);
+                Jump();
+                // cooldown over time
+                Invoke(nameof(ResetJump), jumpCooldown);
+            }
+            else if (readyForDoubleJump) DoubleJump();
+            
+
         }
 
         // reset players position and velocity
@@ -242,11 +253,25 @@ public class PlayerMovement : MonoBehaviour
         rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
     }
 
+
     private void ResetJump()
     {
         readyToJump = true;
 
         exitingSlope = false;
+    }
+
+    private void DoubleJump()
+    {
+        readyForDoubleJump = false;
+        rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
+        rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
+        
+    }
+
+    private void ResetDoubleJump ()
+    {
+        readyForDoubleJump = true;
     }
 
 
