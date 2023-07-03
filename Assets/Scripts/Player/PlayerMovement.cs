@@ -80,7 +80,9 @@ public class PlayerMovement : MonoBehaviour
         // make drag
         if (state == MovementStates.walking || state == MovementStates.sprinting)
         {
-            rb.drag = groundDrag;
+            if (moveDirection != new Vector3(0,0,0))
+                rb.drag = groundDrag;
+            else rb.drag = 2 * groundDrag;
         }
         else rb.drag = 0;
 
