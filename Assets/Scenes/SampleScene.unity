@@ -2443,6 +2443,7 @@ MonoBehaviour:
   whatIsGround:
     serializedVersion: 2
     m_Bits: 64
+  grounded: 0
   maxSlopeAngle: 40
   orientation: {fileID: 1662591321}
   state: 0
@@ -2460,11 +2461,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1b5f34a9a6634974992e7e7d0a5cc58b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerCameraForFOV: {fileID: 963194227}
   orientation: {fileID: 1662591321}
   playerCam: {fileID: 963194228}
   dashForce: 20
   dashUpwardForce: 0
   dashDuration: 0.25
+  fovDefault: 70
+  fovIncrease: 90
   dashCd: 0.5
   dashKey: 304
 --- !u!114 &931899299
@@ -2542,7 +2546,7 @@ Camera:
     height: 1
   near clip plane: 0.1
   far clip plane: 1000
-  field of view: 85
+  field of view: 70
   orthographic: 0
   orthographic size: 5
   m_Depth: -1

@@ -6,6 +6,7 @@ public class Dashing : MonoBehaviour
 {
     // resources needed for dash
     [Header("References")]
+    public Camera playerCameraForFOV;
     public Transform orientation;
     public Transform playerCam;
     private Rigidbody rb;
@@ -38,11 +39,14 @@ public class Dashing : MonoBehaviour
     {
         // dash if pressed a key
         if (Input.GetKeyDown(dashKey))
+        {
             Dash();
+        }
 
         //reduce dash timer
         if (dashCdTimer > 0)
             dashCdTimer -= Time.deltaTime;
+
 
     }
 
@@ -64,8 +68,11 @@ public class Dashing : MonoBehaviour
         // apply force woith a little delay
         delayForceToApply = forceToApply;
         Invoke(nameof(DelayedDashForce), 0.025f);
+
         // reset the dash
         Invoke(nameof(ResetDash), dashDuration);
+
+        
 
     }
 
@@ -96,5 +103,6 @@ public class Dashing : MonoBehaviour
         return direction.normalized;
 
     }
+
 
 }
