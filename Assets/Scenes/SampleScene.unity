@@ -190,14 +190,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 82547705}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: -0, y: -0.7105946, z: -0, w: -0.7036017}
+  m_LocalPosition: {x: 0, y: 3.02, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 963194228}
   m_Father: {fileID: 0}
   m_RootOrder: 2
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: -269.43298, z: 0}
 --- !u!43 &216321602
 Mesh:
   m_ObjectHideFlags: 0
@@ -2436,6 +2436,7 @@ MonoBehaviour:
   jumpCooldown: 0.25
   airMultiplier: 0.2
   readyToJump: 1
+  readyForDoubleJump: 0
   jumpKey: 32
   sprintKey: 0
   reserKey: 114
@@ -2467,8 +2468,6 @@ MonoBehaviour:
   dashForce: 20
   dashUpwardForce: 0
   dashDuration: 0.25
-  fovDefault: 70
-  fovIncrease: 90
   dashCd: 0.5
   dashKey: 304
 --- !u!114 &931899299
