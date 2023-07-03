@@ -50,19 +50,22 @@ public class PlayerMovement : MonoBehaviour
 
     Vector3 moveDirection;
 
+    public new Collider collider;
+
     Rigidbody rb;
 
     // states creation
     public MovementStates state;
     public enum MovementStates
     {
+        climbing,
         walking,
         sprinting,
         dashing,
         air
     }
 
-
+    public bool climbing;
     public bool dashing;
     public bool activeGrapple;
 
@@ -106,8 +109,13 @@ public class PlayerMovement : MonoBehaviour
 
     private void MyInput()
     {
-        horizontalInput = Input.GetAxisRaw("Horizontal");
-        verticalInput = Input.GetAxisRaw("Vertical");
+        //if not climb get input controls
+        if (!climbing)
+        {
+            horizontalInput = Input.GetAxisRaw("Horizontal");
+            verticalInput = Input.GetAxisRaw("Vertical");
+        }
+        
 
         //if ready to jump
         if (Input.GetKeyDown(jumpKey) && readyToJump)
@@ -138,11 +146,14 @@ public class PlayerMovement : MonoBehaviour
     //State handler
     private void StateHandler ()
     {
-
-
+        //if climb
+        if (climbing)
+        {
+            collider.enabled = false;
+        }
 
         // if dashinng
-         if (dashing)
+        else if (dashing)
         {
             state = MovementStates.dashing;
             moveSpeed = dashSpeed;
