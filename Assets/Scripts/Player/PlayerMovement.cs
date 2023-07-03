@@ -30,7 +30,7 @@ public class PlayerMovement : MonoBehaviour
     [Header("Ground check")]
     public float playerHeight;
     public LayerMask whatIsGround;
-    bool grounded;
+    public bool grounded;
 
     //for sloping
     [Header("Slope Handling")]
@@ -52,14 +52,13 @@ public class PlayerMovement : MonoBehaviour
     public MovementStates state;
     public enum MovementStates
     {
-        freeze,
         walking,
         sprinting,
         dashing,
         air
     }
 
-    public bool freeze;
+
     public bool dashing;
     public bool activeGrapple;
 
@@ -74,7 +73,7 @@ public class PlayerMovement : MonoBehaviour
     {
 
         //ground check with raycast down to the ground
-        grounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.3f, whatIsGround);
+        grounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.15f, whatIsGround);
 
         MyInput();
         SpeedControl();
@@ -86,7 +85,9 @@ public class PlayerMovement : MonoBehaviour
             if (moveDirection != new Vector3(0,0,0))
                 rb.drag = groundDrag;
             else rb.drag = 2 * groundDrag;
+            rb.useGravity = true;
         }
+        
         else rb.drag = 0;
 
     }
@@ -126,17 +127,11 @@ public class PlayerMovement : MonoBehaviour
     //State handler
     private void StateHandler ()
     {
-        //if freezed - stop any movements
-        if (freeze)
-        {
-            state = MovementStates.freeze;
-            moveSpeed = 0;
-            rb.velocity = Vector3.zero;
-        }
+
 
 
         // if dashinng
-        else if (dashing)
+         if (dashing)
         {
             state = MovementStates.dashing;
             moveSpeed = dashSpeed;
@@ -302,7 +297,7 @@ public class PlayerMovement : MonoBehaviour
         Vector3 velocityY = Vector3.up * Mathf.Sqrt(-2 * gravity * trajectoryHeight);
         Vector3 velocityXZ = displacementXZ / (Mathf.Sqrt(-2 * trajectoryHeight / gravity) + Mathf.Sqrt(2 * (displacementY - trajectoryHeight) / gravity));
 
-        return velocityXZ + velocityY;
+        return (velocityXZ + velocityY) + new Vector3(0f, 3f, 0f);
 
     }
 

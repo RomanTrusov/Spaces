@@ -66,7 +66,6 @@ public class Grapling : MonoBehaviour
 
         grappling = true; //grappling starts
 
-        pm.freeze = true; //freeze player a bit
 
         //throw raycast
         RaycastHit hit;
@@ -92,7 +91,6 @@ public class Grapling : MonoBehaviour
 
     private void ExecuteGrapple()
     {
-        pm.freeze = false; //unfreeze player when start grapple
         pm.activeGrapple = false;
 
         Vector3 lowestPoint = new Vector3(transform.position.x, transform.position.y - 1f, transform.position.z);
@@ -110,7 +108,6 @@ public class Grapling : MonoBehaviour
 
     private void StopGrapple()
     {
-        pm.freeze = false; //unfreeze player when start grapple
         pm.activeGrapple = false;
         // stop grappling
         grappling = false;

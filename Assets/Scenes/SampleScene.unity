@@ -2446,7 +2446,6 @@ MonoBehaviour:
   maxSlopeAngle: 40
   orientation: {fileID: 1662591321}
   state: 0
-  freeze: 0
   dashing: 0
   activeGrapple: 0
 --- !u!114 &931899298
@@ -2487,7 +2486,7 @@ MonoBehaviour:
     m_Bits: 64
   lr: {fileID: 1869349059}
   maxGrapplingDistance: 25
-  grappleDelayTime: 0.25
+  grappleDelayTime: 0
   overshootYaxis: 1
   grapplingCd: 0.5
   grapplingKey: 324
