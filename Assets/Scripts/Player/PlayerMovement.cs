@@ -65,6 +65,7 @@ public class PlayerMovement : MonoBehaviour
         air
     }
 
+    public bool onSlope;
     public bool climbing;
     public bool dashing;
     public bool activeGrapple;
@@ -78,18 +79,19 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
-
+        onSlope = OnSlope();
         //ground check with raycast down to the ground
-        grounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.15f, whatIsGround);
+        if (readyToJump)
+        grounded = Physics.Raycast(transform.position + new Vector3(0.5f,0f,0f), Vector3.down, playerHeight * 0.5f + 0.1f, whatIsGround);
 
         MyInput();
         SpeedControl();
         StateHandler();
 
         // make drag
-        if (grounded && !activeGrapple)
+        if (grounded && !activeGrapple && state != MovementStates.air)
         {
-            if (moveDirection != new Vector3(0,0,0))
+            if (moveDirection != Vector3.zero)
                 rb.drag = groundDrag;
             else rb.drag = 2 * groundDrag;
             rb.useGravity = true;
@@ -149,6 +151,7 @@ public class PlayerMovement : MonoBehaviour
         //if climb
         if (climbing)
         {
+            state = MovementStates.climbing;
             collider.enabled = false;
         }
 
@@ -204,14 +207,20 @@ public class PlayerMovement : MonoBehaviour
             rb.AddForce(moveDirection * moveSpeed * 10f, ForceMode.Force);
         }
 
-        //TEST reduce Y velocity while falling
-        else if (!grounded)
+        //reduce Y velocity while falling
+        else if (!grounded && rb.useGravity)
         {
             if (rb.velocity.y < 0)
             {
                 rb.AddForce(moveDirection * moveSpeed * 10f * airMultiplier - new Vector3(0, 15f, 0), ForceMode.Force);
             } else
             rb.AddForce(moveDirection * moveSpeed * 10f * airMultiplier, ForceMode.Force);
+        }
+
+        //TEST if air - move down
+        if (state == MovementStates.air && rb.useGravity)
+        {
+            rb.AddForce(orientation.up * -7f, ForceMode.Force);
         }
 
         //turn off gravity when slope
@@ -257,6 +266,7 @@ public class PlayerMovement : MonoBehaviour
     {
 
         exitingSlope = true;
+        grounded = false;
 
         // sure that Y velocity is 0
         rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);

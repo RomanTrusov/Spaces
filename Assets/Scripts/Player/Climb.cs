@@ -46,7 +46,7 @@ public class Climb : MonoBehaviour
             // zero to current velocity
             playerRigidBody.velocity = Vector3.zero;
             // add velocity to climb
-            playerRigidBody.AddForce(orientation.up * climbForce * 1.5f + orientation.forward * climbForce, ForceMode.Impulse);
+            playerRigidBody.AddForce(orientation.up * climbForce * 2f + orientation.forward * climbForce * 0.7f, ForceMode.Impulse);
             // stop climb after delay
             Invoke(nameof(EndClimb), climbCd);
         }
