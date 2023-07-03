@@ -52,13 +52,16 @@ public class PlayerMovement : MonoBehaviour
     public MovementStates state;
     public enum MovementStates
     {
+        freeze,
         walking,
         sprinting,
         dashing,
         air
     }
 
+    public bool freeze;
     public bool dashing;
+    public bool activeGrapple;
 
     private void Start()
     {
@@ -78,7 +81,7 @@ public class PlayerMovement : MonoBehaviour
         StateHandler();
 
         // make drag
-        if (state == MovementStates.walking || state == MovementStates.sprinting)
+        if (grounded && !activeGrapple)
         {
             if (moveDirection != new Vector3(0,0,0))
                 rb.drag = groundDrag;
@@ -123,9 +126,17 @@ public class PlayerMovement : MonoBehaviour
     //State handler
     private void StateHandler ()
     {
+        //if freezed - stop any movements
+        if (freeze)
+        {
+            state = MovementStates.freeze;
+            moveSpeed = 0;
+            rb.velocity = Vector3.zero;
+        }
+
 
         // if dashinng
-        if (dashing)
+        else if (dashing)
         {
             state = MovementStates.dashing;
             moveSpeed = dashSpeed;
@@ -154,6 +165,8 @@ public class PlayerMovement : MonoBehaviour
     //Move player function
     private void MovePlayer()
     {
+        if (activeGrapple) return;
+
         // calculate movement direction
         moveDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
         //If player on slope add slope speeed
@@ -195,7 +208,7 @@ public class PlayerMovement : MonoBehaviour
     private void SpeedControl()
     {
         //limit speed on slopes
-
+        if (activeGrapple) return;
  
 
             if (OnSlope() && !exitingSlope)
@@ -241,6 +254,23 @@ public class PlayerMovement : MonoBehaviour
         exitingSlope = false;
     }
 
+
+    public void JumpToPosition(Vector3 targetPosition, float trajectoryHeight)
+    {
+        activeGrapple = true; // activate grapple to stop motion and off speed limit
+        //apply jump velocity
+
+        velocityToSet = CalculateJumpVelocity(transform.position, targetPosition, trajectoryHeight);
+        Invoke(nameof(SetVelocity), 0.1f);
+    }
+
+    // apply grappling jump after some delay
+    private Vector3 velocityToSet;
+    private void SetVelocity()
+    {
+        rb.velocity = velocityToSet;
+    }
+
     // check if we are on slope
     private bool OnSlope()
     {
@@ -261,4 +291,19 @@ public class PlayerMovement : MonoBehaviour
         // get slope move deirection normalized vi projection on the slope
         return Vector3.ProjectOnPlane(moveDirection, slopeHit.normal).normalized;
     }
+
+    //calculating grapple jump
+    public Vector3 CalculateJumpVelocity(Vector3 startPoint, Vector3 endPoint, float trajectoryHeight)
+    {
+        float gravity = Physics.gravity.y;
+        float displacementY = endPoint.y - startPoint.y;
+        Vector3 displacementXZ = new Vector3(endPoint.x - startPoint.x, 0f, endPoint.z - startPoint.z);
+
+        Vector3 velocityY = Vector3.up * Mathf.Sqrt(-2 * gravity * trajectoryHeight);
+        Vector3 velocityXZ = displacementXZ / (Mathf.Sqrt(-2 * trajectoryHeight / gravity) + Mathf.Sqrt(2 * (displacementY - trajectoryHeight) / gravity));
+
+        return velocityXZ + velocityY;
+
+    }
+
 }
