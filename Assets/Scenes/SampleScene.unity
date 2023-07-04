@@ -5313,6 +5313,7 @@ MonoBehaviour:
   airMultiplier: 0.2
   readyToJump: 1
   readyForDoubleJump: 0
+  doubleJumpForce: 1.4
   jumpKey: 32
   sprintKey: 0
   reserKey: 114
@@ -5370,7 +5371,7 @@ MonoBehaviour:
   maxGrapplingDistance: 25
   grappleDelayTime: 0
   overshootYaxis: 0
-  grapplingCd: 0.5
+  grapplingCd: 0.1
   grapplingKey: 324
 --- !u!114 &931899300
 MonoBehaviour:
@@ -9295,6 +9296,7 @@ GameObject:
   - component: {fileID: 1868876474}
   - component: {fileID: 1868876476}
   - component: {fileID: 1868876475}
+  - component: {fileID: 1868876477}
   m_Layer: 0
   m_Name: RawImage
   m_TagString: Untagged
@@ -9356,6 +9358,25 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1868876473}
   m_CullTransparentMesh: 1
+--- !u!114 &1868876477
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1868876473}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 017df39538b83ce4f8e59bf1d4ac0099, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerCamera: {fileID: 963194228}
+  playerGrapple: {fileID: 931899299}
+  fullOpacity: {r: 1, g: 1, b: 1, a: 1}
+  halfOpacity: {r: 1, g: 1, b: 1, a: 0.29803923}
+  whatIsGrappable:
+    serializedVersion: 2
+    m_Bits: 64
 --- !u!1 &1869349058
 GameObject:
   m_ObjectHideFlags: 0

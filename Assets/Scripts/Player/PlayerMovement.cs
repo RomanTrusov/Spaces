@@ -24,6 +24,7 @@ public class PlayerMovement : MonoBehaviour
 
     [Header("DoubleJump")]
     public bool readyForDoubleJump;
+    public float doubleJumpForce;
 
     //jump, sprint button
     [Header("Keybinds")]
@@ -286,7 +287,7 @@ public class PlayerMovement : MonoBehaviour
     {
         readyForDoubleJump = false;
         rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
-        rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
+        rb.AddForce(transform.up * jumpForce * doubleJumpForce, ForceMode.Impulse);
         
     }
 
@@ -343,7 +344,7 @@ public class PlayerMovement : MonoBehaviour
         Vector3 velocityY = Vector3.up * Mathf.Sqrt(-2 * gravity * trajectoryHeight);
         Vector3 velocityXZ = displacementXZ / (Mathf.Sqrt(-2 * trajectoryHeight / gravity) + Mathf.Sqrt(2 * (displacementY - trajectoryHeight) / gravity));
 
-        return (velocityXZ + velocityY) + new Vector3(0f, 0f, 0f);
+        return (velocityXZ + velocityY) + new Vector3(0f, 2f, 0f);
 
     }
 
