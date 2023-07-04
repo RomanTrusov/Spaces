@@ -86,7 +86,7 @@ public class PlayerMovement : MonoBehaviour
         onSlope = OnSlope();
         //ground check with raycast down to the ground
         if (readyToJump)
-        grounded = Physics.Raycast(transform.position + new Vector3(0.5f,0f,0f), Vector3.down, playerHeight * 0.5f + 0.1f, whatIsGround);
+        grounded = Physics.Raycast(transform.position + new Vector3(0.5f,0f,0f), Vector3.down, playerHeight * 0.5f + 0.2f, whatIsGround);
 
         MyInput();
         SpeedControl();
