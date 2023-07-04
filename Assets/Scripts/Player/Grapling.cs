@@ -102,7 +102,10 @@ public class Grapling : MonoBehaviour
 
         pm.JumpToPosition(grapplePoint, highestPointOnArc);
 
-        Invoke(nameof(StopGrapple), 1f);
+        if (pm.grounded && grapplePoint.y < transform.position.y)
+            Invoke(nameof(StopGrapple), 0.5f);
+        else
+            Invoke(nameof(StopGrapple), 1f);
 
     }
 

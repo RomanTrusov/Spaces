@@ -14,6 +14,8 @@ public class PlayerMovement : MonoBehaviour
     // reduce sliding
     public float groundDrag;
     public float groundDragStopper;
+    //to track grappling down from air
+    public bool grapplingDown = false;
 
     // for jumps
     [Header("Jumps")]
@@ -90,6 +92,12 @@ public class PlayerMovement : MonoBehaviour
         SpeedControl();
         StateHandler();
 
+        //stop grappling if grounded and graaple down
+        if (grounded && grapplingDown)
+        {
+            grapplingDown = false;
+            activeGrapple = false;
+        }
 
         // make drag 
         if (grounded && !activeGrapple && state != MovementStates.air)
@@ -350,8 +358,17 @@ public class PlayerMovement : MonoBehaviour
             Vector3 velocityXZ = displacementXZ / (Mathf.Sqrt(-2 * trajectoryHeight / gravity) + Mathf.Sqrt(2 * (displacementY - trajectoryHeight) / gravity));
 
             return (velocityXZ + velocityY) * 1.15f + new Vector3(0f, 0f, 0f);
+        } else if (grounded)
+        {
+            Vector3 displacementXZ = new Vector3(endPoint.x - startPoint.x, 0f, endPoint.z - startPoint.z);
+
+            Vector3 velocityY = Vector3.up * Mathf.Sqrt(-2 * gravity * trajectoryHeight);
+            Vector3 velocityXZ = displacementXZ / (Mathf.Sqrt(-2 * trajectoryHeight / gravity) + Mathf.Sqrt(2 * (displacementY - trajectoryHeight) / gravity));
+
+            return (velocityXZ * 1f + velocityY) + new Vector3(0f, 0f, 0f);
         } else
         {
+            grapplingDown = true; // set this state of grappling to cancel grappling on ground
             Vector3 displacementXZ = new Vector3(endPoint.x - startPoint.x, 0f, endPoint.z - startPoint.z);
 
             Vector3 velocityY = Vector3.up * Mathf.Sqrt(-2 * gravity * trajectoryHeight);
