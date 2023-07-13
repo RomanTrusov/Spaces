@@ -25,7 +25,7 @@ public class MeleAttack : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(meleKey) && meleState == 0) // if press mele key during nothing - do simple punch
+        if (Input.GetKeyDown(meleKey) && meleState != 1) // if press mele key during nothing - do simple punch
         {
             MeleAttacking();
         } else if (Input.GetKeyDown(meleKey) && meleState == 1) // if press mele key during combo delay - do combo
@@ -68,7 +68,7 @@ public class MeleAttack : MonoBehaviour
                 playerAnimator.SetBool("KickLeft", true);
                 break;
         }
-        Invoke(nameof(MeleAttackingOff), timeForCombo); // check if we need to make state to 0 or not
+        Invoke(nameof(MeleAttackingOff), timeForCombo/2); // check if we need to make state to 0 or not
     }
 
 

@@ -6122,7 +6122,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerAnimator: {fileID: 1846957127}
   meleState: 0
-  timeForCombo: 0.5
+  timeForCombo: 0.7
   meleKey: 326
 --- !u!4 &932679530 stripped
 Transform:
