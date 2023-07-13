@@ -59,10 +59,13 @@ public class MeleAttack : MonoBehaviour
                 playerAnimator.SetBool("KickForward", true);
                 break;
             case 2:
+                playerAnimator.SetBool("KickRight", true);
                 break;
             case 3:
+                playerAnimator.SetBool("KickBack", true);
                 break;
             case 4:
+                playerAnimator.SetBool("KickLeft", true);
                 break;
         }
         Invoke(nameof(MeleAttackingOff), timeForCombo); // check if we need to make state to 0 or not
@@ -100,6 +103,9 @@ public class MeleAttack : MonoBehaviour
         {
             playerAnimator.SetBool("MelePunch", false);
             playerAnimator.SetBool("KickForward", false);
+            playerAnimator.SetBool("KickBack", false);
+            playerAnimator.SetBool("KickLeft", false);
+            playerAnimator.SetBool("KickRight", false);
             meleState = 0; // state - nothing
         }
     }
