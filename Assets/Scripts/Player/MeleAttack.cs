@@ -6,13 +6,13 @@ public class MeleAttack : MonoBehaviour
 {
     [Header("References")]
     public Animator playerAnimator;
-    //public PlayerMovement pm;
+    public GameObject meleTrigger;
 
     [Header("Debug")]
     //mele states: 0 - inactive, 1 - simple punch, 2 - combo kick
     public int meleState = 0;
     private int currentMeleState = 0;
-    private int meleDirection = 0;
+    public int meleDirection = 0;
 
 
     [Header("Setting")]
@@ -28,6 +28,10 @@ public class MeleAttack : MonoBehaviour
         if (Input.GetKeyDown(meleKey) && meleState != 1) // if press mele key during nothing - do simple punch
         {
             MeleAttacking();
+            //test on activatiing mele trigger and setting the direction
+            meleTrigger.GetComponent<MeleAttackTrigger>().meleDir = 1;
+            meleTrigger.SetActive(true);
+            
         } else if (Input.GetKeyDown(meleKey) && meleState == 1) // if press mele key during combo delay - do combo
         {
             MeleCombo();
@@ -106,6 +110,7 @@ public class MeleAttack : MonoBehaviour
             playerAnimator.SetBool("KickBack", false);
             playerAnimator.SetBool("KickLeft", false);
             playerAnimator.SetBool("KickRight", false);
+            meleTrigger.gameObject.SetActive(false); // deactivate mele trigger
             meleState = 0; // state - nothing
         }
     }
