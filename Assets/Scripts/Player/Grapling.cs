@@ -9,6 +9,7 @@ public class Grapling : MonoBehaviour
     public Transform cam;
     public Transform gunTip;
     public LayerMask whatIsGrappable;
+    public LayerMask enemy;
     public LineRenderer lr; //line component
 
 
@@ -76,6 +77,11 @@ public class Grapling : MonoBehaviour
             //execute grapple function
             Invoke(nameof(ExecuteGrapple), grappleDelayTime);
 
+        } else if (Physics.Raycast(cam.position, cam.forward, out hit, maxGrapplingDistance, enemy)) {
+            //save grapple point from raycast
+            grapplePoint = hit.point;
+            //execute grapple function
+            Invoke(nameof(ExecuteGrapple), grappleDelayTime);
         } else
         {
             // if hit i snot grappable or far away - store the max distance point

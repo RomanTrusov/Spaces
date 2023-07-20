@@ -31,13 +31,24 @@ public class MeleAttack : MonoBehaviour
             //test on activatiing mele trigger and setting the direction
             meleTrigger.GetComponent<MeleAttackTrigger>().meleDir = 1;
             meleTrigger.SetActive(true);
+            Invoke(nameof(deactivateMeleTrigger), 0.35f);
             
         } else if (Input.GetKeyDown(meleKey) && meleState == 1) // if press mele key during combo delay - do combo
         {
             MeleCombo();
+            //test for stronger kick
+            if (meleTrigger.activeSelf) meleTrigger.SetActive(false);
+            meleTrigger.GetComponent<MeleAttackTrigger>().meleDir = 2;
+            meleTrigger.SetActive(true);
+            Invoke(nameof(deactivateMeleTrigger), 0.35f);
         }
     }
 
+
+    private void deactivateMeleTrigger()
+    {
+        meleTrigger.SetActive(false);
+    }
 
     private void MeleAttacking()
     {

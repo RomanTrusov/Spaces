@@ -65,6 +65,7 @@
     <Compile Include="Assets\Scripts\Player\Dashing.cs" />
     <Compile Include="Assets\Scripts\Camera\PlayerCam.cs" />
     <Compile Include="Assets\Scripts\Player\MeleAttackTrigger.cs" />
+    <Compile Include="Assets\Scripts\Enemy\EnemyDeath.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\AssetStore\SciFi_Space_Soldier\Resources\Shaders\SpaceStation_PBR_Basic.shader" />

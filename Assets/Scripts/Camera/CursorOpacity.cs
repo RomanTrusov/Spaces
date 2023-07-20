@@ -12,11 +12,14 @@ public class CursorOpacity : MonoBehaviour
     public Color halfOpacity;
 
     public LayerMask whatIsGrappable;
+    public LayerMask enemy;
 
     private void LateUpdate()
     {
         RaycastHit hit;
         if (Physics.Raycast(playerCamera.position, playerCamera.forward, out hit, playerGrapple.maxGrapplingDistance, whatIsGrappable))
+            GetComponent<RawImage>().color = fullOpacity;
+        else if (Physics.Raycast(playerCamera.position, playerCamera.forward, out hit, playerGrapple.maxGrapplingDistance, enemy))
             GetComponent<RawImage>().color = fullOpacity;
         else GetComponent<RawImage>().color = halfOpacity;
     }

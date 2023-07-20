@@ -15,6 +15,10 @@ public class MeleAttackTrigger : MonoBehaviour
         {
             other.gameObject.GetComponent<Rigidbody>().AddForce(orientation.forward * forwardPush + new Vector3(0f, upwardPush, 0f),ForceMode.Impulse);
             gameObject.SetActive(false);
+        } else if (other.gameObject.layer == 8 && meleDir == 2)
+        {
+            other.gameObject.GetComponent<Rigidbody>().AddForce(orientation.forward * forwardPush + new Vector3(0f, upwardPush * 3, 0f), ForceMode.Impulse);
+            gameObject.SetActive(false);
         }
     }
 
