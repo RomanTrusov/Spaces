@@ -28,24 +28,34 @@ public class MeleAttack : MonoBehaviour
         if (Input.GetKeyDown(meleKey) && meleState != 1) // if press mele key during nothing - do simple punch
         {
             MeleAttacking();
-            //test on activatiing mele trigger and setting the direction
-            meleTrigger.GetComponent<MeleAttackTrigger>().meleDir = 1;
-            meleTrigger.SetActive(true);
-            Invoke(nameof(deactivateMeleTrigger), 0.35f);
-            
+            ActivateMeleTrigger();
+
+
         } else if (Input.GetKeyDown(meleKey) && meleState == 1) // if press mele key during combo delay - do combo
         {
             MeleCombo();
-            //test for stronger kick
-            if (meleTrigger.activeSelf) meleTrigger.SetActive(false);
-            meleTrigger.GetComponent<MeleAttackTrigger>().meleDir = 2;
-            meleTrigger.SetActive(true);
-            Invoke(nameof(deactivateMeleTrigger), 0.35f);
+            ActivateMeleTrigger();
         }
     }
 
 
-    private void deactivateMeleTrigger()
+    private void ActivateMeleTrigger ()
+    {
+        // check is it simple punch or a combo attack
+        if (meleState == 1)
+        {
+            meleTrigger.GetComponent<MeleAttackTrigger>().meleState = 1;
+        } else if (meleState == 2)
+        {
+            if (meleTrigger.activeSelf) meleTrigger.SetActive(false);
+            meleTrigger.GetComponent<MeleAttackTrigger>().meleState = 2;
+            meleTrigger.GetComponent<MeleAttackTrigger>().meleDirection = meleDirection;
+        }
+        meleTrigger.SetActive(true);
+        Invoke(nameof(DeactivateMeleTrigger), 0.35f);
+    }
+
+    private void DeactivateMeleTrigger()
     {
         meleTrigger.SetActive(false);
     }
@@ -86,7 +96,6 @@ public class MeleAttack : MonoBehaviour
         Invoke(nameof(MeleAttackingOff), timeForCombo/2); // check if we need to make state to 0 or not
     }
 
-
     private int CheckMeleDirection() //for directional combo
     {
         // forward - if only go forward (no horizontal)
@@ -123,6 +132,7 @@ public class MeleAttack : MonoBehaviour
             playerAnimator.SetBool("KickRight", false);
             meleTrigger.gameObject.SetActive(false); // deactivate mele trigger
             meleState = 0; // state - nothing
+            meleDirection = 0; // reset mele direction
         }
     }
 
