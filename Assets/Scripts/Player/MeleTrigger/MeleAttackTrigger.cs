@@ -28,19 +28,19 @@ public class MeleAttackTrigger : MonoBehaviour
             switch (meleDirection)
             {
                 case 0:
-                    other.gameObject.GetComponent<Rigidbody>().AddForce(orientation.forward * forwardPush + new Vector3(0f, upwardPush, 0f) * meleAttackModifier, ForceMode.Impulse);
+                    other.gameObject.GetComponent<Rigidbody>().AddForce((orientation.forward * forwardPush + new Vector3(0f, upwardPush, 0f)) * meleAttackModifier, ForceMode.Impulse);
                     break;
                 case 1: 
-                    other.gameObject.GetComponent<Rigidbody>().AddForce(orientation.forward * forwardPush + new Vector3(0f, upwardPush, 0f) * meleAttackModifier, ForceMode.Impulse);
+                    other.gameObject.GetComponent<Rigidbody>().AddForce((orientation.forward * forwardPush + new Vector3(0f, upwardPush, 0f)) * meleAttackModifier, ForceMode.Impulse);
                     break;
                 case 2:
-                    other.gameObject.GetComponent<Rigidbody>().AddForce(orientation.right * forwardPush + new Vector3(0f, upwardPush, 0f) * meleAttackModifier, ForceMode.Impulse);
+                    other.gameObject.GetComponent<Rigidbody>().AddForce((orientation.right * forwardPush + new Vector3(0f, upwardPush, 0f)) * meleAttackModifier, ForceMode.Impulse);
                     break;
                 case 3:
-                    other.gameObject.GetComponent<Rigidbody>().AddForce(orientation.up * forwardPush + new Vector3(0f, upwardPush, 0f) * meleAttackModifier, ForceMode.Impulse);
+                    other.gameObject.GetComponent<Rigidbody>().AddForce((orientation.up * forwardPush + new Vector3(0f, upwardPush, 0f)) * meleAttackModifier, ForceMode.Impulse);
                     break;
                 case 4:
-                    other.gameObject.GetComponent<Rigidbody>().AddForce(orientation.right * -forwardPush + new Vector3(0f, upwardPush, 0f) * meleAttackModifier, ForceMode.Impulse);
+                    other.gameObject.GetComponent<Rigidbody>().AddForce((orientation.right * -forwardPush + new Vector3(0f, upwardPush, 0f)) * meleAttackModifier, ForceMode.Impulse);
                     break;
             }
 

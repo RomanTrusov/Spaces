@@ -7,39 +7,47 @@ public class EnemyBehaviour : MonoBehaviour
     public Transform playerPosition;
     public float alertDistance;
     public LayerMask playerLayer;
+    public float enemySpeed;
 
     private Vector3 playerDirection;
-    private RaycastHit hit;
+    private RaycastHit hit; //will be used to punch player
 
-    Transform enemyPosition;
-    public float distance;
+    private Transform selfPosition;
+    private Rigidbody selfRb;
+    public EnemyStates state;
 
+    public enum EnemyStates
+    {
+        await,
+        follow
+    }
 
     private void Start()
     {
-        enemyPosition = GetComponent<Transform>();
+        selfPosition = GetComponent<Transform>();
+        selfRb = GetComponent<Rigidbody>();
+        state = EnemyStates.await;
     }
 
     private void FixedUpdate()
     {
 
-        if (!NoticedPlayer())
+        if (state == EnemyStates.await && !NoticedPlayer())
         {
-            Debug.Log("NotGotcha");
-            //try to nootice player
+
         }
-        else
+        else if (NoticedPlayer())
         {
-            Debug.Log("Gotcha!");
-            //follow player until losing him again
+            state = EnemyStates.follow;
+            FollowPlayer();
         }
     }
 
 
     private bool NoticedPlayer ()
     { // check if player close to the enemy
-        playerDirection = playerPosition.position - enemyPosition.position;
-        if (Physics.Raycast(enemyPosition.position, playerDirection, out hit, alertDistance, playerLayer))
+        playerDirection = playerPosition.position - selfPosition.position;
+        if (Physics.Raycast(selfPosition.position, playerDirection, out hit, alertDistance, playerLayer))
         {
             return true;
         }
@@ -51,6 +59,14 @@ public class EnemyBehaviour : MonoBehaviour
 
     private void FollowPlayer ()
     { //apply movement to the player direction
-
+        playerDirection = playerPosition.position - selfPosition.position;
+        // check for loosing player in larger distance
+        if (Physics.Raycast(selfPosition.position, playerDirection, out hit, alertDistance, playerLayer))
+        {
+            selfRb.AddForce(playerDirection.normalized * enemySpeed);
+        } else
+        {
+            state = EnemyStates.await;
+        }
     }
 } 
