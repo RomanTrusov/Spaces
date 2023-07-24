@@ -152,8 +152,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b6b7e344d53c02c41bf83268817466a1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerRb: {fileID: 0}
   playerPosition: {fileID: 0}
-  alertDistance: 3
+  alertDistance: 10
   playerLayer:
     serializedVersion: 2
     m_Bits: 8
+  enemySpeed: 15
+  state: 0

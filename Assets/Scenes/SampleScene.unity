@@ -12594,16 +12594,20 @@ PrefabInstance:
       value: Enemy
       objectReference: {fileID: 0}
     - target: {fileID: 4513720961126296676, guid: 9d66e66eaeab7c8469c76a80433a4388, type: 3}
-      propertyPath: enemySpeed
-      value: 15
+      propertyPath: playerRb
+      value: 
+      objectReference: {fileID: 931899295}
+    - target: {fileID: 4513720961126296676, guid: 9d66e66eaeab7c8469c76a80433a4388, type: 3}
+      propertyPath: puchForce
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 4513720961126296676, guid: 9d66e66eaeab7c8469c76a80433a4388, type: 3}
-      propertyPath: alertDistance
-      value: 10
+      propertyPath: pushForce
+      value: 70
       objectReference: {fileID: 0}
     - target: {fileID: 4513720961126296676, guid: 9d66e66eaeab7c8469c76a80433a4388, type: 3}
       propertyPath: playerPosition
       value: 
-      objectReference: {fileID: 931899296}
+      objectReference: {fileID: 1557405273}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9d66e66eaeab7c8469c76a80433a4388, type: 3}

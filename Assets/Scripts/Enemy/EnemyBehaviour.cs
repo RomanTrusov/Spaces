@@ -4,17 +4,22 @@ using UnityEngine;
 
 public class EnemyBehaviour : MonoBehaviour
 {
+    public Rigidbody playerRb;
     public Transform playerPosition;
     public float alertDistance;
     public LayerMask playerLayer;
     public float enemySpeed;
+    public EnemyStates state;
+    public float pushForce;
 
     private Vector3 playerDirection;
     private RaycastHit hit; //will be used to punch player
 
     private Transform selfPosition;
     private Rigidbody selfRb;
-    public EnemyStates state;
+
+    private float attackCD; //cooldown before next attack
+    private float attackCDtimer;
 
     public enum EnemyStates
     {
@@ -27,6 +32,7 @@ public class EnemyBehaviour : MonoBehaviour
         selfPosition = GetComponent<Transform>();
         selfRb = GetComponent<Rigidbody>();
         state = EnemyStates.await;
+        attackCD = 1f; //1 second before attack
     }
 
     private void FixedUpdate()
@@ -40,6 +46,7 @@ public class EnemyBehaviour : MonoBehaviour
         {
             state = EnemyStates.follow;
             FollowPlayer();
+            CheckForAttack();
         }
     }
 
@@ -69,4 +76,23 @@ public class EnemyBehaviour : MonoBehaviour
             state = EnemyStates.await;
         }
     }
+
+    private void CheckForAttack()
+    {
+        if (Physics.Raycast(selfPosition.position, playerDirection, out hit, 1.5f, playerLayer) && attackCDtimer >= 0)
+        {
+            attackCDtimer -= Time.deltaTime;
+        } else if (Physics.Raycast(selfPosition.position, playerDirection, out hit, 1.5f, playerLayer) && attackCDtimer < 0)
+        {
+            AttackPlayer();
+            attackCDtimer = attackCD;
+        }
+            
+    }
+
+    private void AttackPlayer ()
+    {
+        playerRb.AddForce((playerDirection.normalized * pushForce) + new Vector3(0f,20f,0f),ForceMode.Impulse);
+    }
+
 } 
