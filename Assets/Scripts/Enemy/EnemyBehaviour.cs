@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class EnemyBehaviour : MonoBehaviour
 {
+    public PlayerMovement pm;
     public Rigidbody playerRb;
     public Transform playerPosition;
     public float alertDistance;
@@ -32,15 +33,16 @@ public class EnemyBehaviour : MonoBehaviour
         selfPosition = GetComponent<Transform>();
         selfRb = GetComponent<Rigidbody>();
         state = EnemyStates.await;
-        attackCD = 1f; //1 second before attack
+        attackCD = 0.5f; //time before attack
+        attackCDtimer = attackCD;
     }
 
     private void FixedUpdate()
     {
-
+        
         if (state == EnemyStates.await && !NoticedPlayer())
         {
-
+            
         }
         else if (NoticedPlayer())
         {
@@ -86,13 +88,20 @@ public class EnemyBehaviour : MonoBehaviour
         {
             AttackPlayer();
             attackCDtimer = attackCD;
-        }
-            
+        } else attackCDtimer = attackCD;
+
     }
 
     private void AttackPlayer ()
     {
-        playerRb.AddForce((playerDirection.normalized * pushForce) + new Vector3(0f,20f,0f),ForceMode.Impulse);
+        pm.attacked = true;
+        Invoke(nameof(StopPlayerBeenAttacked), 0.5f);
+        playerRb.AddForce((playerDirection.normalized * pushForce * 10) + new Vector3(0f,10f,0f),ForceMode.Impulse);
     }
 
+    private void StopPlayerBeenAttacked()
+    {
+        pm.attacked = false;
+    }
+         
 } 

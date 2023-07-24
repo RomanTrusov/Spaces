@@ -66,9 +66,11 @@ public class PlayerMovement : MonoBehaviour
         walking,
         sprinting,
         dashing,
-        air
+        air,
+        attacked
     }
 
+    public bool attacked;
     public bool onSlope;
     public bool climbing;
     public bool dashing;
@@ -89,8 +91,9 @@ public class PlayerMovement : MonoBehaviour
         grounded = Physics.Raycast(transform.position + new Vector3(0.5f,0f,0f), Vector3.down, playerHeight * 0.5f + 0.2f, whatIsGround);
 
         MyInput();
-        SpeedControl();
         StateHandler();
+        SpeedControl();
+        
 
         //stop grappling if grounded and graaple down
         if (grounded && grapplingDown)
@@ -100,7 +103,8 @@ public class PlayerMovement : MonoBehaviour
         }
 
         // make drag 
-        if (grounded && !activeGrapple && state != MovementStates.air)
+        if (attacked) rb.drag = 0;
+        else if (grounded && !activeGrapple && state != MovementStates.air)
         {
             if (moveDirection != Vector3.zero)
                 rb.drag = groundDrag;
@@ -108,7 +112,7 @@ public class PlayerMovement : MonoBehaviour
             rb.useGravity = true;
             ResetDoubleJump();
         }
-        
+
         else rb.drag = 0;
 
     }
@@ -160,7 +164,11 @@ public class PlayerMovement : MonoBehaviour
     private void StateHandler ()
     {
         //if climb
-        if (climbing)
+        if (attacked)
+        {
+            state = MovementStates.attacked;
+        }
+        else if (climbing)
         {
             state = MovementStates.climbing;
             collider.enabled = false;
@@ -245,32 +253,31 @@ public class PlayerMovement : MonoBehaviour
     private void SpeedControl()
     {
         //limit speed on slopes
-        if (activeGrapple) return;
- 
+        if (activeGrapple && !attacked) return;
 
-            if (OnSlope() && !exitingSlope)
+        if (attacked)
+        {
+            rb.velocity = rb.velocity.normalized * walkSpeed;
+        }
+        else if (OnSlope() && !exitingSlope)
+        {
+
+            if (rb.velocity.magnitude > moveSpeed)
             {
-
-                if (rb.velocity.magnitude > moveSpeed)
-                {
-                    rb.velocity = rb.velocity.normalized * moveSpeed;
-                }
+                rb.velocity = rb.velocity.normalized * moveSpeed;
             }
+        }
 
-            else
+        else
+        {
+            Vector3 flatVel = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
+
+            if (flatVel.magnitude > moveSpeed)
             {
-                Vector3 flatVel = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
-
-                if (flatVel.magnitude > moveSpeed)
-                {
-                    Vector3 limitVel = flatVel.normalized * moveSpeed;
-                    rb.velocity = new Vector3(limitVel.x, rb.velocity.y, limitVel.z);
-                }
+                Vector3 limitVel = flatVel.normalized * moveSpeed;
+                rb.velocity = new Vector3(limitVel.x, rb.velocity.y, limitVel.z);
             }
-
-            
-        
-        
+        }
     }
 
     private void Jump()
