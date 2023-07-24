@@ -20,7 +20,7 @@ public class MeleAttack : MonoBehaviour
     public float timeForCombo;
 
     [Header("Input")]
-    public KeyCode meleKey = KeyCode.Mouse3;
+    public KeyCode meleKey = KeyCode.Mouse0;
 
 
     private void Update()

@@ -33,7 +33,7 @@ public class EnemyBehaviour : MonoBehaviour
         selfPosition = GetComponent<Transform>();
         selfRb = GetComponent<Rigidbody>();
         state = EnemyStates.await;
-        attackCD = 0.5f; //time before attack
+        attackCD = 0.2f; //time before attack
         attackCDtimer = attackCD;
     }
 
@@ -94,9 +94,12 @@ public class EnemyBehaviour : MonoBehaviour
 
     private void AttackPlayer ()
     {
-        pm.attacked = true;
-        Invoke(nameof(StopPlayerBeenAttacked), 0.5f);
-        playerRb.AddForce((playerDirection.normalized * pushForce * 10) + new Vector3(0f,10f,0f),ForceMode.Impulse);
+        pm.attacked = true; //set player to the condition
+        Invoke(nameof(StopPlayerBeenAttacked), 0.8f); //cancel this condition later
+        Vector3 flatDirection = new Vector3(playerDirection.x,0f,playerDirection.z);
+        Vector3 playerDirectionY = new Vector3(0f, playerDirection.y + 5f, 0f);
+        playerRb.AddForce(flatDirection.normalized * pushForce * 10f + playerDirectionY.normalized * pushForce * 5f, ForceMode.Impulse);
+        //playerRb.AddForce((playerDirection.normalized + new Vector3(0f, 1f, 0f)) * pushForce * 10 + new Vector3(0f, -2f, 0f), ForceMode.Impulse);
     }
 
     private void StopPlayerBeenAttacked()

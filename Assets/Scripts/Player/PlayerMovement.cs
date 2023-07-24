@@ -167,6 +167,7 @@ public class PlayerMovement : MonoBehaviour
         if (attacked)
         {
             state = MovementStates.attacked;
+            grounded = false;
         }
         else if (climbing)
         {
@@ -257,7 +258,7 @@ public class PlayerMovement : MonoBehaviour
 
         if (attacked)
         {
-            rb.velocity = rb.velocity.normalized * walkSpeed;
+            rb.velocity = rb.velocity.normalized * walkSpeed * 2f;
         }
         else if (OnSlope() && !exitingSlope)
         {
