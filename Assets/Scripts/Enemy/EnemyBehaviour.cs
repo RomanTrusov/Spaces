@@ -4,14 +4,14 @@ using UnityEngine;
 
 public class EnemyBehaviour : MonoBehaviour
 {
-    public PlayerMovement pm;
-    public Rigidbody playerRb;
-    public Transform playerPosition;
-    public float alertDistance;
-    public LayerMask playerLayer;
-    public float enemySpeed;
+    public PlayerMovement pm; // get Player movements script
+    public Rigidbody playerRb; // get player rigid body
+    public Transform playerPosition; 
+    public float alertDistance; // distance to spot the player
+    public LayerMask playerLayer; 
+    public float enemySpeed; 
     public EnemyStates state;
-    public float pushForce;
+    public float pushForce; // forve of the enemy's attack
 
     private Vector3 playerDirection;
     private RaycastHit hit; //will be used to punch player
@@ -22,7 +22,7 @@ public class EnemyBehaviour : MonoBehaviour
     private float attackCD; //cooldown before next attack
     private float attackCDtimer;
 
-    public enum EnemyStates
+    public enum EnemyStates // states of the enemy
     {
         await,
         follow
@@ -33,7 +33,7 @@ public class EnemyBehaviour : MonoBehaviour
         selfPosition = GetComponent<Transform>();
         selfRb = GetComponent<Rigidbody>();
         state = EnemyStates.await;
-        attackCD = 0.2f; //time before attack
+        attackCD = 0.5f; //time before attack
         attackCDtimer = attackCD;
     }
 
@@ -54,8 +54,8 @@ public class EnemyBehaviour : MonoBehaviour
 
 
     private bool NoticedPlayer ()
-    { // check if player close to the enemy
-        playerDirection = playerPosition.position - selfPosition.position;
+    { // check if player close enough to the enemy
+        playerDirection = playerPosition.position - selfPosition.position; // get which direction to throw raycast
         if (Physics.Raycast(selfPosition.position, playerDirection, out hit, alertDistance, playerLayer))
         {
             return true;
@@ -81,14 +81,14 @@ public class EnemyBehaviour : MonoBehaviour
 
     private void CheckForAttack()
     {
-        if (Physics.Raycast(selfPosition.position, playerDirection, out hit, 1.5f, playerLayer) && attackCDtimer >= 0)
+        if (attackCDtimer >= 0)
         {
             attackCDtimer -= Time.deltaTime;
-        } else if (Physics.Raycast(selfPosition.position, playerDirection, out hit, 1.5f, playerLayer) && attackCDtimer < 0)
+        } else if (Physics.Raycast(selfPosition.position, playerDirection, out hit, 1.5f, playerLayer))
         {
             AttackPlayer();
             attackCDtimer = attackCD;
-        } else attackCDtimer = attackCD;
+        }
 
     }
 
