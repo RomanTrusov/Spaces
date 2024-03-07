@@ -7,6 +7,6 @@ public class EnemyDeath : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.layer == 8) other.gameObject.SetActive(false);
+        if (other.gameObject.layer == 8) Destroy(other.gameObject); //other.gameObject.;
     }
 }
