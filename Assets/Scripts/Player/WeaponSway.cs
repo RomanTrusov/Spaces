@@ -15,7 +15,7 @@ public class WeaponSway : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        origin_rotation = Quaternion.AngleAxis(0,Vector3.zero); // hard coding the origin position
+        origin_rotation = Quaternion.AngleAxis(0,Vector3.zero); // hard coding the origin rotation
     }
 
     // Update is called once per frame
