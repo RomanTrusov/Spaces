@@ -87,10 +87,17 @@ public class PlayerMovement : MonoBehaviour
     {
         onSlope = OnSlope();
         //ground check with raycast down to the ground
-        if (readyToJump)
+        if (readyToJump && grounded) 
         grounded = Physics.Raycast(transform.position + new Vector3(0.5f,0f,0f), Vector3.down, playerHeight * 0.5f + 0.2f, whatIsGround);
+        else if (readyToJump && !grounded)
+        {
+            //sway the weapon from LandSway script
+            WeaponSway activateSway = GameObject.FindObjectOfType(typeof(WeaponSway)) as WeaponSway;
+            activateSway.flySway();
 
-        MyInput();
+            grounded = Physics.Raycast(transform.position + new Vector3(0.5f, 0f, 0f), Vector3.down, playerHeight * 0.5f + 0.2f, whatIsGround);
+        }
+            MyInput();
         StateHandler();
         SpeedControl();
         
@@ -291,6 +298,10 @@ public class PlayerMovement : MonoBehaviour
         rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
         // Impulse for one time force
         rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
+
+        //sway the weapon from WeaponSway script
+        WeaponSway activateSway = GameObject.FindObjectOfType(typeof(WeaponSway)) as WeaponSway;
+        activateSway.JumpSway();
     }
 
 
@@ -306,7 +317,10 @@ public class PlayerMovement : MonoBehaviour
         readyForDoubleJump = false;
         rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
         rb.AddForce(transform.up * jumpForce * doubleJumpForce, ForceMode.Impulse);
-        
+
+        //sway the weapon from WeaponSway script
+        WeaponSway activateSway = GameObject.FindObjectOfType(typeof(WeaponSway)) as WeaponSway;
+        activateSway.JumpSway();
     }
 
     private void ResetDoubleJump ()
