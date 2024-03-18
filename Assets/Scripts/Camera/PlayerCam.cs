@@ -11,6 +11,7 @@ public class PlayerCam : MonoBehaviour
 
     [SerializeField]
     private float playerVelocity;
+    private float swayForce; // force of the camera sway
 
     // for player's orientation
     public Transform orientation;
@@ -25,6 +26,7 @@ public class PlayerCam : MonoBehaviour
         // locked and invisible cursor
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+        swayForce = 0; // default camera sway 0
     }
 
     private void Update()
@@ -43,22 +45,29 @@ public class PlayerCam : MonoBehaviour
         //adding camera shaking while walking
         if (player.GetComponent<PlayerMovement>().grounded) //if grounded - shake camera while moving
         {
+
+            //trying to make sway start slowly
+            if (swayForce < 1) swayForce += 0.02f;
+
             playerVelocity = player.GetComponent<Rigidbody>().velocity.magnitude / 10f; //get speed of walking to set the camera shaking by it's scale
-            Quaternion x_Shake = Quaternion.AngleAxis(playerVelocity * Mathf.Sin(Time.time * 5), Vector3.right); //calculate shake force
-            Quaternion y_Shake = Quaternion.AngleAxis(playerVelocity/2f * Mathf.Sin(Time.time * 3), Vector3.up);
-            Quaternion addShake = x_Shake * y_Shake;
+            Quaternion x_Shake = Quaternion.AngleAxis(swayForce * playerVelocity * Mathf.Sin(Time.time * 5), Vector3.right); //calculate shake force
+            Quaternion y_Shake = Quaternion.AngleAxis(swayForce * playerVelocity / 2f * Mathf.Sin(Time.time * 3), Vector3.up);
+            Quaternion addShake = Quaternion.AngleAxis(0, Vector3.zero) * x_Shake * y_Shake;
 
             //apply velocity scale to camera shake
             transform.rotation = Quaternion.Euler(xRotation, yRotation, 0) * addShake;
             orientation.rotation = Quaternion.Euler(0, yRotation, 0);
 
-        } else // ig !grounded - do not shake camera
+        }
+        else // ig !grounded - do not shake camera
         {
+            swayForce = 0;
             transform.rotation = Quaternion.Euler(xRotation, yRotation, 0);
             orientation.rotation = Quaternion.Euler(0, yRotation, 0);
         }
-        
+        Debug.Log(swayForce);
 
     }
+
 
 }
