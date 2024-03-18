@@ -160,7 +160,7 @@ public class PlayerMovement : MonoBehaviour
         // reset players position and velocity
         if (Input.GetKey(reserKey))
         {
-            rb.position = new Vector3(0, 2.5f, 0);
+            rb.position = new Vector3(25.78f, 46.91f, 6.25f);
             rb.velocity = new Vector3(0, 0, 0);
         }
 
