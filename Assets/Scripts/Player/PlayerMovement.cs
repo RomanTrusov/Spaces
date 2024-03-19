@@ -46,6 +46,8 @@ public class PlayerMovement : MonoBehaviour
     private RaycastHit slopeHit;
     private bool exitingSlope;
 
+    //for restart
+    private Vector3 restartPosition;
 
     public Transform orientation;
 
@@ -78,6 +80,10 @@ public class PlayerMovement : MonoBehaviour
 
     private void Start()
     {
+
+        //set restart position
+        restartPosition = transform.position;
+
         // get rigidbody + free rotation
         rb = GetComponent<Rigidbody>();
         rb.freezeRotation = true;
@@ -88,7 +94,7 @@ public class PlayerMovement : MonoBehaviour
         onSlope = OnSlope();
         //ground check with raycast down to the ground
         if (readyToJump && grounded) 
-        grounded = Physics.Raycast(transform.position + new Vector3(0.5f,0f,0f), Vector3.down, playerHeight * 0.5f + 0.2f, whatIsGround);
+        grounded = Physics.Raycast(transform.position + new Vector3(0.25f,0f,0f), Vector3.down, playerHeight * 0.5f + 0.2f, whatIsGround);
         else if (readyToJump && !grounded)
         {
             //sway the weapon from LandSway script
@@ -134,11 +140,11 @@ public class PlayerMovement : MonoBehaviour
     private void MyInput()
     {
         //if not climb get input controls
-        if (!climbing)
-        {
+        //if (!climbing)
+        //{
             horizontalInput = Input.GetAxisRaw("Horizontal");
             verticalInput = Input.GetAxisRaw("Vertical");
-        }
+        //}
         
 
         //if ready to jump
@@ -147,6 +153,7 @@ public class PlayerMovement : MonoBehaviour
             if (grounded)
             {
                 readyToJump = false;
+
 
                 Jump();
                 // cooldown over time
@@ -160,7 +167,7 @@ public class PlayerMovement : MonoBehaviour
         // reset players position and velocity
         if (Input.GetKey(reserKey))
         {
-            rb.position = new Vector3(25.78f, 46.91f, 6.25f);
+            rb.position = restartPosition;
             rb.velocity = new Vector3(0, 0, 0);
         }
 

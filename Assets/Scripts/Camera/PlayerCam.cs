@@ -40,7 +40,7 @@ public class PlayerCam : MonoBehaviour
         xRotation -= mouseY;
 
         // clamp vertical rotations
-        xRotation = Mathf.Clamp(xRotation, -90f, 90f);
+        xRotation = Mathf.Clamp(xRotation, -80f, 80f);
 
         //adding camera shaking while walking
         if (player.GetComponent<PlayerMovement>().grounded) //if grounded - shake camera while moving
@@ -50,10 +50,11 @@ public class PlayerCam : MonoBehaviour
             if (swayForce < 1) swayForce += 0.02f;
 
             playerVelocity = player.GetComponent<Rigidbody>().velocity.magnitude / 10f; //get speed of walking to set the camera shaking by it's scale
+            if (playerVelocity > 1) playerVelocity = 1; // limit player velocity to avoid camera shift while dashing
             Quaternion x_Shake = Quaternion.AngleAxis(swayForce * playerVelocity * Mathf.Sin(Time.time * 5), Vector3.right); //calculate shake force
             Quaternion y_Shake = Quaternion.AngleAxis(swayForce * playerVelocity / 2f * Mathf.Sin(Time.time * 3), Vector3.up);
             Quaternion addShake = Quaternion.AngleAxis(0, Vector3.zero) * x_Shake * y_Shake;
-
+            
             //apply velocity scale to camera shake
             transform.rotation = Quaternion.Euler(xRotation, yRotation, 0) * addShake;
             orientation.rotation = Quaternion.Euler(0, yRotation, 0);
