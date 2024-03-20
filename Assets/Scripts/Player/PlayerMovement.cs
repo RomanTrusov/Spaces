@@ -11,6 +11,9 @@ public class PlayerMovement : MonoBehaviour
     public float sprintSpeed;
     public float dashSpeed;
 
+    [SerializeField]
+    private Vector3 velocity;
+
     // reduce sliding
     public float groundDrag;
     public float groundDragStopper;
@@ -91,6 +94,9 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
+
+        velocity = GetComponent<Rigidbody>().velocity;
+
         onSlope = OnSlope();
         //ground check with raycast down to the ground
         if (readyToJump && grounded) 

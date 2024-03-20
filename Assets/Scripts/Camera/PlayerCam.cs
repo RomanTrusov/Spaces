@@ -13,6 +13,10 @@ public class PlayerCam : MonoBehaviour
     private float playerVelocity;
     private float swayForce; // force of the camera sway
 
+    //FOV variables
+    private float fovDefault;
+    private float fovGoal;
+
     // for player's orientation
     public Transform orientation;
 
@@ -23,6 +27,10 @@ public class PlayerCam : MonoBehaviour
 
     private void Start()
     {
+        //get default FOV
+        fovDefault = GetComponent<Camera>().fieldOfView;
+
+
         // locked and invisible cursor
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
@@ -31,7 +39,7 @@ public class PlayerCam : MonoBehaviour
 
     private void Update()
     {
-        // get mouse input
+        //============= get mouse input
         float mouseX = Input.GetAxisRaw("Mouse X") * Time.deltaTime * sensX;
         float mouseY = Input.GetAxisRaw("Mouse Y") * Time.deltaTime * sensY;
 
@@ -42,7 +50,7 @@ public class PlayerCam : MonoBehaviour
         // clamp vertical rotations
         xRotation = Mathf.Clamp(xRotation, -80f, 80f);
 
-        //adding camera shaking while walking
+        //============= Adding camera shaking while walking
         if (player.GetComponent<PlayerMovement>().grounded) //if grounded - shake camera while moving
         {
 
@@ -67,7 +75,28 @@ public class PlayerCam : MonoBehaviour
             orientation.rotation = Quaternion.Euler(0, yRotation, 0);
         }
 
+
+        //============= Changing FOV
+        // while falling
+        if (!player.GetComponent<PlayerMovement>().grounded && player.GetComponent<Rigidbody>().velocity.y < -0.2f)
+        {
+            // getting FOV goal
+            fovGoal = GetFOVGoal(fovDefault, player.GetComponent<Rigidbody>().velocity.y, out fovGoal);
+            //lerping the FOV
+            GetComponent<Camera>().fieldOfView = Mathf.Lerp(GetComponent<Camera>().fieldOfView, fovGoal, Time.deltaTime * 5f);
+        }// if not falling - and FOV is not default - return it back
+        else if (GetComponent<Camera>().fieldOfView != fovDefault) 
+            GetComponent<Camera>().fieldOfView = Mathf.Lerp(GetComponent<Camera>().fieldOfView, fovDefault, Time.deltaTime*5f);
     }
 
+    //===============
+    private float GetFOVGoal (float fovDefalut,float yPlayerVelocity ,out float fovGoal)
+    {
+        if (yPlayerVelocity < -30) yPlayerVelocity = -30; // limit the Y velocity
 
+        fovGoal = fovDefault - yPlayerVelocity * 0.75f;
+
+        return fovGoal;
+    }
+    
 }
