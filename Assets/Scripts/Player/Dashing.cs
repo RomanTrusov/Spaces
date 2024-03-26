@@ -82,6 +82,7 @@ public class Dashing : MonoBehaviour
     //method for delayed dashing
     private void DelayedDashForce()
     {
+        rb.velocity = Vector3.Scale(rb.velocity, new Vector3(1f,0f,1f));
         //apply it
         rb.AddForce(delayForceToApply, ForceMode.Impulse);
     }
