@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Dashing : MonoBehaviour
 {
+    //=====================
     // resources needed for dash
     [Header("References")]
     public Camera playerCameraForFOV;
@@ -27,6 +28,15 @@ public class Dashing : MonoBehaviour
     [Header("Keycode")]
     public KeyCode dashKey = KeyCode.E;
 
+    //PS for wind effects
+    [Header("Dash Effects")]
+    public ParticleSystem windLeft;
+    public ParticleSystem windRight;
+    public ParticleSystem windForward;
+    public ParticleSystem windBackward;
+    private ParticleSystem currentWindEffect;
+
+    //=====================
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -34,7 +44,7 @@ public class Dashing : MonoBehaviour
 
     }
 
-
+    //=====================
     private void Update()
     {
         // dash if pressed a key
@@ -47,9 +57,9 @@ public class Dashing : MonoBehaviour
         if (dashCdTimer > 0)
             dashCdTimer -= Time.deltaTime;
 
-
     }
 
+    //=====================
     private void Dash()
     {
         // if cooldown - do nothing
@@ -60,7 +70,7 @@ public class Dashing : MonoBehaviour
         //activate state dashing
         pm.dashing = true;
 
-        //GetDirection direction for the dash
+        //GetDirection for the dash
         Vector3 direction = GetDirection(orientation);
 
         // calculate dash force
@@ -69,13 +79,16 @@ public class Dashing : MonoBehaviour
         delayForceToApply = forceToApply;
         Invoke(nameof(DelayedDashForce), 0.025f);
 
+        //dash wind effect
+        ActivateDashWind();
+        
+
         // reset the dash
         Invoke(nameof(ResetDash), dashDuration);
 
-        
-
     }
 
+    //=====================
     // vector for delayed dash force
     private Vector3 delayForceToApply;
 
@@ -87,12 +100,14 @@ public class Dashing : MonoBehaviour
         rb.AddForce(delayForceToApply, ForceMode.Impulse);
     }
 
+    //=====================
     private void ResetDash()
     {
         pm.dashing = false;
     }
 
-    // get directiob for the dash from inputs
+    //=====================
+    // get direction for the dash from inputs
     private Vector3 GetDirection(Transform orientation)
     {
         float horiontalInput = Input.GetAxisRaw("Horizontal");
@@ -105,5 +120,52 @@ public class Dashing : MonoBehaviour
 
     }
 
+    private void ActivateDashWind()
+    {
+
+        // set Current wind direction
+        if (Input.GetKey(KeyCode.W))
+        {
+            currentWindEffect = windForward;
+        }
+        if (Input.GetKey(KeyCode.A))
+        {
+            currentWindEffect = windLeft;
+        }
+        if (Input.GetKey(KeyCode.S))
+        {
+            currentWindEffect = windBackward;
+        }
+        if (Input.GetKey(KeyCode.D))
+        {
+            currentWindEffect = windRight;
+        }
+
+        //enable PS and disable it with time
+        currentWindEffect.gameObject.SetActive(true);
+
+        ParticleSystem.TrailModule trails = currentWindEffect.trails;
+        trails.colorOverTrail = new Color(1, 1, 1, 0.1f);
+        StartCoroutine(DeactivateDashWind(currentWindEffect, trails));
+    }
+
+    IEnumerator DeactivateDashWind(ParticleSystem activePS, ParticleSystem.TrailModule trails)
+    {
+        Color currentColor = activePS.trails.colorOverTrail.color;
+        yield return new WaitForSeconds(0.2f);
+        for (float i = 1f; i >= 0; i -= 0.05f)
+        {
+            Color lerpColor = Color.Lerp(currentColor, new Color(1, 1, 1, 0), Time.deltaTime * 8f);
+            currentColor = lerpColor;
+            trails.colorOverTrail = lerpColor;
+            Debug.Log(lerpColor);
+            yield return null;
+        }
+        //yield return new WaitForSeconds(0.2f);
+        Debug.Log("Effect Stopped");
+        trails.colorOverTrail = new Color(1,1,1,0.1f);
+        activePS.gameObject.SetActive(false);
+        yield return null;
+    }
 
 }
