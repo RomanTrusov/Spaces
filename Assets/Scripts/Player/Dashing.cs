@@ -158,11 +158,9 @@ public class Dashing : MonoBehaviour
             Color lerpColor = Color.Lerp(currentColor, new Color(1, 1, 1, 0), Time.deltaTime * 8f);
             currentColor = lerpColor;
             trails.colorOverTrail = lerpColor;
-            Debug.Log(lerpColor);
             yield return null;
         }
         //yield return new WaitForSeconds(0.2f);
-        Debug.Log("Effect Stopped");
         trails.colorOverTrail = new Color(1,1,1,0.1f);
         activePS.gameObject.SetActive(false);
         yield return null;

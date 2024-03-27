@@ -12,6 +12,8 @@ public class PlayerCam : MonoBehaviour
     [SerializeField]
     private float playerVelocity;
     private float swayForce; // force of the camera sway
+    [SerializeField]
+    private bool swayInWalk; //to turn off sway in walking
 
     //FOV variables
     private float fovDefault;
@@ -51,7 +53,7 @@ public class PlayerCam : MonoBehaviour
         xRotation = Mathf.Clamp(xRotation, -80f, 80f);
 
         //============= Adding camera shaking while walking
-        if (player.GetComponent<PlayerMovement>().grounded) //if grounded - shake camera while moving
+        if (player.GetComponent<PlayerMovement>().grounded && swayInWalk) //if grounded - shake camera while moving
         {
 
             //trying to make sway start slowly

@@ -51,6 +51,20 @@ public class WeaponSway : MonoBehaviour
         Quaternion t_z_adj = Quaternion.AngleAxis(intensity * t_x_mouse, Vector3.forward); // adding Z rotation from X mouse rotaion
         Quaternion target_rotation = origin_rotation * t_x_adj * t_y_adj * t_z_adj;
 
+        //add sway if dashing
+        if (player.dashing)
+        {
+            // getting dash direction
+            float horiontalInput = Input.GetAxisRaw("Horizontal");
+            float verticalInput = Input.GetAxisRaw("Vertical");
+
+            // calculate sway as it does in mouse sway
+            Quaternion t_x_adjDash = Quaternion.AngleAxis(-intensity * 5 * horiontalInput, Vector3.up);
+            Quaternion t_y_adjDash = Quaternion.AngleAxis(intensity * 5 * verticalInput, Vector3.right); 
+            Quaternion t_z_adjDash = Quaternion.AngleAxis(intensity * 5 * horiontalInput, Vector3.forward);
+            target_rotation = target_rotation * t_x_adjDash * t_y_adjDash * t_z_adjDash;
+        }
+
         //rotate towards target rotation - in local space
         transform.localRotation = Quaternion.Lerp(transform.localRotation, target_rotation, Time.deltaTime * smooth);
     }
