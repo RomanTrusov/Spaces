@@ -72,6 +72,7 @@
     <Compile Include="Assets\Scripts\Camera\CameraSway.cs" />
     <Compile Include="Assets\Scripts\Enemy\EnemyBehaviour.cs" />
     <Compile Include="Assets\Scripts\Player\MeleTrigger\MeleAttackTrigger.cs" />
+    <Compile Include="Assets\Scripts\Player\Effects\GraplingWindRotation.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\AssetStore\SciFi_Space_Soldier\Resources\Shaders\SpaceStation_PBR_Basic.shader" />
