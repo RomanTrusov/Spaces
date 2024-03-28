@@ -65,6 +65,11 @@ public class WeaponSway : MonoBehaviour
             target_rotation = target_rotation * t_x_adjDash * t_y_adjDash * t_z_adjDash;
         }
 
+        //add sway if grappling shoot
+        if (Input.GetKeyDown(KeyCode.Q)) {
+            target_rotation = target_rotation * Quaternion.AngleAxis(intensity * -15f, Vector3.right);
+        }
+
         //rotate towards target rotation - in local space
         transform.localRotation = Quaternion.Lerp(transform.localRotation, target_rotation, Time.deltaTime * smooth);
     }

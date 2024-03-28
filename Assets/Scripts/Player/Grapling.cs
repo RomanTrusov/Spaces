@@ -46,6 +46,8 @@ public class Grapling : MonoBehaviour
 
         //reduce cooldown by time
         if (grapplingCdTimer > 0) grapplingCdTimer -= Time.deltaTime;
+
+
     }
 
     private void LateUpdate()
@@ -91,9 +93,12 @@ public class Grapling : MonoBehaviour
         }
         //activate line and set end position
         lr.enabled = true;
+        //old method with no movement
         lr.SetPosition(1, grapplePoint);
 
+
     }
+
 
     private void ExecuteGrapple()
     {
