@@ -229,22 +229,15 @@ public class PlayerMovement : MonoBehaviour
 
         // calculate movement direction
         moveDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
-        //If player on slope add slope speeed
+        //If player on slope add slope is not negative
         if (OnSlope() && !exitingSlope)
         {
-            Debug.Log(GetSlopeMoveDirection());
-            rb.AddForce(GetSlopeMoveDirection() * moveSpeed * 4f, ForceMode.Force);
-            
+            rb.AddForce(GetSlopeMoveDirection() * moveSpeed * 10f, ForceMode.Force);
 
-            // fix for little jumps on slopees
-            if (rb.velocity.y > 0)
-            {
-                rb.AddForce(Vector3.down * 80f, ForceMode.Force);
-            }
         } 
 
         //add force to the rigid body in the direction with speed times 10. ForceMode.Force for better movement
-        if (grounded)
+        else if (grounded)
         {
             rb.AddForce(moveDirection * moveSpeed * 10f, ForceMode.Force);
         } 
@@ -273,6 +266,7 @@ public class PlayerMovement : MonoBehaviour
     }
 
 
+    //============================================
     // limit velocity of rigid body
     private void SpeedControl()
     {
