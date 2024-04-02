@@ -232,7 +232,9 @@ public class PlayerMovement : MonoBehaviour
         //If player on slope add slope speeed
         if (OnSlope() && !exitingSlope)
         {
+            Debug.Log(GetSlopeMoveDirection());
             rb.AddForce(GetSlopeMoveDirection() * moveSpeed * 4f, ForceMode.Force);
+            
 
             // fix for little jumps on slopees
             if (rb.velocity.y > 0)
@@ -245,7 +247,8 @@ public class PlayerMovement : MonoBehaviour
         if (grounded)
         {
             rb.AddForce(moveDirection * moveSpeed * 10f, ForceMode.Force);
-        }
+        } 
+        
 
         //reduce Y velocity while falling
         else if (!grounded && rb.useGravity)
@@ -375,7 +378,7 @@ public class PlayerMovement : MonoBehaviour
     //to get slope
     private Vector3 GetSlopeMoveDirection()
     {
-        // get slope move deirection normalized vi projection on the slope
+        // get slope move deirection normalized via projection on the slope
         return Vector3.ProjectOnPlane(moveDirection, slopeHit.normal).normalized;
     }
 

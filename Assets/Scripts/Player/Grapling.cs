@@ -17,6 +17,7 @@ public class Grapling : MonoBehaviour
     public float maxGrapplingDistance;
     public float grappleDelayTime; // for the start function, not a cooldown
     public float overshootYaxis;
+    public float sphereCastRadius;
 
     //====== vars for drawing grapling line
     private bool isDrawLineNeeded; //check if the line should be drawn
@@ -84,10 +85,9 @@ public class Grapling : MonoBehaviour
 
         grappling = true; //grappling starts
 
-
-        //throw raycast
+        //throw spherecast to get grappling point
         RaycastHit hit;
-        if(Physics.Raycast(cam.position, cam.forward,out hit, maxGrapplingDistance, whatIsGrappable))
+        if (Physics.SphereCast(cam.position,sphereCastRadius, cam.forward, out hit, maxGrapplingDistance, whatIsGrappable))
         {
             //save grapple point from raycast
             grapplePoint = hit.point;
@@ -95,13 +95,16 @@ public class Grapling : MonoBehaviour
             Invoke(nameof(ExecuteGrapple), grappleDelayTime);
             isDrawLineNeeded = true; // set signal to draw the line
 
-        } else if (Physics.Raycast(cam.position, cam.forward, out hit, maxGrapplingDistance, enemy)) {
+        }
+        else if (Physics.SphereCast(cam.position, sphereCastRadius, cam.forward, out hit, maxGrapplingDistance, enemy))
+        {
             //save grapple point from raycast
             grapplePoint = hit.point;
             //execute grapple function
             Invoke(nameof(ExecuteGrapple), grappleDelayTime);
             isDrawLineNeeded = true; // set signal to draw the line
-        } else
+        }
+        else
         {
             // if hit is not grappable or far away - store the max distance point
             grapplePoint = cam.position + cam.forward * maxGrapplingDistance;
@@ -110,7 +113,6 @@ public class Grapling : MonoBehaviour
         }
         //old method with no movement
         lr.SetPosition(1, grapplePoint);
-
     }
 
     //=============== this method draws the line in time
