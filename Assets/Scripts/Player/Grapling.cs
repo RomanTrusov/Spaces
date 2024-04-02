@@ -56,6 +56,12 @@ public class Grapling : MonoBehaviour
         //reduce cooldown by time
         if (grapplingCdTimer > 0) grapplingCdTimer -= Time.deltaTime;
 
+        //stop grapple with Space
+        if (pm.activeGrapple == true && Input.GetKeyDown(KeyCode.Space))
+        {
+            Debug.Log("chucha");
+            StopGrapple();
+        }
 
     }
 
