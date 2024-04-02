@@ -100,7 +100,9 @@ public class PlayerMovement : MonoBehaviour
         onSlope = OnSlope();
         //ground check with raycast down to the ground
         if (readyToJump && grounded) 
-        grounded = Physics.Raycast(transform.position + new Vector3(0.25f,0f,0f), Vector3.down, playerHeight * 0.5f + 0.2f, whatIsGround);
+            //old
+            //grounded = Physics.Raycast(transform.position + new Vector3(0.25f,0f,0f), Vector3.down, playerHeight * 0.5f + 0.2f, whatIsGround);
+            grounded = Physics.Raycast(transform.position, Vector3.down, playerHeight + 0.15f, whatIsGround);
         else if (readyToJump && !grounded)
         {
             //sway the weapon from LandSway script
@@ -358,12 +360,13 @@ public class PlayerMovement : MonoBehaviour
     // check if we are on slope
     private bool OnSlope()
     {
-        if (Physics.Raycast(transform.position, Vector3.down, out slopeHit, playerHeight * 0.5f + 0.3f))
+        if (Physics.Raycast(transform.position, Vector3.down, out slopeHit, playerHeight * 0.5f + 0.5f))
         {
             // slope angle
             float angle = Vector3.Angle(Vector3.up, slopeHit.normal);
+            Debug.Log(angle);
             // true if angle less that max slope angle
-            return angle < maxSlopeAngle && angle != 0;
+            if (angle < maxSlopeAngle && angle != 0) return true;
         }
 
         return false;

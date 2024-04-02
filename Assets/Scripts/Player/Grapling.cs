@@ -39,15 +39,16 @@ public class Grapling : MonoBehaviour
     //is grapple
     private bool grappling;
 
-    //===============
+    #region Start
 
     private void Start()
     {
         // get access to the player movement script
         pm = GetComponent<PlayerMovement>();
     }
+    #endregion Start
 
-    //===============
+    #region Update
     private void Update()
     {
         //wait for input
@@ -64,8 +65,9 @@ public class Grapling : MonoBehaviour
         }
 
     }
+    #endregion Update
 
-    //===============
+    #region Late Update functions
     private void LateUpdate()
     {
         //if grapple - update start position of the line
@@ -80,11 +82,13 @@ public class Grapling : MonoBehaviour
             DrawLine(lr);
         }
     }
+    #endregion Late Update functions
 
     //--------------------------------------------------
     //THREE GRAPPLE FUNCTIONS START HERE
     //--------------------------------------------------
 
+    #region Start Grapple function
     private void StartGrapple()
     {
         if (grapplingCdTimer > 0) return; //if cooldown
@@ -121,7 +125,9 @@ public class Grapling : MonoBehaviour
         lr.SetPosition(1, grapplePoint);
     }
 
-    //=============== this method draws the line in time
+    #endregion
+
+    #region This method draws the line in time
     private void DrawLine(LineRenderer lr)
     {
         if (!isPredrawFinished) //do predraw
@@ -148,8 +154,9 @@ public class Grapling : MonoBehaviour
             }
         }
     }
+    #endregion
 
-    //===============
+    #region Execute grapple
     private void ExecuteGrapple()
     {
         pm.activeGrapple = false;
@@ -169,7 +176,9 @@ public class Grapling : MonoBehaviour
             Invoke(nameof(StopGrapple), 1f);
 
     }
-    //===============
+    #endregion
+
+    #region Stop Grapple
     private void StopGrapple()
     {
         pm.activeGrapple = false;
@@ -182,5 +191,5 @@ public class Grapling : MonoBehaviour
         // reset point 1 position
         lr.SetPosition(1, lr.GetPosition(0));
     }
-
+    #endregion 
 }
