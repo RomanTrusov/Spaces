@@ -16027,7 +16027,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   grounded: 0
-  maxSlopeAngle: 40
+  maxSlopeAngle: 60
   orientation: {fileID: 1662591321}
   collider: {fileID: 1557405270}
   state: 0
@@ -16084,7 +16084,7 @@ MonoBehaviour:
   maxGrapplingDistance: 25
   grappleDelayTime: 0.25
   overshootYaxis: 0
-  sphereCastRadius: 1
+  sphereCastRadius: 0.5
   grapplingCd: 0.1
   grapplingKey: 113
 --- !u!114 &931899300
@@ -27050,7 +27050,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1557405269}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: -0.033, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 931899296}
