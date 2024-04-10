@@ -70,8 +70,14 @@ public class Dashing : MonoBehaviour
         //activate state dashing
         pm.dashing = true;
 
-        //GetDirection for the dash
+        //GetDirection for the dash from inputs
         Vector3 direction = GetDirection(orientation);
+
+        //if player stands still, direction = camera forward
+        if (direction == Vector3.zero)
+        {
+            direction = playerCam.forward;
+        }
 
         // calculate dash force
         Vector3 forceToApply = direction * dashForce + orientation.up * dashUpwardForce;
@@ -81,6 +87,7 @@ public class Dashing : MonoBehaviour
 
         //dash wind effect
         ActivateDashWind();
+        
         
 
         // reset the dash
@@ -128,17 +135,20 @@ public class Dashing : MonoBehaviour
         {
             currentWindEffect = windForward;
         }
-        if (Input.GetKey(KeyCode.A))
+        else if (Input.GetKey(KeyCode.A))
         {
             currentWindEffect = windLeft;
         }
-        if (Input.GetKey(KeyCode.S))
+        else if (Input.GetKey(KeyCode.S))
         {
             currentWindEffect = windBackward;
         }
-        if (Input.GetKey(KeyCode.D))
+        else if (Input.GetKey(KeyCode.D))
         {
             currentWindEffect = windRight;
+        } else
+        {
+            currentWindEffect = windForward;
         }
 
         //enable PS and disable it with time

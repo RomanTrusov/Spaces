@@ -126,7 +126,7 @@ public class PlayerMovement : MonoBehaviour
         }
 
         // make drag 
-        if (attacked) rb.drag = 0;
+        if (attacked || dashing) rb.drag = 0;
         else if (grounded && !activeGrapple && state != MovementStates.air)
         {
             if (moveDirection != Vector3.zero)
