@@ -113,7 +113,8 @@ public class PlayerMovement : MonoBehaviour
             //grounded = Physics.Raycast(transform.position + new Vector3(0.5f, 0f, 0f), Vector3.down, playerHeight * 0.5f + 0.2f, whatIsGround);
             grounded = Physics.Raycast(transform.position, Vector3.down, playerHeight + 0.15f, whatIsGround);
         }
-            MyInput();
+            
+        MyInput();
         StateHandler();
         SpeedControl();
         

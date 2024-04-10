@@ -80,8 +80,8 @@ public class Grapling : MonoBehaviour
             if (Input.GetKeyDown(grapplingKey)) StartGrappleWhileHolding();
             //reduce cooldown by time
             if (grapplingCdTimer > 0) grapplingCdTimer -= Time.deltaTime;
-            //execute while pressed - do I need another Execute script?
-            if (Input.GetKey(grapplingKey)) ExecuteGrappleWhlieHolding();
+            //execute while pressed and grappled to something
+            if (Input.GetKey(grapplingKey) && grapplePoint != Vector3.zero) ExecuteGrappleWhlieHolding();
             //stop grapple with Space or Grappling key UP
             if (pm.activeGrapple == true && Input.GetKeyUp(grapplingKey))
             {
@@ -231,7 +231,9 @@ public class Grapling : MonoBehaviour
             else //all above must be a raycast, all below must be a spherecast
             {
                 // if hit is not grappable or far away - store the max distance point
-                grapplePoint = cam.position + cam.forward * maxGrapplingDistance;
+                //grapplePoint = cam.position + cam.forward * maxGrapplingDistance;
+                // if missed make grapple point 000
+                grapplePoint = Vector3.zero;
                 //stop grapple function
                 Invoke(nameof(StopGrapple), grappleDelayTime);
             }
@@ -302,21 +304,6 @@ public class Grapling : MonoBehaviour
         Vector3 destination = Vector3.Normalize(grapplePoint - transform.position);
 
         PlayerRB.AddForce(destination * grapplingOnHoldForce,ForceMode.Force);
-
-        /*
-        Vector3 lowestPoint = new Vector3(transform.position.x, transform.position.y - 1f, transform.position.z);
-
-        float grapplePointRelativeYPos = grapplePoint.y - lowestPoint.y;
-        float highestPointOnArc = grapplePointRelativeYPos + overshootYaxis;
-
-        if (grapplePointRelativeYPos < 0) highestPointOnArc = overshootYaxis;
-
-        pm.JumpToPosition(grapplePoint, highestPointOnArc);
-
-        if (pm.grounded && grapplePoint.y < transform.position.y)
-            Invoke(nameof(StopGrapple), 1f);
-        else
-            Invoke(nameof(StopGrapple), 1f);*/
 
     }
     #endregion Execute grapple while holding
