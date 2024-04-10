@@ -87,8 +87,6 @@ public class Dashing : MonoBehaviour
 
         //dash wind effect
         ActivateDashWind();
-        
-        
 
         // reset the dash
         Invoke(nameof(ResetDash), dashDuration);
