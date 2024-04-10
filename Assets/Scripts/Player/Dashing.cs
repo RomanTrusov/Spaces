@@ -18,6 +18,7 @@ public class Dashing : MonoBehaviour
     public float dashForce;
     public float dashUpwardForce;
     public float dashDuration;
+    public bool readyForDash;
 
     //dash cooldown
     [Header("Cooldown")]
@@ -47,15 +48,18 @@ public class Dashing : MonoBehaviour
     //=====================
     private void Update()
     {
+
+        //setting ready for dash while grounded with coolsown delay to avoid double dash from ground
+        if ((pm.grounded && dashCdTimer < 0.1f) || pm.activeGrapple) readyForDash = true;
+
         // dash if pressed a key
-        if (Input.GetKeyDown(dashKey))
-        {
-            Dash();
-        }
+        if (Input.GetKeyDown(dashKey) && readyForDash) Dash();
 
         //reduce dash timer
         if (dashCdTimer > 0)
             dashCdTimer -= Time.deltaTime;
+
+        
 
     }
 
@@ -67,12 +71,15 @@ public class Dashing : MonoBehaviour
         // restart dash cooldown if it was used
         else dashCdTimer = dashCd;
 
+        //make player not ready for dash while in air
+        readyForDash = false;
+
         //activate state dashing
         pm.dashing = true;
 
         //GetDirection for the dash from inputs
         Vector3 direction = GetDirection(orientation);
-
+        
         //if player stands still, direction = camera forward
         if (direction == Vector3.zero)
         {
@@ -81,6 +88,7 @@ public class Dashing : MonoBehaviour
 
         // calculate dash force
         Vector3 forceToApply = direction * dashForce + orientation.up * dashUpwardForce;
+        
         // apply force woith a little delay
         delayForceToApply = forceToApply;
         Invoke(nameof(DelayedDashForce), 0.025f);
@@ -119,7 +127,12 @@ public class Dashing : MonoBehaviour
         float verticalInput = Input.GetAxisRaw("Vertical");
 
         Vector3 direction = new Vector3();
-        direction = orientation.forward * verticalInput + orientation.right * horiontalInput;
+
+        //if moving forward, dash towards camera, else - moving direction
+        if (verticalInput == 1)
+        {
+            direction = playerCam.forward;
+        } else direction = orientation.forward * verticalInput + orientation.right * horiontalInput;
 
         return direction.normalized;
 

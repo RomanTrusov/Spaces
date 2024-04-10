@@ -368,7 +368,6 @@ public class PlayerMovement : MonoBehaviour
         {
             // slope angle
             float angle = Vector3.Angle(Vector3.up, slopeHit.normal);
-            Debug.Log(angle);
             // true if angle less that max slope angle
             if (angle < maxSlopeAngle && angle != 0) return true;
         }
