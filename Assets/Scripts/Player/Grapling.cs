@@ -6,6 +6,7 @@ public class Grapling : MonoBehaviour
 {
     [Header("References")]
     private PlayerMovement pm;
+    private Rigidbody PlayerRB;
     public Transform cam;
     public Transform gunTip;
     public LayerMask whatIsGrappable;
@@ -18,6 +19,8 @@ public class Grapling : MonoBehaviour
     public float grappleDelayTime; // for the start function, not a cooldown
     public float overshootYaxis;
     public float sphereCastRadius;
+    public bool isGrappleOnHold; // is grappling requres holding ab utton
+    public float grapplingOnHoldForce = 1f;
 
     //====== vars for drawing grapling line
     private bool isDrawLineNeeded; //check if the line should be drawn
@@ -45,24 +48,49 @@ public class Grapling : MonoBehaviour
     {
         // get access to the player movement script
         pm = GetComponent<PlayerMovement>();
+        // get player rigid body
+        PlayerRB = GetComponent<Rigidbody>();
+
     }
     #endregion Start
 
     #region Update
     private void Update()
     {
-        //wait for input
-        if (Input.GetKeyDown(grapplingKey)) StartGrapple();
-
-        //reduce cooldown by time
-        if (grapplingCdTimer > 0) grapplingCdTimer -= Time.deltaTime;
-
-        //stop grapple with Space
-        if (pm.activeGrapple == true && Input.GetKeyDown(KeyCode.Space))
+        // grappling on pressing a button
+        if (!isGrappleOnHold)
         {
-            Debug.Log("chucha");
-            StopGrapple();
+            //wait for input
+            if (Input.GetKeyDown(grapplingKey)) StartGrapple();
+
+            //reduce cooldown by time
+            if (grapplingCdTimer > 0) grapplingCdTimer -= Time.deltaTime;
+
+            //stop grapple with Space or Grappling key UP
+            if (pm.activeGrapple == true && Input.GetKeyDown(KeyCode.Space))
+            {
+                StopGrapple();
+            }
         }
+        
+        //grappling on holdind a button
+        if (isGrappleOnHold)
+        {
+            //wait for input
+            if (Input.GetKeyDown(grapplingKey)) StartGrappleWhileHolding();
+            //reduce cooldown by time
+            if (grapplingCdTimer > 0) grapplingCdTimer -= Time.deltaTime;
+            //execute while pressed - do I need another Execute script?
+            if (Input.GetKey(grapplingKey)) ExecuteGrappleWhlieHolding();
+            //stop grapple with Space or Grappling key UP
+            if (pm.activeGrapple == true && Input.GetKeyUp(grapplingKey))
+            {
+                StopGrapple();
+            }
+
+        }
+
+
 
     }
     #endregion Update
@@ -88,16 +116,19 @@ public class Grapling : MonoBehaviour
     //THREE GRAPPLE FUNCTIONS START HERE
     //--------------------------------------------------
 
-    #region Start Grapple function
+    #region Start Grapple whlie pressing function
     private void StartGrapple()
     {
-        if (grapplingCdTimer > 0) return; //if cooldown
+        //if cooldown
+        if (grapplingCdTimer > 0) return; 
 
-        grappling = true; //grappling starts
+        //grappling starts
+        grappling = true; 
 
         //throw spherecast to get grappling point
         RaycastHit hit;
-        if (Physics.SphereCast(cam.position,sphereCastRadius, cam.forward, out hit, maxGrapplingDistance, whatIsGrappable))
+        //raycast throw first
+        if (Physics.Raycast(cam.position,cam.forward, out hit, maxGrapplingDistance, whatIsGrappable))
         {
             //save grapple point from raycast
             grapplePoint = hit.point;
@@ -106,22 +137,106 @@ public class Grapling : MonoBehaviour
             isDrawLineNeeded = true; // set signal to draw the line
 
         }
-        else if (Physics.SphereCast(cam.position, sphereCastRadius, cam.forward, out hit, maxGrapplingDistance, enemy))
+        else if (Physics.Raycast(cam.position, cam.forward, out hit, maxGrapplingDistance, enemy))
         {
             //save grapple point from raycast
             grapplePoint = hit.point;
             //execute grapple function
             Invoke(nameof(ExecuteGrapple), grappleDelayTime);
+            isDrawLineNeeded = true; // set signal to draw the line
+        }
+        else 
+        {
+            //spherecast throw then
+            if (Physics.SphereCast(cam.position, sphereCastRadius, cam.forward, out hit, maxGrapplingDistance, whatIsGrappable))
+            {
+                //save grapple point from raycast
+                grapplePoint = hit.point;
+                //execute grapple function
+                Invoke(nameof(ExecuteGrapple), grappleDelayTime);
+                isDrawLineNeeded = true; // set signal to draw the line
+
+            }
+            else if (Physics.SphereCast(cam.position, sphereCastRadius, cam.forward, out hit, maxGrapplingDistance, enemy))
+            {
+                //save grapple point from raycast
+                grapplePoint = hit.point;
+                //execute grapple function
+                Invoke(nameof(ExecuteGrapple), grappleDelayTime);
+                isDrawLineNeeded = true; // set signal to draw the line
+            }
+            else //all above must be a raycast, all below must be a spherecast
+            {
+                // if hit is not grappable or far away - store the max distance point
+                grapplePoint = cam.position + cam.forward * maxGrapplingDistance;
+                //stop grapple function
+                Invoke(nameof(StopGrapple), grappleDelayTime);
+            }
+        }
+
+        lr.SetPosition(1, grapplePoint);
+    }
+
+    #endregion
+
+    #region Start Grapple whlie holding function
+    private void StartGrappleWhileHolding()
+    {
+        //if cooldown
+        if (grapplingCdTimer > 0) return;
+
+        //grappling starts
+        grappling = true;
+
+        //throw spherecast to get grappling point
+        RaycastHit hit;
+        //raycast throw first
+        if (Physics.Raycast(cam.position, cam.forward, out hit, maxGrapplingDistance, whatIsGrappable))
+        {
+            //save grapple point from raycast
+            grapplePoint = hit.point;
+            //execute grapple function
+            //Invoke(nameof(ExecuteGrapple), grappleDelayTime);
+            isDrawLineNeeded = true; // set signal to draw the line
+
+        }
+        else if (Physics.Raycast(cam.position, cam.forward, out hit, maxGrapplingDistance, enemy))
+        {
+            //save grapple point from raycast
+            grapplePoint = hit.point;
+            //execute grapple function
+            //Invoke(nameof(ExecuteGrapple), grappleDelayTime);
             isDrawLineNeeded = true; // set signal to draw the line
         }
         else
         {
-            // if hit is not grappable or far away - store the max distance point
-            grapplePoint = cam.position + cam.forward * maxGrapplingDistance;
-            //stop grapple function
-            Invoke(nameof(StopGrapple), grappleDelayTime);
+            //spherecast throw then
+            if (Physics.SphereCast(cam.position, sphereCastRadius, cam.forward, out hit, maxGrapplingDistance, whatIsGrappable))
+            {
+                //save grapple point from raycast
+                grapplePoint = hit.point;
+                //execute grapple function
+                //Invoke(nameof(ExecuteGrapple), grappleDelayTime);
+                isDrawLineNeeded = true; // set signal to draw the line
+
+            }
+            else if (Physics.SphereCast(cam.position, sphereCastRadius, cam.forward, out hit, maxGrapplingDistance, enemy))
+            {
+                //save grapple point from raycast
+                grapplePoint = hit.point;
+                //execute grapple function
+                //Invoke(nameof(ExecuteGrapple), grappleDelayTime);
+                isDrawLineNeeded = true; // set signal to draw the line
+            }
+            else //all above must be a raycast, all below must be a spherecast
+            {
+                // if hit is not grappable or far away - store the max distance point
+                grapplePoint = cam.position + cam.forward * maxGrapplingDistance;
+                //stop grapple function
+                Invoke(nameof(StopGrapple), grappleDelayTime);
+            }
         }
-        //old method with no movement
+
         lr.SetPosition(1, grapplePoint);
     }
 
@@ -156,7 +271,7 @@ public class Grapling : MonoBehaviour
     }
     #endregion
 
-    #region Execute grapple
+    #region Execute grapple while press once
     private void ExecuteGrapple()
     {
         pm.activeGrapple = false;
@@ -176,7 +291,35 @@ public class Grapling : MonoBehaviour
             Invoke(nameof(StopGrapple), 1f);
 
     }
-    #endregion
+    #endregion Execute grapple while press once
+
+    #region Execute grapple while holding
+    private void ExecuteGrappleWhlieHolding()
+    {
+        pm.activeGrapple = true;// ++set it while holding
+
+        //get direction to the grapple point
+        Vector3 destination = Vector3.Normalize(grapplePoint - transform.position);
+
+        PlayerRB.AddForce(destination * grapplingOnHoldForce,ForceMode.Force);
+
+        /*
+        Vector3 lowestPoint = new Vector3(transform.position.x, transform.position.y - 1f, transform.position.z);
+
+        float grapplePointRelativeYPos = grapplePoint.y - lowestPoint.y;
+        float highestPointOnArc = grapplePointRelativeYPos + overshootYaxis;
+
+        if (grapplePointRelativeYPos < 0) highestPointOnArc = overshootYaxis;
+
+        pm.JumpToPosition(grapplePoint, highestPointOnArc);
+
+        if (pm.grounded && grapplePoint.y < transform.position.y)
+            Invoke(nameof(StopGrapple), 1f);
+        else
+            Invoke(nameof(StopGrapple), 1f);*/
+
+    }
+    #endregion Execute grapple while holding
 
     #region Stop Grapple
     private void StopGrapple()

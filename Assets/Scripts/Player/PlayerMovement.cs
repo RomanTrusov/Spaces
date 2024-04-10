@@ -272,7 +272,9 @@ public class PlayerMovement : MonoBehaviour
 
     //============================================
     // limit velocity of rigid body
+    
     private void SpeedControl()
+       
     {
         //limit speed on slopes
         if (activeGrapple && !attacked) return;
