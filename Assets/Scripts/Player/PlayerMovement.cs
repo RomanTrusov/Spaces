@@ -109,7 +109,9 @@ public class PlayerMovement : MonoBehaviour
             WeaponSway activateSway = GameObject.FindObjectOfType(typeof(WeaponSway)) as WeaponSway;
             activateSway.flySway();
 
-            grounded = Physics.Raycast(transform.position + new Vector3(0.5f, 0f, 0f), Vector3.down, playerHeight * 0.5f + 0.2f, whatIsGround);
+            //old
+            //grounded = Physics.Raycast(transform.position + new Vector3(0.5f, 0f, 0f), Vector3.down, playerHeight * 0.5f + 0.2f, whatIsGround);
+            grounded = Physics.Raycast(transform.position, Vector3.down, playerHeight + 0.15f, whatIsGround);
         }
             MyInput();
         StateHandler();
@@ -360,7 +362,7 @@ public class PlayerMovement : MonoBehaviour
     // check if we are on slope
     private bool OnSlope()
     {
-        if (Physics.Raycast(transform.position, Vector3.down, out slopeHit, playerHeight * 0.5f + 0.5f))
+        if (Physics.Raycast(transform.position, Vector3.down, out slopeHit, playerHeight + 0.5f))
         {
             // slope angle
             float angle = Vector3.Angle(Vector3.up, slopeHit.normal);
