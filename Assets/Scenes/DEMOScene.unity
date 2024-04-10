@@ -45650,6 +45650,7 @@ MonoBehaviour:
   dashForce: 20
   dashUpwardForce: 0
   dashDuration: 0.25
+  readyForDash: 0
   dashCd: 0.5
   dashKey: 304
   windLeft: {fileID: 1771014895}
@@ -45681,6 +45682,8 @@ MonoBehaviour:
   grappleDelayTime: 0.25
   overshootYaxis: 0
   sphereCastRadius: 0.5
+  isGrappleOnHold: 1
+  grapplingOnHoldForce: 30
   grapplingCd: 0.1
   grapplingKey: 113
 --- !u!114 &931899300
