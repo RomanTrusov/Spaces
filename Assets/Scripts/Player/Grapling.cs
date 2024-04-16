@@ -195,18 +195,18 @@ public class Grapling : MonoBehaviour
         {
             //save grapple point from raycast
             grapplePoint = hit.point;
-            //execute grapple function
-            //Invoke(nameof(ExecuteGrapple), grappleDelayTime);
             isDrawLineNeeded = true; // set signal to draw the line
+            // Y velocity to 0 in grappling start
+            PlayerRB.velocity = Vector3.Scale(PlayerRB.velocity, new Vector3(1f,0,1f));
 
         }
         else if (Physics.Raycast(cam.position, cam.forward, out hit, maxGrapplingDistance, enemy))
         {
             //save grapple point from raycast
             grapplePoint = hit.point;
-            //execute grapple function
-            //Invoke(nameof(ExecuteGrapple), grappleDelayTime);
             isDrawLineNeeded = true; // set signal to draw the line
+            // Y velocity to 0 in grappling start
+            PlayerRB.velocity = Vector3.Scale(PlayerRB.velocity, new Vector3(1f, 0, 1f));
         }
         else
         {
@@ -215,23 +215,22 @@ public class Grapling : MonoBehaviour
             {
                 //save grapple point from raycast
                 grapplePoint = hit.point;
-                //execute grapple function
-                //Invoke(nameof(ExecuteGrapple), grappleDelayTime);
                 isDrawLineNeeded = true; // set signal to draw the line
+                // Y velocity to 0 in grappling start
+                PlayerRB.velocity = Vector3.Scale(PlayerRB.velocity, new Vector3(1f, 0, 1f));
+
 
             }
             else if (Physics.SphereCast(cam.position, sphereCastRadius, cam.forward, out hit, maxGrapplingDistance, enemy))
             {
                 //save grapple point from raycast
                 grapplePoint = hit.point;
-                //execute grapple function
-                //Invoke(nameof(ExecuteGrapple), grappleDelayTime);
                 isDrawLineNeeded = true; // set signal to draw the line
+                // Y velocity to 0 in grappling start
+                PlayerRB.velocity = Vector3.Scale(PlayerRB.velocity, new Vector3(1f, 0, 1f));
             }
             else //all above must be a raycast, all below must be a spherecast
             {
-                // if hit is not grappable or far away - store the max distance point
-                //grapplePoint = cam.position + cam.forward * maxGrapplingDistance;
                 // if missed make grapple point 000
                 grapplePoint = Vector3.zero;
                 //stop grapple function

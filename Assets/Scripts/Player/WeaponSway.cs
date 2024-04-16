@@ -66,7 +66,7 @@ public class WeaponSway : MonoBehaviour
         }
 
         //add sway if grappling shoot
-        if (Input.GetKeyDown(KeyCode.Q)) {
+        if (Input.GetKeyDown(KeyCode.Mouse1)) {
             target_rotation = target_rotation * Quaternion.AngleAxis(intensity * -15f, Vector3.right);
         }
 

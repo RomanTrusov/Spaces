@@ -150,12 +150,8 @@ public class PlayerMovement : MonoBehaviour
 
     private void MyInput()
     {
-        //if not climb get input controls
-        //if (!climbing)
-        //{
-            horizontalInput = Input.GetAxisRaw("Horizontal");
-            verticalInput = Input.GetAxisRaw("Vertical");
-        //}
+        horizontalInput = Input.GetAxisRaw("Horizontal");
+        verticalInput = Input.GetAxisRaw("Vertical");
         
 
         //if ready to jump
@@ -230,7 +226,10 @@ public class PlayerMovement : MonoBehaviour
     //Move player function
     private void MovePlayer()
     {
-        if (activeGrapple) return;
+        // need to make small control while grapple
+        //modifier to slow down control while grappling
+        float grappleSpeedModifier = 1f;
+        if (activeGrapple) grappleSpeedModifier = 0.2f;
 
         // calculate movement direction
         moveDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
@@ -244,7 +243,7 @@ public class PlayerMovement : MonoBehaviour
         //add force to the rigid body in the direction with speed times 10. ForceMode.Force for better movement
         else if (grounded)
         {
-            rb.AddForce(moveDirection * moveSpeed * 10f, ForceMode.Force);
+            rb.AddForce(moveDirection * moveSpeed * grappleSpeedModifier * 10f, ForceMode.Force);
         } 
         
 
@@ -253,9 +252,9 @@ public class PlayerMovement : MonoBehaviour
         {
             if (rb.velocity.y < 0)
             {
-                rb.AddForce(moveDirection * moveSpeed * 10f * airMultiplier - new Vector3(0, 15f, 0), ForceMode.Force);
+                rb.AddForce(moveDirection * moveSpeed * grappleSpeedModifier * 10f * airMultiplier - new Vector3(0, 15f, 0), ForceMode.Force);
             } else
-            rb.AddForce(moveDirection * moveSpeed * 10f * airMultiplier, ForceMode.Force);
+            rb.AddForce(moveDirection * moveSpeed * grappleSpeedModifier * 10f * airMultiplier, ForceMode.Force);
         }
 
         //TEST if air - move down
