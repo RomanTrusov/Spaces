@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -36,7 +37,7 @@ public class PlayerMovement : MonoBehaviour
     [Header("Keybinds")]
     public KeyCode jumpKey = KeyCode.Space;
     public KeyCode sprintKey = KeyCode.LeftShift;
-    public KeyCode reserKey = KeyCode.R;
+    public KeyCode resetKey = KeyCode.R;
 
     [Header("Ground check")]
     public float playerHeight;
@@ -127,7 +128,8 @@ public class PlayerMovement : MonoBehaviour
         }
 
         // make drag 
-        if (attacked || dashing) rb.drag = 0;
+        if (dashing) rb.drag = 0;
+        if (attacked) rb.drag = 4;
         else if (grounded && !activeGrapple && state != MovementStates.air)
         {
             if (moveDirection != Vector3.zero)
@@ -172,10 +174,10 @@ public class PlayerMovement : MonoBehaviour
         }
 
         // reset players position and velocity
-        if (Input.GetKey(reserKey))
+        if (Input.GetKey(resetKey))
         {
-            rb.position = restartPosition;
-            rb.velocity = new Vector3(0, 0, 0);
+            Scene scene = SceneManager.GetActiveScene();
+            SceneManager.LoadScene(scene.name);
         }
 
     }
@@ -281,7 +283,8 @@ public class PlayerMovement : MonoBehaviour
 
         if (attacked)
         {
-            rb.velocity = rb.velocity.normalized * walkSpeed * 2f;
+            //rb.velocity = rb.velocity.normalized * walkSpeed * 2f;
+            rb.velocity = rb.velocity.normalized * walkSpeed;
         }
         else if (OnSlope() && !exitingSlope)
         {

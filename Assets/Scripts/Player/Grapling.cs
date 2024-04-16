@@ -191,7 +191,7 @@ public class Grapling : MonoBehaviour
         //throw spherecast to get grappling point
         RaycastHit hit;
         //raycast throw first
-        if (Physics.Raycast(cam.position, cam.forward, out hit, maxGrapplingDistance, whatIsGrappable))
+        if (Physics.Raycast(cam.position, cam.forward, out hit, maxGrapplingDistance, enemy))
         {
             //save grapple point from raycast
             grapplePoint = hit.point;
@@ -200,7 +200,7 @@ public class Grapling : MonoBehaviour
             PlayerRB.velocity = Vector3.Scale(PlayerRB.velocity, new Vector3(1f,0,1f));
 
         }
-        else if (Physics.Raycast(cam.position, cam.forward, out hit, maxGrapplingDistance, enemy))
+        else if (Physics.Raycast(cam.position, cam.forward, out hit, maxGrapplingDistance, whatIsGrappable))
         {
             //save grapple point from raycast
             grapplePoint = hit.point;
@@ -211,7 +211,7 @@ public class Grapling : MonoBehaviour
         else
         {
             //spherecast throw then
-            if (Physics.SphereCast(cam.position, sphereCastRadius, cam.forward, out hit, maxGrapplingDistance, whatIsGrappable))
+            if (Physics.SphereCast(cam.position, sphereCastRadius, cam.forward, out hit, maxGrapplingDistance, enemy))
             {
                 //save grapple point from raycast
                 grapplePoint = hit.point;
@@ -221,7 +221,7 @@ public class Grapling : MonoBehaviour
 
 
             }
-            else if (Physics.SphereCast(cam.position, sphereCastRadius, cam.forward, out hit, maxGrapplingDistance, enemy))
+            else if (Physics.SphereCast(cam.position, sphereCastRadius, cam.forward, out hit, maxGrapplingDistance, whatIsGrappable))
             {
                 //save grapple point from raycast
                 grapplePoint = hit.point;

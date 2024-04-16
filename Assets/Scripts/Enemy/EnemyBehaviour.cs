@@ -33,7 +33,7 @@ public class EnemyBehaviour : MonoBehaviour
         selfPosition = GetComponent<Transform>();
         selfRb = GetComponent<Rigidbody>();
         state = EnemyStates.await;
-        attackCD = 0.5f; //time before attack
+        attackCD = 2f; //time before attack
         attackCDtimer = attackCD;
     }
 
@@ -84,7 +84,7 @@ public class EnemyBehaviour : MonoBehaviour
         if (attackCDtimer >= 0)
         {
             attackCDtimer -= Time.deltaTime;
-        } else if (Physics.Raycast(selfPosition.position, playerDirection, out hit, 1.5f, playerLayer))
+        } else if (Physics.Raycast(selfPosition.position, playerDirection, out hit, 1f, playerLayer))
         {
             AttackPlayer();
             attackCDtimer = attackCD;
