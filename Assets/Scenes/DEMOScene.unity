@@ -47259,7 +47259,7 @@ MonoBehaviour:
   isGrappleOnHold: 1
   grapplingOnHoldForce: 30
   grapplingCd: 0.1
-  grapplingKey: 113
+  grapplingKey: 324
 --- !u!114 &931899300
 MonoBehaviour:
   m_ObjectHideFlags: 0

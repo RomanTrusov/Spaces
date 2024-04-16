@@ -11,7 +11,7 @@ public class EnemyBehaviour : MonoBehaviour
     public LayerMask playerLayer; 
     public float enemySpeed; 
     public EnemyStates state;
-    public float pushForce; // forve of the enemy's attack
+    public float pushForce; // force of the enemy's attack
 
     private Vector3 playerDirection;
     private RaycastHit hit; //will be used to punch player
@@ -53,7 +53,7 @@ public class EnemyBehaviour : MonoBehaviour
     }
 
 
-    private bool NoticedPlayer ()
+    private bool NoticedPlayer()
     { // check if player close enough to the enemy
         playerDirection = playerPosition.position - selfPosition.position; // get which direction to throw raycast
         if (Physics.Raycast(selfPosition.position, playerDirection, out hit, alertDistance, playerLayer))
@@ -66,7 +66,7 @@ public class EnemyBehaviour : MonoBehaviour
 
     }
 
-    private void FollowPlayer ()
+    private void FollowPlayer()
     { //apply movement to the player direction
         playerDirection = playerPosition.position - selfPosition.position;
         // check for loosing player in larger distance

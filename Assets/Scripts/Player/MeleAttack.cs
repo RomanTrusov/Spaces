@@ -30,7 +30,6 @@ public class MeleAttack : MonoBehaviour
             MeleAttacking();
             ActivateMeleTrigger();
 
-
         } else if (Input.GetKeyDown(meleKey) && meleState == 1) // if press mele key during combo delay - do combo
         {
             MeleCombo();
@@ -45,6 +44,7 @@ public class MeleAttack : MonoBehaviour
         if (meleState == 1)
         {
             meleTrigger.GetComponent<MeleAttackTrigger>().meleState = 1;
+            meleTrigger.GetComponent<MeleAttackTrigger>().meleDirection = meleDirection;
         } else if (meleState == 2)
         {
             if (meleTrigger.activeSelf) meleTrigger.SetActive(false);
@@ -62,6 +62,7 @@ public class MeleAttack : MonoBehaviour
 
     private void MeleAttacking()
     {
+        meleDirection = CheckMeleDirection(); //get mele direction
         playerAnimator.SetBool("MelePunch", true);
         meleState = 1; // state - simple punch
         currentMeleState = meleState;
