@@ -6,6 +6,8 @@ public class EnemyBehaviourDrone : MonoBehaviour
 {
     [SerializeField]
     private GameObject player;
+    [SerializeField]
+    private ParticleSystem parts;
 
     public int enemyHealth;
 
@@ -60,21 +62,28 @@ public class EnemyBehaviourDrone : MonoBehaviour
         attackedCDTimer = attackedCD;
     }
 
-    void Update()
+    void FixedUpdate()
     {
         //check for 0 heath
-        if (enemyHealth == 0)
+        if (enemyHealth <= 0)
         {
             StopPlayerBeenAttacked();
-            Destroy(gameObject);
+            state = EnemyStates.attacked;
+            GetComponent<Rigidbody>().mass = 20f;
         }
 
         //little air up force
-        GetComponent<Rigidbody>().AddForce(Vector3.up * 7f, ForceMode.Force);
+        if (state != EnemyStates.idle && state != EnemyStates.attacked) GetComponent<Rigidbody>().AddForce(Vector3.up * 10f, ForceMode.Force);
 
         //if enemy attacker - cuntdown with attacked state, at the end change state and false attacked
         if (attacked)
         {
+            //activate effect
+            if (attackedCDTimer == attackedCD)
+            {
+                parts.gameObject.SetActive(true);
+
+            }
             attackedCDTimer -= Time.deltaTime;
             if (attackedCDTimer < 0)
             {
@@ -84,9 +93,9 @@ public class EnemyBehaviourDrone : MonoBehaviour
         }
         
         //limit the speed
-        if (GetComponent<Rigidbody>().velocity.magnitude > 4f && state == EnemyStates.alert)
+        if (GetComponent<Rigidbody>().velocity.magnitude > 10f && state == EnemyStates.alert)
         {
-            GetComponent<Rigidbody>().velocity = GetComponent<Rigidbody>().velocity.normalized * 4f;
+            GetComponent<Rigidbody>().velocity = GetComponent<Rigidbody>().velocity.normalized * 10f;
         }
 
         //try to notice player every step
@@ -104,16 +113,16 @@ public class EnemyBehaviourDrone : MonoBehaviour
         if (state == EnemyStates.idle)
         {
             //stay still
-        //if noticed player
+            //if noticed player
         } else if (state == EnemyStates.alert)
         {
             //move around
-
+            float alertMovingDistanceRand = Random.Range(alertMovingDistance-3f, alertMovingDistance+3f);
             //stay at the distance
-            if (Vector3.Distance(transform.position,player.transform.position) < alertMovingDistance)
+            if (Vector3.Distance(transform.position,player.transform.position) < alertMovingDistanceRand)
             {
                 GetComponent<Rigidbody>().AddForce(PlayerDirection().normalized * -enemySpeed);
-            } else if (Vector3.Distance(transform.position, player.transform.position) > alertMovingDistance)
+            } else if (Vector3.Distance(transform.position, player.transform.position) > alertMovingDistanceRand)
             {
                 GetComponent<Rigidbody>().AddForce(PlayerDirection().normalized * enemySpeed);
             } 
@@ -150,7 +159,6 @@ public class EnemyBehaviourDrone : MonoBehaviour
         if (state == EnemyStates.idle && Physics.Raycast(transform.position,PlayerDirection(), out hit, noticeDistance, playerLayer))
         {
             state = EnemyStates.alert;
-        //if not idle and not see me - idle
         } 
     }
 
