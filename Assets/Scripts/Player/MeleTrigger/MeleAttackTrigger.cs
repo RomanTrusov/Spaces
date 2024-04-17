@@ -19,6 +19,7 @@ public class MeleAttackTrigger : MonoBehaviour
         // in it's enemy and simple punch - punch enemy
         if (other.gameObject.layer == 8 && meleState == 1)
         {
+            other.GetComponent<EnemyBehaviourDrone>().enemyHealth = 0;
             switch (meleDirection)
             {
                 case 0:
@@ -42,6 +43,7 @@ public class MeleAttackTrigger : MonoBehaviour
         //if it's enemy and it's a combo attack - punch harder
         else if (other.gameObject.layer == 8 && meleState == 2)
         {
+            other.GetComponent<EnemyBehaviourDrone>().enemyHealth = 0;
             switch (meleDirection)
             {
                 case 0:
