@@ -8,6 +8,8 @@ public class EnemyBehaviourDrone : MonoBehaviour
     private GameObject player;
     [SerializeField]
     private ParticleSystem parts;
+    [SerializeField]
+    private ParticleSystem dust;
 
     public int enemyHealth;
 
@@ -81,7 +83,8 @@ public class EnemyBehaviourDrone : MonoBehaviour
             //activate effect
             if (attackedCDTimer == attackedCD)
             {
-                parts.gameObject.SetActive(true);
+                ParticleSystem clone = Instantiate(parts, transform.position, transform.rotation, transform);
+                clone.gameObject.SetActive(true);
 
             }
             attackedCDTimer -= Time.deltaTime;
