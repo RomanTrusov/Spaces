@@ -5,6 +5,9 @@ using UnityEngine.SceneManagement;
 
 public class PlayerMovement : MonoBehaviour
 {
+    [SerializeField]
+    private int playerHP;
+
     [Header("Movement")]
     // movespeed calculates inside, other speeds - puts manually
     private float moveSpeed;
@@ -60,6 +63,8 @@ public class PlayerMovement : MonoBehaviour
 
     Vector3 moveDirection;
 
+    public GameObject deadSign;
+
     public new Collider collider;
 
     Rigidbody rb;
@@ -73,7 +78,8 @@ public class PlayerMovement : MonoBehaviour
         sprinting,
         dashing,
         air,
-        attacked
+        attacked,
+        dead
     }
 
     public bool attacked;
@@ -96,6 +102,14 @@ public class PlayerMovement : MonoBehaviour
     private void Update()
     {
 
+        if (playerHP <= 0)
+        {
+            state = MovementStates.dead;
+            moveSpeed = 0f;
+            rb.drag = 0;
+            deadSign.SetActive(true);
+        }
+
         velocity = GetComponent<Rigidbody>().velocity;
 
         onSlope = OnSlope();
@@ -114,10 +128,11 @@ public class PlayerMovement : MonoBehaviour
             //grounded = Physics.Raycast(transform.position + new Vector3(0.5f, 0f, 0f), Vector3.down, playerHeight * 0.5f + 0.2f, whatIsGround);
             grounded = Physics.Raycast(transform.position, Vector3.down, playerHeight + 0.15f, whatIsGround);
         }
-            
+        
         MyInput();
         StateHandler();
         SpeedControl();
+        
         
 
         //stop grappling if grounded and graaple down
@@ -419,6 +434,11 @@ public class PlayerMovement : MonoBehaviour
         }
         
 
+    }
+
+    public void PlayerGetHit()
+    {
+        playerHP -= 1;
     }
 
 }

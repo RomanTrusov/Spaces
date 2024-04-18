@@ -233,6 +233,9 @@ public class EnemyBehaviourDrone : MonoBehaviour
         //push player
         player.GetComponent<Rigidbody>().AddForce(flatDirection.normalized * pushForce * 10f + playerDirectionY.normalized * pushForce * 5f, ForceMode.Impulse);
 
+        //activate player's get hit method
+        player.GetComponent<PlayerMovement>().PlayerGetHit();
+
         //back to alert state
         state = EnemyStates.alert;
     }
