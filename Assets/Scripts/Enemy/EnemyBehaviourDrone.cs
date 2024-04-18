@@ -10,6 +10,8 @@ public class EnemyBehaviourDrone : MonoBehaviour
     private ParticleSystem parts;
     [SerializeField]
     private ParticleSystem dust;
+    [SerializeField]
+    private ParticleSystem lowHP;
 
     public int enemyHealth;
 
@@ -47,7 +49,7 @@ public class EnemyBehaviourDrone : MonoBehaviour
         idle,
         alert,
         attack,
-        attacked
+        attacked,
     }
 
     void Start()
@@ -74,8 +76,14 @@ public class EnemyBehaviourDrone : MonoBehaviour
             GetComponent<Rigidbody>().mass = 20f;
         }
 
+        //activate smoke if 1 HP
+        if (enemyHealth == 1)
+        {
+            lowHP.gameObject.SetActive(true);
+        }
+
         //little air up force
-        if (state != EnemyStates.idle && state != EnemyStates.attacked) GetComponent<Rigidbody>().AddForce(Vector3.up * 10f, ForceMode.Force);
+        if (state != EnemyStates.idle && state != EnemyStates.attacked) GetComponent<Rigidbody>().AddForce(Vector3.up * 9f, ForceMode.Force);
 
         //if enemy attacker - cuntdown with attacked state, at the end change state and false attacked
         if (attacked)
@@ -93,6 +101,7 @@ public class EnemyBehaviourDrone : MonoBehaviour
                 attacked = false;
                 state = EnemyStates.alert;
             } else state = EnemyStates.attacked;
+            if (enemyHealth <= 0) Invoke(nameof(DestroyEnemy), 1f);
         }
         
         //limit the speed
@@ -120,9 +129,22 @@ public class EnemyBehaviourDrone : MonoBehaviour
         } else if (state == EnemyStates.alert)
         {
             //move around
-            float alertMovingDistanceRand = Random.Range(alertMovingDistance-3f, alertMovingDistance+3f);
-            //stay at the distance
-            if (Vector3.Distance(transform.position,player.transform.position) < alertMovingDistanceRand)
+            float alertMovingDistanceRand = Random.Range(alertMovingDistance-1f, alertMovingDistance+1f);
+
+            //move sideways
+            float rnd = Random.Range(0,1f);
+            if (rnd < 0.005f)
+            {
+                GetComponent<Rigidbody>().AddForce(Vector3.left * 40f,ForceMode.Impulse);
+            }
+            else if (rnd > 0.995f)
+            {
+                GetComponent<Rigidbody>().AddForce(Vector3.left * -40f, ForceMode.Impulse);
+            }
+            else
+
+          //stay at the distance
+          if (Vector3.Distance(transform.position,player.transform.position) < alertMovingDistanceRand)
             {
                 GetComponent<Rigidbody>().AddForce(PlayerDirection().normalized * -enemySpeed);
             } else if (Vector3.Distance(transform.position, player.transform.position) > alertMovingDistanceRand)
@@ -131,7 +153,7 @@ public class EnemyBehaviourDrone : MonoBehaviour
             } 
 
 
-            //decide to attack every second
+            //deciding to attack or not every second of alerting
             decideToAttackCDTimer -= Time.deltaTime;
             if (decideToAttackCDTimer < 0)
             {
@@ -140,13 +162,15 @@ public class EnemyBehaviourDrone : MonoBehaviour
             }
 
         //if decided to attack
-
         } 
         else if (state == EnemyStates.attack)
         {
-            //going to attack
-            GetComponent<Rigidbody>().AddForce(PlayerDirection().normalized * enemySpeed * 2f);
+            //calculate players'face position
+            Vector3 PlayerFace = PlayerDirection() + new Vector3(0,0.5f,0);
+            //rush on player with more speed
+            GetComponent<Rigidbody>().AddForce(PlayerFace.normalized * enemySpeed * 3f);
 
+            //if raycasted player - hit him
             if (Physics.Raycast(transform.position, PlayerDirection(), out hit, 1.5f, playerLayer))
             {
                 AttackPlayer();
@@ -157,8 +181,7 @@ public class EnemyBehaviourDrone : MonoBehaviour
 
     private void TryToNoticePlayer()
     {
-        //getting player direction
-        //if idle and player close
+        //if idle and player close enemy is alerted
         if (state == EnemyStates.idle && Physics.Raycast(transform.position,PlayerDirection(), out hit, noticeDistance, playerLayer))
         {
             state = EnemyStates.alert;
@@ -166,19 +189,22 @@ public class EnemyBehaviourDrone : MonoBehaviour
     }
 
     private Vector3 PlayerDirection()
-    {
+    {// find player direction
         return player.transform.position - transform.position;
     }
 
         
     private void DecidingToAttack()
     {
-        //50/50 to attack every second of alerting
+        //chance to attack every second of alerting
         float rnd = Random.Range(0, 1f);
         if (rnd >= 0.75f)
         {
+            //stop Y velocity
             GetComponent<Rigidbody>().velocity = Vector3.zero;
+            //change state to attack
             state = EnemyStates.attack;
+            // back to alert state after two seconds of rushing
             Invoke(nameof(AlertAfterAttack), 2f);
         } else
         {
@@ -188,30 +214,48 @@ public class EnemyBehaviourDrone : MonoBehaviour
 
     private void AlertAfterAttack()
     {
+        //reset the alert state
         state = EnemyStates.alert;
     }
 
 
     private void AttackPlayer()
     {
-        attackCDTimer = attackCD; //reset timer
-        player.GetComponent<PlayerMovement>().attacked = true; //set player to the condition
-        Invoke(nameof(StopPlayerBeenAttacked), 0.8f); //cancel this condition later
+        //reset timer
+        attackCDTimer = attackCD;
+        //set player attacked condition
+        player.GetComponent<PlayerMovement>().attacked = true;
+        //cancel this condition later
+        Invoke(nameof(StopPlayerBeenAttacked), 0.8f);
+        //get force direction for the player
         Vector3 flatDirection = new Vector3(PlayerDirection().x, 0f, PlayerDirection().z);
         Vector3 playerDirectionY = new Vector3(0f, PlayerDirection().y + 5f, 0f);
+        //push player
         player.GetComponent<Rigidbody>().AddForce(flatDirection.normalized * pushForce * 10f + playerDirectionY.normalized * pushForce * 5f, ForceMode.Impulse);
 
+        //back to alert state
         state = EnemyStates.alert;
     }
 
     private void StopPlayerBeenAttacked()
-    {
+    {//to avoid infinite attacked state for the player after enemty death
         player.GetComponent<PlayerMovement>().attacked = false;
     }
 
     public void ResetAttackedTimer()
-    {
+    {//access to other scripts
         attackedCDTimer = attackedCD;
+    }
+
+    private void DestroyEnemy()
+    {
+        //make a lot of patricles
+        ParticleSystem clone = Instantiate(parts, transform.position, transform.rotation);
+        clone.gameObject.SetActive(true);
+        //scale down enemy
+        transform.localScale = Vector3.Scale(transform.localScale, new Vector3(0.85f, 0.85f, 0.85f));
+        //destroy parent after second
+        Destroy(transform.parent.gameObject,0.5f);
     }
 
 }
