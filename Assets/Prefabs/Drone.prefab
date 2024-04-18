@@ -5008,8 +5008,8 @@ MonoBehaviour:
   lowHP: {fileID: 2770756154811705794}
   enemyHealth: 3
   noticeDistance: 20
-  alertMovingDistance: 10
-  enemySpeed: 15
+  alertMovingDistance: 7
+  enemySpeed: 10
   pushForce: 10
   playerLayer:
     serializedVersion: 2
