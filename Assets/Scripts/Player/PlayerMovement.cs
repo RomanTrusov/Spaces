@@ -5,8 +5,8 @@ using UnityEngine.SceneManagement;
 
 public class PlayerMovement : MonoBehaviour
 {
-    [SerializeField]
-    private int playerHP;
+
+    public int playerHP;
 
     [Header("Movement")]
     // movespeed calculates inside, other speeds - puts manually
