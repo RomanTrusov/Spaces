@@ -125,9 +125,11 @@ public class EnemyBehaviourDrone : MonoBehaviour
         if (state == EnemyStates.idle)
         {
             //stay still
+            GetComponent<Rigidbody>().useGravity = false;
             //if noticed player
         } else if (state == EnemyStates.alert)
         {
+            GetComponent<Rigidbody>().useGravity = true;
             //move around
             float alertMovingDistanceRand = Random.Range(alertMovingDistance-1f, alertMovingDistance+1f);
 
@@ -257,6 +259,10 @@ public class EnemyBehaviourDrone : MonoBehaviour
         clone.gameObject.SetActive(true);
         //scale down enemy
         transform.localScale = Vector3.Scale(transform.localScale, new Vector3(0.85f, 0.85f, 0.85f));
+
+        //restore player's health
+        player.GetComponent<PlayerMovement>().playerHP += 1;
+
         //destroy parent after second
         Destroy(transform.parent.gameObject,0.5f);
     }

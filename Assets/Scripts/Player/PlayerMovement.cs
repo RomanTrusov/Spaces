@@ -8,6 +8,9 @@ public class PlayerMovement : MonoBehaviour
 
     public int playerHP;
 
+    //[SerializeField]
+    //CrackOnDamage crackOnDamage;
+
     [Header("Movement")]
     // movespeed calculates inside, other speeds - puts manually
     private float moveSpeed;
@@ -132,7 +135,7 @@ public class PlayerMovement : MonoBehaviour
         MyInput();
         StateHandler();
         SpeedControl();
-        
+        CheckMaxHP();
         
 
         //stop grappling if grounded and graaple down
@@ -438,7 +441,12 @@ public class PlayerMovement : MonoBehaviour
 
     public void PlayerGetHit()
     {
-        playerHP -= 1;
+        playerHP -= 25;
+    }
+
+    private void CheckMaxHP()
+    {
+        if (playerHP > 100) playerHP = 100;
     }
 
 }
