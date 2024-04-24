@@ -133,6 +133,7 @@ public class EnemyBehaviourDrone : MonoBehaviour
             //move around
             float alertMovingDistanceRand = Random.Range(alertMovingDistance-1f, alertMovingDistance+1f);
 
+            /*
             //move sideways
             float rnd = Random.Range(0,1f);
             if (rnd < 0.005f)
@@ -143,7 +144,7 @@ public class EnemyBehaviourDrone : MonoBehaviour
             {
                 GetComponent<Rigidbody>().AddForce(Vector3.left * -40f, ForceMode.Impulse);
             }
-            else
+            else*/
 
           //stay at the distance
           if (Vector3.Distance(transform.position,player.transform.position) < alertMovingDistanceRand)
@@ -180,6 +181,10 @@ public class EnemyBehaviourDrone : MonoBehaviour
         }
     }
 
+    private void OnDestroy()
+    {// healpp player on destroy
+        if (player != null) player.GetComponent<PlayerMovement>().HealPlayer();
+    }
 
     private void TryToNoticePlayer()
     {
@@ -262,11 +267,9 @@ public class EnemyBehaviourDrone : MonoBehaviour
         //scale down enemy
         transform.localScale = Vector3.Scale(transform.localScale, new Vector3(0.85f, 0.85f, 0.85f));
 
-        //restore player's health
-        player.GetComponent<PlayerMovement>().playerHP += 1;
-
         //destroy parent after second
         Destroy(transform.parent.gameObject,0.5f);
     }
+
 
 }

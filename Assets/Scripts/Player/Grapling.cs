@@ -114,7 +114,7 @@ public class Grapling : MonoBehaviour
         }
 
         //grapped enemy
-        if (grappedEnemy)
+        if (isGrappedEnemy)
         {
             //follow grappling hook to the enemy
             grapplePoint = grappedEnemy.transform.position;

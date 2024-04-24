@@ -7,6 +7,12 @@ public class PlayerMovement : MonoBehaviour
 {
 
     public int playerHP;
+    public bool isNeedToHeal;
+    private bool isInvincible;
+    [SerializeField]
+    private Animator healAnimator;
+    [SerializeField]
+    private Animator damageAnimator;
 
     [Header("Movement")]
     // movespeed calculates inside, other speeds - puts manually
@@ -133,7 +139,9 @@ public class PlayerMovement : MonoBehaviour
         StateHandler();
         SpeedControl();
         CheckMaxHP();
-        
+
+        //invinvible while dashing
+        if (dashing) isInvincible = true; else isInvincible = false;
 
         //stop grappling if grounded and graaple down
         if (grounded && grapplingDown)
@@ -143,7 +151,7 @@ public class PlayerMovement : MonoBehaviour
         }
 
         // make drag 
-        if (dashing) rb.drag = 0;
+        
         if (attacked) rb.drag = 4;
         else if (grounded && !activeGrapple && state != MovementStates.air)
         {
@@ -154,6 +162,7 @@ public class PlayerMovement : MonoBehaviour
             ResetDoubleJump();
         }
         else rb.drag = 0;
+        if (dashing) rb.drag = 0;
 
         //turn off gravity if grapple
         if (activeGrapple) rb.useGravity = false;
@@ -440,12 +449,28 @@ public class PlayerMovement : MonoBehaviour
 
     public void PlayerGetHit()
     {
-        playerHP -= 25;
+        if (!isInvincible)
+        {
+            playerHP -= 1;
+            damageAnimator.Play("Base Layer.Cracks",0,0);
+        }
+            
     }
 
     private void CheckMaxHP()
     {
         if (playerHP > 100) playerHP = 100;
+    }
+
+    //heal player
+    public void HealPlayer ()
+    {
+        //plater no more need to heal
+        isNeedToHeal = false;
+        //restore hp
+        playerHP += 1;
+        // play heal animation
+        healAnimator.Play("Base Layer.Heal", 0, 0);
     }
 
 }
