@@ -42,6 +42,10 @@ public class Grapling : MonoBehaviour
     //is grapple
     private bool grappling;
 
+    //if player was grappling the enemy
+    private bool isGrappedEnemy;
+    private GameObject grappedEnemy;
+
     #region Start
 
     private void Start()
@@ -88,9 +92,9 @@ public class Grapling : MonoBehaviour
                 StopGrapple();
             }
 
+            
+
         }
-
-
 
     }
     #endregion Update
@@ -102,6 +106,14 @@ public class Grapling : MonoBehaviour
         if (grappling)
         {
             lr.SetPosition(0, gunTip.position);
+        }
+
+        //grapped enemy
+        if (grappedEnemy)
+        {
+            //follow grappling hook to the enemy
+            grapplePoint = grappedEnemy.transform.position;
+            lr.SetPosition(1, grapplePoint);
         }
 
         //acticate draw line in later update
@@ -198,6 +210,10 @@ public class Grapling : MonoBehaviour
             isDrawLineNeeded = true; // set signal to draw the line
             // Y velocity to 0 in grappling start
             PlayerRB.velocity = Vector3.Scale(PlayerRB.velocity, new Vector3(1f,0,1f));
+            //grapped to the enemy
+            isGrappedEnemy = true;
+            //get enemy object on hit
+            grappedEnemy = hit.transform.gameObject;
 
         }
         else if (Physics.Raycast(cam.position, cam.forward, out hit, maxGrapplingDistance, whatIsGrappable))
@@ -218,6 +234,10 @@ public class Grapling : MonoBehaviour
                 isDrawLineNeeded = true; // set signal to draw the line
                 // Y velocity to 0 in grappling start
                 PlayerRB.velocity = Vector3.Scale(PlayerRB.velocity, new Vector3(1f, 0, 1f));
+                //grapped to the enemy
+                isGrappedEnemy = true;
+                //get enemy object on hit
+                grappedEnemy = hit.transform.gameObject;
 
 
             }
@@ -303,6 +323,7 @@ public class Grapling : MonoBehaviour
         Vector3 destination = Vector3.Normalize(grapplePoint - transform.position);
 
         PlayerRB.AddForce(destination * grapplingOnHoldForce,ForceMode.Force);
+        PlayerRB.AddForce(Vector3.up * grapplingOnHoldForce/3,ForceMode.Force);
 
     }
     #endregion Execute grapple while holding
@@ -313,6 +334,10 @@ public class Grapling : MonoBehaviour
         pm.activeGrapple = false;
         // stop grappling
         grappling = false;
+        //reset enemy grapple
+        isGrappedEnemy = false;
+        //reset enemygrapple object
+        grappedEnemy = null;
         // reset cooldown
         grapplingCdTimer = grapplingCd;
         //deactivate line
