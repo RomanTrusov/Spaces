@@ -153,8 +153,11 @@ public class PlayerMovement : MonoBehaviour
             rb.useGravity = true;
             ResetDoubleJump();
         }
-
         else rb.drag = 0;
+
+        //turn off gravity if grapple
+        if (activeGrapple) rb.useGravity = false;
+        else rb.useGravity = true;
 
     }
 
@@ -280,7 +283,7 @@ public class PlayerMovement : MonoBehaviour
         }
 
         //turn off gravity when slope
-        rb.useGravity = !OnSlope();
+        if (!activeGrapple) rb.useGravity = !OnSlope();
 
 
     }

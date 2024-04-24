@@ -84,20 +84,25 @@ public class Grapling : MonoBehaviour
             if (Input.GetKeyDown(grapplingKey)) StartGrappleWhileHolding();
             //reduce cooldown by time
             if (grapplingCdTimer > 0) grapplingCdTimer -= Time.deltaTime;
-            //execute while pressed and grappled to something
-            if (Input.GetKey(grapplingKey) && grapplePoint != Vector3.zero) ExecuteGrappleWhlieHolding();
             //stop grapple with Space or Grappling key UP
             if (pm.activeGrapple == true && Input.GetKeyUp(grapplingKey))
             {
                 StopGrapple();
             }
-
-            
-
         }
 
     }
     #endregion Update
+
+    private void FixedUpdate()
+    {
+        //grappling on holdind a button
+        if (isGrappleOnHold)
+        {
+            //add force
+            if (Input.GetKey(grapplingKey) && grapplePoint != Vector3.zero) ExecuteGrappleWhlieHolding();
+        }
+    }
 
     #region Late Update functions
     private void LateUpdate()

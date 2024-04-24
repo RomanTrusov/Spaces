@@ -8138,7 +8138,7 @@ GameObject:
   - component: {fileID: 435031398}
   - component: {fileID: 435031397}
   m_Layer: 0
-  m_Name: Health
+  m_Name: Controls
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8196,9 +8196,16 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "wasd - \u0434\u0432\u0438\u0436\u0435\u043D\u0438\u0435\nspace - \u043F\u0440\u044B\u0436\u043E\u043A\nshift+wsad
-    - \u0440\u044B\u0432\u043E\u043A\nRMB - \u043A\u0440\u044E\u043A \u043A\u043E\u0448\u043A\u0430\nR
-    - \u0440\u0435\u0441\u0442\u0430\u0440\u0442"
+  m_Text: 'wasd - move
+
+    space - jump
+
+    shift+wsad - dash
+
+    RMB - grappling
+    hook
+
+    R - restart'
 --- !u!222 &435031398
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -26319,7 +26326,7 @@ MonoBehaviour:
   overshootYaxis: 0
   sphereCastRadius: 0.5
   isGrappleOnHold: 1
-  grapplingOnHoldForce: 30
+  grapplingOnHoldForce: 40
   grapplingCd: 0.1
   grapplingKey: 324
 --- !u!114 &931899300
@@ -64116,7 +64123,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!82 &2097184771
 AudioSource:
   m_ObjectHideFlags: 0
