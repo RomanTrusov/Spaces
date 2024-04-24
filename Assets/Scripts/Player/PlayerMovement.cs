@@ -8,9 +8,6 @@ public class PlayerMovement : MonoBehaviour
 
     public int playerHP;
 
-    //[SerializeField]
-    //CrackOnDamage crackOnDamage;
-
     [Header("Movement")]
     // movespeed calculates inside, other speeds - puts manually
     private float moveSpeed;
@@ -167,7 +164,6 @@ public class PlayerMovement : MonoBehaviour
     }
 
     // function for keyboard inputs
-
     private void MyInput()
     {
         horizontalInput = Input.GetAxisRaw("Horizontal");

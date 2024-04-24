@@ -24233,7 +24233,7 @@ MonoBehaviour:
   grappleDelayTime: 0.25
   overshootYaxis: 0
   sphereCastRadius: 0.5
-  isGrappleOnHold: 1
+  isGrappleOnHold: 0
   grapplingOnHoldForce: 30
   grapplingCd: 0.1
   grapplingKey: 324
