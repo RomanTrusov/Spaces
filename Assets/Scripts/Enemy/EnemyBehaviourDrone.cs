@@ -208,6 +208,8 @@ public class EnemyBehaviourDrone : MonoBehaviour
             state = EnemyStates.attack;
             // back to alert state after two seconds of rushing
             Invoke(nameof(AlertAfterAttack), 2f);
+            // start red light animation
+            GetComponent<Animator>().Play("Base Layer.RedLight",0,0);
         } else
         {
             return;
