@@ -259,19 +259,21 @@ public class PlayerMovement : MonoBehaviour
         float grappleSpeedModifier = 1f;
         if (activeGrapple) grappleSpeedModifier = 0.2f;
 
+
+        float speedMultiplier = 30f; //10f default
         // calculate movement direction
         moveDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
         //If player on slope add slope is not negative
         if (OnSlope() && !exitingSlope)
         {
-            rb.AddForce(GetSlopeMoveDirection() * moveSpeed * 10f, ForceMode.Force);
+            rb.AddForce(GetSlopeMoveDirection() * moveSpeed * speedMultiplier, ForceMode.Force);
 
         } 
 
         //add force to the rigid body in the direction with speed times 10. ForceMode.Force for better movement
         else if (grounded)
         {
-            rb.AddForce(moveDirection * moveSpeed * grappleSpeedModifier * 10f, ForceMode.Force);
+            rb.AddForce(moveDirection * moveSpeed * grappleSpeedModifier * speedMultiplier, ForceMode.Force);
         } 
         
 
@@ -280,9 +282,9 @@ public class PlayerMovement : MonoBehaviour
         {
             if (rb.velocity.y < 0)
             {
-                rb.AddForce(moveDirection * moveSpeed * grappleSpeedModifier * 10f * airMultiplier - new Vector3(0, 15f, 0), ForceMode.Force);
+                rb.AddForce(moveDirection * moveSpeed * grappleSpeedModifier * speedMultiplier * airMultiplier - new Vector3(0, 15f, 0), ForceMode.Force);
             } else
-            rb.AddForce(moveDirection * moveSpeed * grappleSpeedModifier * 10f * airMultiplier, ForceMode.Force);
+            rb.AddForce(moveDirection * moveSpeed * grappleSpeedModifier * speedMultiplier * airMultiplier, ForceMode.Force);
         }
 
         //TEST if air - move down
