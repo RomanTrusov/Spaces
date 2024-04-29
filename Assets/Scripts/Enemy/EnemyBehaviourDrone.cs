@@ -174,7 +174,7 @@ public class EnemyBehaviourDrone : MonoBehaviour
             GetComponent<Rigidbody>().AddForce(PlayerFace.normalized * enemySpeed * 3f);
 
             //if raycasted player - hit him
-            if (Physics.Raycast(transform.position, PlayerDirection(), out hit, 1.5f, playerLayer))
+            if (Physics.Raycast(transform.position, PlayerDirection(), out hit, 2f, playerLayer))
             {
                 AttackPlayer();
             }

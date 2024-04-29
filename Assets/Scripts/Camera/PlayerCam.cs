@@ -26,6 +26,17 @@ public class PlayerCam : MonoBehaviour
     float xRotation;
     float yRotation;
 
+    //to limit fps
+    public int target = 30;
+
+    void Awake()
+    {
+        //set vsync off and set the limit fps
+        QualitySettings.vSyncCount = 0;
+        Application.targetFrameRate = target;
+    }
+
+
 
     private void Start()
     {
@@ -41,6 +52,12 @@ public class PlayerCam : MonoBehaviour
 
     private void Update()
     {
+
+        //limit fps every frame
+        if (Application.targetFrameRate != target)
+            Application.targetFrameRate = target;
+
+
         //============= get mouse input
         float mouseX = Input.GetAxisRaw("Mouse X") * Time.deltaTime * sensX;
         float mouseY = Input.GetAxisRaw("Mouse Y") * Time.deltaTime * sensY;
@@ -53,7 +70,7 @@ public class PlayerCam : MonoBehaviour
         xRotation = Mathf.Clamp(xRotation, -80f, 80f);
 
         //============= Adding camera shaking while walking
-        if (player.GetComponent<PlayerMovement>().grounded && swayInWalk) //if grounded - shake camera while moving
+        /*if (player.GetComponent<PlayerMovement>().grounded && swayInWalk) //if grounded - shake camera while moving
         {
 
             //trying to make sway start slowly
@@ -70,13 +87,15 @@ public class PlayerCam : MonoBehaviour
             orientation.rotation = Quaternion.Euler(0, yRotation, 0);
 
         }
-        else // ig !grounded - do not shake camera
+        else // if !grounded - do not shake camera
         {
             swayForce = 0;
             transform.rotation = Quaternion.Euler(xRotation, yRotation, 0);
             orientation.rotation = Quaternion.Euler(0, yRotation, 0);
-        }
-
+        }*/
+        // moving camera with falt lerp
+        transform.rotation = Quaternion.Lerp(transform.rotation,Quaternion.Euler(xRotation, yRotation, 0),Time.deltaTime*50);
+        orientation.rotation = Quaternion.Lerp(orientation.rotation,Quaternion.Euler(0, yRotation, 0),Time.deltaTime*50);
 
         //============= Changing FOV
         // while falling

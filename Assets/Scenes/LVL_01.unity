@@ -27933,6 +27933,7 @@ MonoBehaviour:
   playerVelocity: 0
   swayInWalk: 0
   orientation: {fileID: 1662591321}
+  target: 120
 --- !u!1 &964619383
 GameObject:
   m_ObjectHideFlags: 0
