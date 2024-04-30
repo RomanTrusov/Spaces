@@ -15,9 +15,12 @@ public class MeleAttack : MonoBehaviour
     public int meleDirection = 0;
 
 
-    [Header("Setting")]
+    [Header("Settings")]
     //delay to track the combo
     public float timeForCombo;
+    // cooldown for attacks to avoid button mashing
+    private float attackCD = 0.5f;
+    private float attackCDtimer = 0;
 
     [Header("Input")]
     public KeyCode meleKey = KeyCode.Mouse0;
@@ -25,15 +28,24 @@ public class MeleAttack : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(meleKey) && meleState != 1) // if press mele key during nothing - do simple punch
+
+        //reduce meleCD timer to 0
+        if (attackCDtimer >= 0) attackCDtimer -= Time.deltaTime;
+
+        //if meleCD 0 allow attack and reset meleCD
+        if (attackCDtimer <= 0 && Input.GetKeyDown(meleKey) && meleState != 1) // if press mele key during nothing - do simple punch
         {
             MeleAttacking();
             ActivateMeleTrigger();
 
-        } else if (Input.GetKeyDown(meleKey) && meleState == 1) // if press mele key during combo delay - do combo
+            attackCDtimer = attackCD;
+
+        } else if (attackCDtimer <= 0 && Input.GetKeyDown(meleKey) && meleState == 1) // if press mele key during combo delay - do combo
         {
             MeleCombo();
             ActivateMeleTrigger();
+
+            attackCDtimer = attackCD;
         }
     }
 
