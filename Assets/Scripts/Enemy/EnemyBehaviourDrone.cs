@@ -66,17 +66,21 @@ public class EnemyBehaviourDrone : MonoBehaviour
         attackedCDTimer = attackedCD;
     }
 
+
     void FixedUpdate()
     {
         //check for 0 heath
         if (enemyHealth <= 0)
         {
+            //stop all attacking effects on player
             StopPlayerBeenAttacked();
+            // ?? why attacked, not dead
             state = EnemyStates.attacked;
+            // ?? delete after destruction added
             GetComponent<Rigidbody>().mass = 20f;
         }
 
-        //activate smoke if 1 HP
+        //activate smoke particles if 1 HP
         if (enemyHealth == 1)
         {
             lowHP.gameObject.SetActive(true);
@@ -116,8 +120,14 @@ public class EnemyBehaviourDrone : MonoBehaviour
         //if enemy is not alerted - stop invoke
         if (state != EnemyStates.alert) CancelInvoke("DecidingToAttack");
 
-        //rotate to the player if not idle
-        if (state != EnemyStates.idle && state != EnemyStates.attacked) transform.LookAt(player.transform, Vector3.up);
+
+        // OLD rotate to the player if not idle
+        // NEW rotate to the player if not idle
+        //if (state != EnemyStates.idle && state != EnemyStates.attacked) transform.LookAt(player.transform, Vector3.up);
+        if (state != EnemyStates.idle && state != EnemyStates.attacked)
+        {
+            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(PlayerDirection()), Time.deltaTime * 5);
+        }
 
 
         //=================STATES BEHAVIOUR
@@ -181,8 +191,13 @@ public class EnemyBehaviourDrone : MonoBehaviour
         }
     }
 
+    private void LateUpdate()
+    {
+        
+    }
+
     private void OnDestroy()
-    {// healpp player on destroy
+    {// healpp player on destroy (if to avoid errors on closing the game)
         if (player != null) player.GetComponent<PlayerMovement>().HealPlayer();
     }
 

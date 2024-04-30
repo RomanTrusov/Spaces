@@ -11,7 +11,7 @@ public class PlayerCam : MonoBehaviour
 
     [SerializeField]
     private float playerVelocity;
-    private float swayForce; // force of the camera sway
+    //private float swayForce; // force of the camera sway - not used - sway off
     [SerializeField]
     private bool swayInWalk; //to turn off sway in walking
 
@@ -47,7 +47,7 @@ public class PlayerCam : MonoBehaviour
         // locked and invisible cursor
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
-        swayForce = 0; // default camera sway 0
+        //swayForce = 0; // default camera sway 0  - not used - sway off
     }
 
     private void Update()
