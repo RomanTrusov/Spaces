@@ -1438,6 +1438,7 @@ MonoBehaviour:
   forwardPush: 7
   upwardPush: 5
   meleAttackModifier: 2
+  punchEffect: {fileID: 739664573680825631, guid: 963e75b2f6b2ce047bc310acb32d4f4d, type: 3}
   meleState: 0
   meleDirection: 0
 --- !u!1 &60987072
@@ -7730,7 +7731,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh61480
+  m_Name: pb_Mesh20600
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -52086,10 +52087,6 @@ PrefabInstance:
     - target: {fileID: 400108, guid: 8c00db5be83e04b4c88b073e10fba9b9, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1951105808843999854, guid: 8c00db5be83e04b4c88b073e10fba9b9, type: 3}
-      propertyPath: m_IsActive
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8c00db5be83e04b4c88b073e10fba9b9, type: 3}

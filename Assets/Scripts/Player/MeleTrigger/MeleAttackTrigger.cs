@@ -9,6 +9,10 @@ public class MeleAttackTrigger : MonoBehaviour
     public float upwardPush;
     public float meleAttackModifier;
 
+    [SerializeField]
+    private GameObject punchEffect;
+
+    private Transform enemyTransform;
 
     public int meleState = 0;
     public int meleDirection = 0;
@@ -19,6 +23,10 @@ public class MeleAttackTrigger : MonoBehaviour
         // in it's enemy and simple punch - punch enemy
         if (other.gameObject.layer == 8 && meleState == 1)
         {
+            // get enemy GO
+            enemyTransform = other.gameObject.transform;
+
+            InitiatePunchEffect();
             InitiateAttackOnEnemy(other);
 
             switch (meleDirection)
@@ -44,6 +52,7 @@ public class MeleAttackTrigger : MonoBehaviour
         //if it's enemy and it's a combo attack - punch harder
         else if (other.gameObject.layer == 8 && meleState == 2)
         {
+            InitiatePunchEffect();
             InitiateAttackOnEnemy(other);
 
             switch (meleDirection)
@@ -79,6 +88,14 @@ public class MeleAttackTrigger : MonoBehaviour
         other.GetComponent<EnemyBehaviourDrone>().ResetAttackedTimer();*/
     }
 
-
+    private void InitiatePunchEffect()
+    {
+        //get player's position
+        Vector3 playerPosition = orientation.parent.position;
+        //get effect position
+        Vector3 punchEffectPosition = Vector3.Lerp(playerPosition,enemyTransform.position,0.80f);
+        //instace on effect
+        Instantiate(punchEffect, punchEffectPosition, Quaternion.identity);
+    }
 
 }
