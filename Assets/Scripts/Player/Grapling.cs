@@ -215,6 +215,7 @@ public class Grapling : MonoBehaviour
             {
                 state = GrapplingStates.enemy;
                 grappedEnemy = hit.transform.gameObject;
+                grappedEnemy.GetComponent<EnemyBehaviourDrone>().state = EnemyBehaviourDrone.EnemyStates.grapped;
             }
             // if hitted ground
             else if (hit.transform.gameObject.layer == LayerMask.NameToLayer("whatIsGround"))
@@ -231,6 +232,7 @@ public class Grapling : MonoBehaviour
                 {
                     state = GrapplingStates.enemy;
                     grappedEnemy = hit.transform.gameObject;
+                    grappedEnemy.GetComponent<EnemyBehaviourDrone>().state = EnemyBehaviourDrone.EnemyStates.grapped;
                 }
                 // if hitted ground
                 else if (hit.transform.gameObject.layer == LayerMask.NameToLayer("whatIsGround"))
@@ -248,14 +250,19 @@ public class Grapling : MonoBehaviour
             }
         }
 
-        //save grapple point from raycast
-        grapplePoint = hit.point;
-        // set signal to draw the line
-        isDrawLineNeeded = true; 
-        // Y velocity to 0 in grappling start
-        PlayerRB.velocity = Vector3.Scale(PlayerRB.velocity, new Vector3(1f, 0, 1f));
+        if (state != GrapplingStates.nothing)
+        {
+            //save grapple point from raycast
+            grapplePoint = hit.point;
+            // set signal to draw the line
+            isDrawLineNeeded = true;
+            // Y velocity to 0 in grappling start
+            PlayerRB.velocity = Vector3.Scale(PlayerRB.velocity, new Vector3(1f, 0, 1f));
 
-        lr.SetPosition(1, grapplePoint);
+            lr.SetPosition(1, grapplePoint);
+        }
+
+        
     }
 
 
@@ -314,28 +321,45 @@ public class Grapling : MonoBehaviour
         pm.activeGrapple = true;// ++set it while holding
 
         //get direction to the grapple point
-        Vector3 destination = Vector3.Normalize(grapplePoint - transform.position);
-
+        Vector3 destination = (grapplePoint - transform.position).normalized;
+        //regulate upward force depends on Y of destination
         PlayerRB.AddForce(destination * grapplingOnHoldForce,ForceMode.Force);
-        PlayerRB.AddForce(Vector3.up * grapplingOnHoldForce/3,ForceMode.Force);
+        if (destination.y > -0.5f)
+        {
+            PlayerRB.AddForce(Vector3.up * grapplingOnHoldForce / 3, ForceMode.Force);
+        }
+        else
+        {
+            PlayerRB.AddForce(Vector3.up * grapplingOnHoldForce / -3, ForceMode.Force);
+        }
 
+
+        if (grappedEnemy && grappedEnemy.GetComponent<EnemyBehaviourDrone>().state == EnemyBehaviourDrone.EnemyStates.dead)
+        {
+            StopGrapple();
+        }
     }
 
     //Stop Grapple
-    private void StopGrapple()
+    public void StopGrapple()
     {
         pm.activeGrapple = false;
         // stop grappling
         grappling = false;
         //reset enemy grapple
         state = GrapplingStates.nothing;
+        //reset enemy state
+        if (grappedEnemy && grappedEnemy.GetComponent<EnemyBehaviourDrone>().enemyHealth != 0) grappedEnemy.GetComponent<EnemyBehaviourDrone>().state = EnemyBehaviourDrone.EnemyStates.alert;
         //reset enemygrapple object
         grappedEnemy = null;
         // reset cooldown
         grapplingCdTimer = grapplingCd;
         //deactivate line
         lr.enabled = false;
+        //reset grapple point
+        grapplePoint = Vector3.zero;
         // reset point 1 position
         lr.SetPosition(1, lr.GetPosition(0));
+        
     }
 }
