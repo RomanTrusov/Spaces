@@ -43,10 +43,17 @@ public class Grapling : MonoBehaviour
     private bool grappling;
 
     //if player was grappling the enemy
-    private bool isGrappedEnemy;
+    //private bool isGrappedEnemy;
     private GameObject grappedEnemy;
 
-    #region Start
+    public GrapplingStates state;
+
+    public enum GrapplingStates
+    {
+        nothing,
+        wall,
+        enemy
+    }
 
     private void Start()
     {
@@ -56,9 +63,7 @@ public class Grapling : MonoBehaviour
         PlayerRB = GetComponent<Rigidbody>();
 
     }
-    #endregion Start
 
-    #region Update
     private void Update()
     {
         // grappling on pressing a button
@@ -92,7 +97,6 @@ public class Grapling : MonoBehaviour
         }
 
     }
-    #endregion Update
 
     private void FixedUpdate()
     {
@@ -104,7 +108,6 @@ public class Grapling : MonoBehaviour
         }
     }
 
-    #region Late Update functions
     private void LateUpdate()
     {
         //if grapple - update start position of the line
@@ -113,27 +116,26 @@ public class Grapling : MonoBehaviour
             lr.SetPosition(0, gunTip.position);
         }
 
-        //grapped enemy
-        if (isGrappedEnemy)
+        //grapped enemy !!change to state enemy
+        if (state == GrapplingStates.enemy)
         {
             //follow grappling hook to the enemy
             grapplePoint = grappedEnemy.transform.position;
             lr.SetPosition(1, grapplePoint);
         }
 
-        //acticate draw line in later update
+        //activate draw line in later update
         if (isDrawLineNeeded)
         {
             DrawLine(lr);
         }
     }
-    #endregion Late Update functions
 
     //--------------------------------------------------
-    //THREE GRAPPLE FUNCTIONS START HERE
+    //GRAPPLE FUNCTIONS START HERE
     //--------------------------------------------------
 
-    #region Start Grapple whlie pressing function
+    //Start Grapple whlie pressing function
     private void StartGrapple()
     {
         //if cooldown
@@ -194,68 +196,51 @@ public class Grapling : MonoBehaviour
         lr.SetPosition(1, grapplePoint);
     }
 
-    #endregion
 
-    #region Start Grapple whlie holding function
+    //Start Grapple whlie holding function
     private void StartGrappleWhileHolding()
     {
-        //if cooldown
+        //if cooldown - return
         if (grapplingCdTimer > 0) return;
 
         //grappling starts
         grappling = true;
 
-        //throw spherecast to get grappling point
+        //throw raycast to get grappling point and state
         RaycastHit hit;
-        //raycast throw first
-        if (Physics.Raycast(cam.position, cam.forward, out hit, maxGrapplingDistance, enemy))
+        if (Physics.Raycast(cam.position, cam.forward, out hit, maxGrapplingDistance))
         {
-            //save grapple point from raycast
-            grapplePoint = hit.point;
-            isDrawLineNeeded = true; // set signal to draw the line
-            // Y velocity to 0 in grappling start
-            PlayerRB.velocity = Vector3.Scale(PlayerRB.velocity, new Vector3(1f,0,1f));
-            //grapped to the enemy
-            isGrappedEnemy = true;
-            //get enemy object on hit
-            grappedEnemy = hit.transform.gameObject;
-
-        }
-        else if (Physics.Raycast(cam.position, cam.forward, out hit, maxGrapplingDistance, whatIsGrappable))
-        {
-            //save grapple point from raycast
-            grapplePoint = hit.point;
-            isDrawLineNeeded = true; // set signal to draw the line
-            // Y velocity to 0 in grappling start
-            PlayerRB.velocity = Vector3.Scale(PlayerRB.velocity, new Vector3(1f, 0, 1f));
-        }
-        else
-        {
-            //spherecast throw then
-            if (Physics.SphereCast(cam.position, sphereCastRadius, cam.forward, out hit, maxGrapplingDistance, enemy))
+            //if hitted enemy
+            if (hit.transform.gameObject.layer == LayerMask.NameToLayer("Enemy"))
             {
-                //save grapple point from raycast
-                grapplePoint = hit.point;
-                isDrawLineNeeded = true; // set signal to draw the line
-                // Y velocity to 0 in grappling start
-                PlayerRB.velocity = Vector3.Scale(PlayerRB.velocity, new Vector3(1f, 0, 1f));
-                //grapped to the enemy
-                isGrappedEnemy = true;
-                //get enemy object on hit
+                state = GrapplingStates.enemy;
                 grappedEnemy = hit.transform.gameObject;
-
-
             }
-            else if (Physics.SphereCast(cam.position, sphereCastRadius, cam.forward, out hit, maxGrapplingDistance, whatIsGrappable))
+            // if hitted ground
+            else if (hit.transform.gameObject.layer == LayerMask.NameToLayer("whatIsGround"))
             {
-                //save grapple point from raycast
-                grapplePoint = hit.point;
-                isDrawLineNeeded = true; // set signal to draw the line
-                // Y velocity to 0 in grappling start
-                PlayerRB.velocity = Vector3.Scale(PlayerRB.velocity, new Vector3(1f, 0, 1f));
+                state = GrapplingStates.wall;
             }
-            else //all above must be a raycast, all below must be a spherecast
+        } else
+        // if raycast hit nothing - throw spherecast
+        {
+            if (Physics.SphereCast(cam.position, sphereCastRadius, cam.forward, out hit, maxGrapplingDistance))
             {
+                //if hitted enemy
+                if (hit.transform.gameObject.layer == LayerMask.NameToLayer("Enemy"))
+                {
+                    state = GrapplingStates.enemy;
+                    grappedEnemy = hit.transform.gameObject;
+                }
+                // if hitted ground
+                else if (hit.transform.gameObject.layer == LayerMask.NameToLayer("whatIsGround"))
+                {
+                    state = GrapplingStates.wall;
+                }
+            }
+            else
+            { //if hitted nothing
+                state = GrapplingStates.nothing;
                 // if missed make grapple point 000
                 grapplePoint = Vector3.zero;
                 //stop grapple function
@@ -263,12 +248,18 @@ public class Grapling : MonoBehaviour
             }
         }
 
+        //save grapple point from raycast
+        grapplePoint = hit.point;
+        // set signal to draw the line
+        isDrawLineNeeded = true; 
+        // Y velocity to 0 in grappling start
+        PlayerRB.velocity = Vector3.Scale(PlayerRB.velocity, new Vector3(1f, 0, 1f));
+
         lr.SetPosition(1, grapplePoint);
     }
 
-    #endregion
 
-    #region This method draws the line in time
+    //This method draws the line in time
     private void DrawLine(LineRenderer lr)
     {
         if (!isPredrawFinished) //do predraw
@@ -295,9 +286,8 @@ public class Grapling : MonoBehaviour
             }
         }
     }
-    #endregion
 
-    #region Execute grapple while press once
+    //Execute grapple while press once
     private void ExecuteGrapple()
     {
         pm.activeGrapple = false;
@@ -317,9 +307,8 @@ public class Grapling : MonoBehaviour
             Invoke(nameof(StopGrapple), 1f);
 
     }
-    #endregion Execute grapple while press once
 
-    #region Execute grapple while holding
+    //Execute grapple while holding
     private void ExecuteGrappleWhlieHolding()
     {
         pm.activeGrapple = true;// ++set it while holding
@@ -331,16 +320,15 @@ public class Grapling : MonoBehaviour
         PlayerRB.AddForce(Vector3.up * grapplingOnHoldForce/3,ForceMode.Force);
 
     }
-    #endregion Execute grapple while holding
 
-    #region Stop Grapple
+    //Stop Grapple
     private void StopGrapple()
     {
         pm.activeGrapple = false;
         // stop grappling
         grappling = false;
         //reset enemy grapple
-        isGrappedEnemy = false;
+        state = GrapplingStates.nothing;
         //reset enemygrapple object
         grappedEnemy = null;
         // reset cooldown
@@ -350,5 +338,4 @@ public class Grapling : MonoBehaviour
         // reset point 1 position
         lr.SetPosition(1, lr.GetPosition(0));
     }
-    #endregion 
 }

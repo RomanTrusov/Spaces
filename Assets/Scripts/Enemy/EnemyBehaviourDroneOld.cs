@@ -2,11 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyBehaviourDrone : MonoBehaviour
+public class EnemyBehaviourDroneOld : MonoBehaviour
 {
-    [SerializeField]
-    GameObject avoidIstantDestroy;
-
     [SerializeField]
     private GameObject player;
     [SerializeField]
@@ -15,15 +12,6 @@ public class EnemyBehaviourDrone : MonoBehaviour
     private ParticleSystem dust;
     [SerializeField]
     private ParticleSystem lowHP;
-    [SerializeField]
-    private GameObject lamp;
-
-    [ColorUsage(true, true)]
-    public Color alertLamp;
-    [ColorUsage(true, true)]
-    public Color attacktLamp;
-    [ColorUsage(true, true)]
-    public Color damagedtLamp;
 
     public int enemyHealth;
 
@@ -40,46 +28,34 @@ public class EnemyBehaviourDrone : MonoBehaviour
 
     RaycastHit hit;
 
+    public bool attacked;
+
     [SerializeField]
-    public EnemyStates state;
+    EnemyStates state;
 
     [SerializeField]
     float attackCD = 2f;
     float attackCDTimer;
 
-    [SerializeField]
-    private GameObject wholeDrone;
-    [SerializeField]
-    private GameObject brokenDrone;
-
-    float damagedCD = 1f;
-    float damagedCDTimer;
+    float attackedCD = 1f;
+    float attackedCDTimer;
 
     float decideToAttackCD = 1f;
     float decideToAttackCDTimer = 0;
 
 
-    public enum EnemyStates
+    enum EnemyStates
     {
         idle,
         alert,
         attack,
-        grapped,
+        attacked, // !!legacy
         damaged,
         dead
     }
 
-    private void Awake()
-    {
-        //avoid self destrustioc if broken drone is active by accident
-        if (avoidIstantDestroy.activeSelf) avoidIstantDestroy.SetActive(false);
-    }
-
     void Start()
     {
-
-        
-
         //find the player object
         player = GameObject.Find("Player");
 
@@ -89,21 +65,22 @@ public class EnemyBehaviourDrone : MonoBehaviour
         //reset timers
         decideToAttackCDTimer = decideToAttackCD;
         attackCDTimer = attackCD;
-        damagedCDTimer = damagedCD; // !!change to damaged timer
+        attackedCDTimer = attackedCD; // !!change to damaged timer
     }
 
 
     void FixedUpdate()
     {
         //check for 0 heath
-        /*
         if (enemyHealth <= 0)
         {
             //stop all attacking effects on player
             StopPlayerBeenAttacked();
             // !! change to dead state
-            state = EnemyStates.dead;
-        }*/
+            state = EnemyStates.attacked;
+            // !! put inside dead state update
+            GetComponent<Rigidbody>().mass = 20f;
+        }
 
         //activate smoke particles if 1 HP
         if (enemyHealth == 1)
@@ -111,8 +88,28 @@ public class EnemyBehaviourDrone : MonoBehaviour
             lowHP.gameObject.SetActive(true);
         }
 
-        
+        //little air up force
+        if (state != EnemyStates.idle && state != EnemyStates.attacked) GetComponent<Rigidbody>().AddForce(Vector3.up * 9f, ForceMode.Force);
 
+        //if enemy attacker - cuntdown with attacked state, at the end change state and false attacked
+        if (attacked)
+        {
+            //activate effect
+            if (attackedCDTimer == attackedCD)
+            {
+                ParticleSystem clone = Instantiate(parts, transform.position, transform.rotation, transform);
+                clone.gameObject.SetActive(true);
+
+            }
+            attackedCDTimer -= Time.deltaTime;
+            if (attackedCDTimer < 0)
+            {
+                attacked = false;
+                state = EnemyStates.alert;
+            } else state = EnemyStates.attacked;
+            if (enemyHealth <= 0) Invoke(nameof(DestroyEnemy), 1f);
+        }
+        
         //limit the speed
         if (GetComponent<Rigidbody>().velocity.magnitude > 10f && state == EnemyStates.alert)
         {
@@ -120,40 +117,56 @@ public class EnemyBehaviourDrone : MonoBehaviour
         }
 
         //try to notice player every step
-        if (state != EnemyStates.damaged) TryToNoticePlayer();
+        if (state != EnemyStates.attacked) TryToNoticePlayer();
 
         //if enemy is not alerted - stop invoke
         if (state != EnemyStates.alert) CancelInvoke("DecidingToAttack");
 
-        //=================STATES MACHINE
+
+        // OLD rotate to the player if not idle
+        // NEW rotate to the player if not idle
+        //if (state != EnemyStates.idle && state != EnemyStates.attacked) transform.LookAt(player.transform, Vector3.up);
+        if (state != EnemyStates.idle && state != EnemyStates.attacked)
+        {
+            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(PlayerDirection()), Time.deltaTime * 5);
+        }
+
+
+        //=================STATES BEHAVIOUR
         //if stay still
         if (state == EnemyStates.idle)
         {
-            //stay still with no gravity
+            //stay still
             GetComponent<Rigidbody>().useGravity = false;
             //if noticed player
-        } 
-        else if (state == EnemyStates.alert)
+        } else if (state == EnemyStates.alert)
         {
-            //set lamp to blue in alert state
-            lamp.GetComponent<Renderer>().material.SetColor("_Color", alertLamp);
-            //little air up force
-            GetComponent<Rigidbody>().AddForce(Vector3.up * 9f, ForceMode.Force);
-            //turn on gravity
             GetComponent<Rigidbody>().useGravity = true;
-            //rotate to the player
-            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(PlayerDirection()), Time.deltaTime * 5);
-            //get lightly random distance to player to follow
+            //move around
             float alertMovingDistanceRand = Random.Range(alertMovingDistance-1f, alertMovingDistance+1f);
 
-            //stay at the distance
-            if (Vector3.Distance(transform.position,player.transform.position) < alertMovingDistanceRand)
-                {
-                    GetComponent<Rigidbody>().AddForce(PlayerDirection().normalized * -enemySpeed);
-                } else if (Vector3.Distance(transform.position, player.transform.position) > alertMovingDistanceRand)
-                {
-                    GetComponent<Rigidbody>().AddForce(PlayerDirection().normalized * enemySpeed);
-                } 
+            /*
+            //move sideways
+            float rnd = Random.Range(0,1f);
+            if (rnd < 0.005f)
+            {
+                GetComponent<Rigidbody>().AddForce(Vector3.left * 40f,ForceMode.Impulse);
+            }
+            else if (rnd > 0.995f)
+            {
+                GetComponent<Rigidbody>().AddForce(Vector3.left * -40f, ForceMode.Impulse);
+            }
+            else*/
+
+          //stay at the distance
+          if (Vector3.Distance(transform.position,player.transform.position) < alertMovingDistanceRand)
+            {
+                GetComponent<Rigidbody>().AddForce(PlayerDirection().normalized * -enemySpeed);
+            } else if (Vector3.Distance(transform.position, player.transform.position) > alertMovingDistanceRand)
+            {
+                GetComponent<Rigidbody>().AddForce(PlayerDirection().normalized * enemySpeed);
+            } 
+
 
             //deciding to attack or not every second of alerting
             decideToAttackCDTimer -= Time.deltaTime;
@@ -167,63 +180,22 @@ public class EnemyBehaviourDrone : MonoBehaviour
         } 
         else if (state == EnemyStates.attack)
         {
-            // red light indocation
-            lamp.GetComponent<Renderer>().material.SetColor("_Color", attacktLamp);
             //calculate players'face position
             Vector3 PlayerFace = PlayerDirection() + new Vector3(0,0.5f,0);
-            //little air up force
-            GetComponent<Rigidbody>().AddForce(Vector3.up * 9f, ForceMode.Force);
             //rush on player with more speed
             GetComponent<Rigidbody>().AddForce(PlayerFace.normalized * enemySpeed * 3f);
-            //rotate to the player
-            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(PlayerDirection()), Time.deltaTime * 5);
+
             //if raycasted player - hit him
             if (Physics.Raycast(transform.position, PlayerDirection(), out hit, 2f, playerLayer))
             {
                 AttackPlayer();
             }
         }
-        else if (state == EnemyStates.damaged)
-        {
-            //set lamp to damaged
-            lamp.GetComponent<Renderer>().material.SetColor("_Color", damagedtLamp);
+    }
 
-            //stop the velocity and off gravity
-            GetComponent<Rigidbody>().velocity = Vector3.zero;
-            GetComponent<Rigidbody>().useGravity = false;
-
-
-            //activate particle effect
-            if (damagedCDTimer == damagedCD)
-            {
-                ParticleSystem clone = Instantiate(parts, transform.position, transform.rotation, transform);
-                clone.gameObject.SetActive(true);
-            }
-
-            //reduce timer to set effect once
-            damagedCDTimer -= Time.deltaTime;
-            if (damagedCDTimer < 0)
-            {
-                state = EnemyStates.alert;
-            }
-            else state = EnemyStates.damaged;
-            if (enemyHealth <= 0) state = EnemyStates.dead;
-        }
-        else if (state == EnemyStates.grapped)
-        {
-            //set lamp to damaged
-            lamp.GetComponent<Renderer>().material.SetColor("_Color", damagedtLamp);
-
-            //stop the velocity and off gravity
-            GetComponent<Rigidbody>().velocity = Vector3.zero;
-            GetComponent<Rigidbody>().useGravity = false;
-
-        }
-        else if (state == EnemyStates.dead)
-        {
-            StopPlayerBeenAttacked();
-            DestroyEnemy();
-        }
+    private void LateUpdate()
+    {
+        
     }
 
     private void OnDestroy()
@@ -252,12 +224,14 @@ public class EnemyBehaviourDrone : MonoBehaviour
         float rnd = Random.Range(0, 1f);
         if (rnd >= 0.75f)
         {
-            //stop velocity
+            //stop Y velocity
             GetComponent<Rigidbody>().velocity = Vector3.zero;
             //change state to attack
             state = EnemyStates.attack;
             // back to alert state after two seconds of rushing
             Invoke(nameof(AlertAfterAttack), 2f);
+            // start red light animation
+            GetComponent<Animator>().Play("Base Layer.RedLight",0,0);
         } else
         {
             return;
@@ -270,12 +244,6 @@ public class EnemyBehaviourDrone : MonoBehaviour
         state = EnemyStates.alert;
     }
 
-    public void GetDamage(int damage)
-    {
-        enemyHealth -= damage;
-        state = EnemyBehaviourDrone.EnemyStates.damaged;
-        ResetAttackedTimer();
-    }
 
     private void AttackPlayer()
     {
@@ -285,7 +253,6 @@ public class EnemyBehaviourDrone : MonoBehaviour
         player.GetComponent<PlayerMovement>().attacked = true;
         //cancel this condition later
         Invoke(nameof(StopPlayerBeenAttacked), 0.8f);
-
         //get force direction for the player
         Vector3 flatDirection = new Vector3(PlayerDirection().x, 0f, PlayerDirection().z);
         Vector3 playerDirectionY = new Vector3(0f, PlayerDirection().y + 5f, 0f);
@@ -306,12 +273,11 @@ public class EnemyBehaviourDrone : MonoBehaviour
 
     public void ResetAttackedTimer()
     {//access to other scripts
-        damagedCDTimer = damagedCD;
+        attackedCDTimer = attackedCD;
     }
 
     private void DestroyEnemy()
     {
-        /*
         //make a lot of patricles
         ParticleSystem clone = Instantiate(parts, transform.position, transform.rotation);
         clone.gameObject.SetActive(true);
@@ -320,10 +286,6 @@ public class EnemyBehaviourDrone : MonoBehaviour
 
         //destroy parent after second
         Destroy(transform.parent.gameObject,0.5f);
-        */
-
-        if (wholeDrone.activeSelf) wholeDrone.SetActive(false);
-        if (!brokenDrone.activeSelf) brokenDrone.SetActive(true);
     }
 
 

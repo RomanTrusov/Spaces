@@ -19,7 +19,7 @@ public class MeleAttack : MonoBehaviour
     //delay to track the combo
     public float timeForCombo;
     // cooldown for attacks to avoid button mashing
-    private float attackCD = 0.5f;
+    private float attackCD = 0.3f;
     private float attackCDtimer = 0;
 
     [Header("Input")]
