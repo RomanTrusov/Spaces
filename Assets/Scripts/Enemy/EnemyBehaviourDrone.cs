@@ -252,6 +252,7 @@ public class EnemyBehaviourDrone : MonoBehaviour
         if (rnd >= 0.75f)
         {
             //activate sfx
+            sfxBeforeAttack.pitch = Random.Range(0.5f,1.5f);
             sfxBeforeAttack.Play();
             Invoke(nameof(ActivateAttackState),0.5f);
             
@@ -269,6 +270,7 @@ public class EnemyBehaviourDrone : MonoBehaviour
 
     public void GetDamage(int damage)
     {
+        sfxGetHit.pitch = Random.Range(0.5f, 1.5f);
         sfxGetHit.Play();
         enemyHealth -= damage;
         state = EnemyBehaviourDrone.EnemyStates.damaged;
