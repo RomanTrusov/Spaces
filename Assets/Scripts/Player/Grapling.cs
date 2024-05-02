@@ -208,7 +208,6 @@ public class Grapling : MonoBehaviour
         grappling = true;
         // set the damage scaler while grapple (NOW TURNED OFF)
         gameObject.GetComponent<MeleAttack>().playerDamageGrappleModifier = 1;
-        pm.grappleSpeedModifier = 0.2f;
         yVelocityMoodifier = 1;
 
         //--------GRAPPLE STATES
@@ -229,6 +228,7 @@ public class Grapling : MonoBehaviour
             // if hitted ground
             else if (hit.transform.gameObject.layer == LayerMask.NameToLayer("whatIsGround"))
             {
+                pm.grappleSpeedModifier = 0.2f;
                 state = GrapplingStates.wall;
             }
         } else
@@ -249,6 +249,7 @@ public class Grapling : MonoBehaviour
                 // if hitted ground
                 else if (hit.transform.gameObject.layer == LayerMask.NameToLayer("whatIsGround"))
                 {
+                    pm.grappleSpeedModifier = 0.2f;
                     state = GrapplingStates.wall;
                 }
             }

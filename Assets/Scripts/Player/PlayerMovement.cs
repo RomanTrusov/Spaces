@@ -265,7 +265,7 @@ public class PlayerMovement : MonoBehaviour
         //If player on slope add slope is not negative
         if (OnSlope() && !exitingSlope)
         {
-            rb.AddForce(GetSlopeMoveDirection() * moveSpeed * speedMultiplier, ForceMode.Force);
+            rb.AddForce(GetSlopeMoveDirection() * moveSpeed * grappleSpeedModifier * speedMultiplier, ForceMode.Force);
 
         } 
 

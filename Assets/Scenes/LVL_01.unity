@@ -26341,6 +26341,7 @@ MonoBehaviour:
   meleDirection: 0
   timeForCombo: 1
   playerDamage: 1
+  playerDamageGrappleModifier: 10
   meleKey: 323
 --- !u!114 &931899302
 MonoBehaviour:
@@ -64595,9 +64596,9 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: e34ce2e2745b69b4a89a6a3ff9b8a151, type: 3}
+  m_audioClip: {fileID: 8300000, guid: e6b3a1a5fda46e04cacbf0eb4fd7edb1, type: 3}
   m_PlayOnAwake: 1
-  m_Volume: 0.255
+  m_Volume: 0.205
   m_Pitch: 1
   Loop: 1
   Mute: 0
