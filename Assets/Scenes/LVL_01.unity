@@ -1434,6 +1434,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b00f516a47b7704cb5a3b0319d4d3af, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerMeleAttack: {fileID: 931899301}
   orientation: {fileID: 1662591321}
   forwardPush: 7
   upwardPush: 5
@@ -7731,7 +7732,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh20600
+  m_Name: pb_Mesh20608
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -26216,6 +26217,7 @@ MonoBehaviour:
   walkSpeed: 7.5
   sprintSpeed: 15
   dashSpeed: 20
+  grappleSpeedModifier: 0
   velocity: {x: 0, y: 0, z: 0}
   groundDrag: 8
   groundDragStopper: 16
@@ -26338,6 +26340,7 @@ MonoBehaviour:
   meleState: 0
   meleDirection: 0
   timeForCombo: 1
+  playerDamage: 1
   meleKey: 323
 --- !u!114 &931899302
 MonoBehaviour:

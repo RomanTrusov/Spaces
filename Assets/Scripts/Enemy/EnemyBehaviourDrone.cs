@@ -95,15 +95,12 @@ public class EnemyBehaviourDrone : MonoBehaviour
 
     void FixedUpdate()
     {
-        //check for 0 heath
-        /*
+
         if (enemyHealth <= 0)
         {
-            //stop all attacking effects on player
-            StopPlayerBeenAttacked();
             // !! change to dead state
             state = EnemyStates.dead;
-        }*/
+        }
 
         //activate smoke particles if 1 HP
         if (enemyHealth == 1)
@@ -207,7 +204,7 @@ public class EnemyBehaviourDrone : MonoBehaviour
                 state = EnemyStates.alert;
             }
             else state = EnemyStates.damaged;
-            if (enemyHealth <= 0) state = EnemyStates.dead;
+            //if (enemyHealth <= 0) state = EnemyStates.dead;
         }
         else if (state == EnemyStates.grapped)
         {

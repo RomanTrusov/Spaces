@@ -206,6 +206,8 @@ public class Grapling : MonoBehaviour
 
         //grappling starts
         grappling = true;
+        // set the damage scaler while grapple (NOW TURNED OFF)
+        gameObject.GetComponent<MeleAttack>().playerDamageGrappleModifier = 1;
         pm.grappleSpeedModifier = 0.2f;
         yVelocityMoodifier = 1;
 
@@ -332,8 +334,9 @@ public class Grapling : MonoBehaviour
 
         //get direction to the grapple point
         Vector3 destination = (grapplePoint - transform.position).normalized;
-        //regulate upward force depends on Y of destination // yVelocityMoodifier 0 if grapped enemy
+        //move player to the grapple point
         PlayerRB.AddForce(destination * grapplingOnHoldForce,ForceMode.Force);
+        //regulate upward force depends on Y of destination // yVelocityMoodifier 0 if grapped enemy
         if (destination.y > -0.5f)
         {
             PlayerRB.AddForce(Vector3.up * grapplingOnHoldForce / 3 * yVelocityMoodifier, ForceMode.Force);
@@ -343,7 +346,7 @@ public class Grapling : MonoBehaviour
             PlayerRB.AddForce(Vector3.up * grapplingOnHoldForce / -3 * yVelocityMoodifier, ForceMode.Force);
         }
 
-
+        //if enemy grappled enemy dead - stop grapple
         if (grappedEnemy && grappedEnemy.GetComponent<EnemyBehaviourDrone>().state == EnemyBehaviourDrone.EnemyStates.dead)
         {
             StopGrapple();
@@ -371,7 +374,9 @@ public class Grapling : MonoBehaviour
         //reset control speed
         pm.grappleSpeedModifier = 1f;
         // reset Y velocity while grapple
-        yVelocityMoodifier = 1; 
+        yVelocityMoodifier = 1;
+        // reset the damage scaler while grapple
+        gameObject.GetComponent<MeleAttack>().playerDamageGrappleModifier = 1;
         // reset point 1 position
         lr.SetPosition(1, lr.GetPosition(0));
         

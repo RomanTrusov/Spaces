@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class MeleAttackTrigger : MonoBehaviour
 {
+    public MeleAttack playerMeleAttack;
+
     public Transform orientation;
     public float forwardPush;
     public float upwardPush;
@@ -82,7 +84,7 @@ public class MeleAttackTrigger : MonoBehaviour
 
     private void InitiateAttackOnEnemy(Collider other)
     {
-        other.GetComponent<EnemyBehaviourDrone>().GetDamage(1);
+        other.GetComponent<EnemyBehaviourDrone>().GetDamage(playerMeleAttack.playerDamage * playerMeleAttack.playerDamageGrappleModifier);
         /*other.GetComponent<EnemyBehaviourDrone>().enemyHealth -= 1;
         other.GetComponent<EnemyBehaviourDrone>().state = EnemyBehaviourDrone.EnemyStates.damaged;
         other.GetComponent<EnemyBehaviourDrone>().ResetAttackedTimer();*/
