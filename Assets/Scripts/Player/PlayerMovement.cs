@@ -20,6 +20,7 @@ public class PlayerMovement : MonoBehaviour
     public float walkSpeed;
     public float sprintSpeed;
     public float dashSpeed;
+    public float grappleSpeedModifier; //modifier that reduces speed during the grapple
 
     [SerializeField]
     private Vector3 velocity;
@@ -103,7 +104,10 @@ public class PlayerMovement : MonoBehaviour
         // get rigidbody + free rotation
         rb = GetComponent<Rigidbody>();
         rb.freezeRotation = true;
-    }
+
+        //set the default value
+        grappleSpeedModifier = 1f;
+}
 
     private void Update()
     {
@@ -254,11 +258,6 @@ public class PlayerMovement : MonoBehaviour
     //Move player function
     private void MovePlayer()
     {
-        // need to make small control while grapple
-        //modifier to slow down control while grappling
-        float grappleSpeedModifier = 1f;
-        if (activeGrapple) grappleSpeedModifier = 0.2f;
-
 
         float speedMultiplier = 30f; //10f default
         // calculate movement direction

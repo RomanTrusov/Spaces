@@ -21,6 +21,7 @@ public class Grapling : MonoBehaviour
     public float sphereCastRadius;
     public bool isGrappleOnHold; // is grappling requres holding ab utton
     public float grapplingOnHoldForce = 1f;
+    private int yVelocityMoodifier = 1; // modifier that goes 0 when grapple enemy to not uplift player
 
     //====== vars for drawing grapling line
     private bool isDrawLineNeeded; //check if the line should be drawn
@@ -205,7 +206,10 @@ public class Grapling : MonoBehaviour
 
         //grappling starts
         grappling = true;
+        pm.grappleSpeedModifier = 0.2f;
+        yVelocityMoodifier = 1;
 
+        //--------GRAPPLE STATES
         //throw raycast to get grappling point and state
         RaycastHit hit;
         if (Physics.Raycast(cam.position, cam.forward, out hit, maxGrapplingDistance))
@@ -216,6 +220,9 @@ public class Grapling : MonoBehaviour
                 state = GrapplingStates.enemy;
                 grappedEnemy = hit.transform.gameObject;
                 grappedEnemy.GetComponent<EnemyBehaviourDrone>().state = EnemyBehaviourDrone.EnemyStates.grapped;
+                pm.grappleSpeedModifier = 0; //do not let to move player to get hin to the enemy directly
+                yVelocityMoodifier = 0; // 0 to not uplift player above enemy
+                pm.GetComponent<Rigidbody>().velocity = Vector3.zero; // stop player
             }
             // if hitted ground
             else if (hit.transform.gameObject.layer == LayerMask.NameToLayer("whatIsGround"))
@@ -233,6 +240,9 @@ public class Grapling : MonoBehaviour
                     state = GrapplingStates.enemy;
                     grappedEnemy = hit.transform.gameObject;
                     grappedEnemy.GetComponent<EnemyBehaviourDrone>().state = EnemyBehaviourDrone.EnemyStates.grapped;
+                    pm.grappleSpeedModifier = 0; //do not let to move player to get hin to the enemy directly
+                    yVelocityMoodifier = 0; // 0 to not uplift player above enemy
+                    pm.GetComponent<Rigidbody>().velocity = Vector3.zero; // stop player
                 }
                 // if hitted ground
                 else if (hit.transform.gameObject.layer == LayerMask.NameToLayer("whatIsGround"))
@@ -322,15 +332,15 @@ public class Grapling : MonoBehaviour
 
         //get direction to the grapple point
         Vector3 destination = (grapplePoint - transform.position).normalized;
-        //regulate upward force depends on Y of destination
+        //regulate upward force depends on Y of destination // yVelocityMoodifier 0 if grapped enemy
         PlayerRB.AddForce(destination * grapplingOnHoldForce,ForceMode.Force);
         if (destination.y > -0.5f)
         {
-            PlayerRB.AddForce(Vector3.up * grapplingOnHoldForce / 3, ForceMode.Force);
+            PlayerRB.AddForce(Vector3.up * grapplingOnHoldForce / 3 * yVelocityMoodifier, ForceMode.Force);
         }
         else
         {
-            PlayerRB.AddForce(Vector3.up * grapplingOnHoldForce / -3, ForceMode.Force);
+            PlayerRB.AddForce(Vector3.up * grapplingOnHoldForce / -3 * yVelocityMoodifier, ForceMode.Force);
         }
 
 
@@ -358,6 +368,10 @@ public class Grapling : MonoBehaviour
         lr.enabled = false;
         //reset grapple point
         grapplePoint = Vector3.zero;
+        //reset control speed
+        pm.grappleSpeedModifier = 1f;
+        // reset Y velocity while grapple
+        yVelocityMoodifier = 1; 
         // reset point 1 position
         lr.SetPosition(1, lr.GetPosition(0));
         
