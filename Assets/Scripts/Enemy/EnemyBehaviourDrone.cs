@@ -58,6 +58,8 @@ public class EnemyBehaviourDrone : MonoBehaviour
     float decideToAttackCD = 1f;
     float decideToAttackCDTimer = 0;
 
+    public AudioSource sfxBeforeAttack;
+    public AudioSource sfxGetHit;
 
     public enum EnemyStates
     {
@@ -249,12 +251,10 @@ public class EnemyBehaviourDrone : MonoBehaviour
         float rnd = Random.Range(0, 1f);
         if (rnd >= 0.75f)
         {
-            //stop velocity
-            GetComponent<Rigidbody>().velocity = Vector3.zero;
-            //change state to attack
-            state = EnemyStates.attack;
-            // back to alert state after two seconds of rushing
-            Invoke(nameof(AlertAfterAttack), 2f);
+            //activate sfx
+            sfxBeforeAttack.Play();
+            Invoke(nameof(ActivateAttackState),0.5f);
+            
         } else
         {
             return;
@@ -269,9 +269,20 @@ public class EnemyBehaviourDrone : MonoBehaviour
 
     public void GetDamage(int damage)
     {
+        sfxGetHit.Play();
         enemyHealth -= damage;
         state = EnemyBehaviourDrone.EnemyStates.damaged;
         ResetAttackedTimer();
+    }
+
+    private void ActivateAttackState()
+    {
+        //stop velocity
+        GetComponent<Rigidbody>().velocity = Vector3.zero;
+        //change state to attack
+        state = EnemyStates.attack;
+        // back to alert state after two seconds of rushing
+        Invoke(nameof(AlertAfterAttack), 2f);
     }
 
     private void AttackPlayer()

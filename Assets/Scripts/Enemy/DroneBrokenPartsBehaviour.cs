@@ -10,7 +10,7 @@ public class DroneBrokenPartsBehaviour : MonoBehaviour
     void Start()
     {
         //invoke destroy after delay
-        Invoke(nameof(DestroyParent),1.5f);
+        Invoke(nameof(DestroyParent),3f);
         // get random direction to throw parts
         randomDirection = new Vector3(Random.Range(-2f,2f), Random.Range(-2f, 2f), Random.Range(-2f, 2f));
     }
