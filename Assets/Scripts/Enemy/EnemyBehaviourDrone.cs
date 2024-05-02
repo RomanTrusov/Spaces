@@ -14,6 +14,8 @@ public class EnemyBehaviourDrone : MonoBehaviour
     [SerializeField]
     private ParticleSystem damageShock;
     [SerializeField]
+    private ParticleSystem grapplingParticles;
+    [SerializeField]
     private ParticleSystem dust;
     [SerializeField]
     private ParticleSystem lowHP;
@@ -126,6 +128,8 @@ public class EnemyBehaviourDrone : MonoBehaviour
         //if enemy is not alerted - stop invoke
         if (state != EnemyStates.alert) CancelInvoke("DecidingToAttack");
 
+        if (state != EnemyStates.grapped) grapplingParticles.gameObject.SetActive(false);
+
         //=================STATES MACHINE
         //if stay still
         if (state == EnemyStates.idle)
@@ -216,6 +220,8 @@ public class EnemyBehaviourDrone : MonoBehaviour
         {
             //set lamp to damaged
             lamp.GetComponent<Renderer>().material.SetColor("_Color", damagedtLamp);
+
+            if (!grapplingParticles.gameObject.activeSelf) grapplingParticles.gameObject.SetActive(true);
 
             //stop the velocity and off gravity
             GetComponent<Rigidbody>().velocity = Vector3.zero;
