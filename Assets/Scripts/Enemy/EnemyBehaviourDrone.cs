@@ -12,6 +12,8 @@ public class EnemyBehaviourDrone : MonoBehaviour
     [SerializeField]
     private ParticleSystem parts;
     [SerializeField]
+    private ParticleSystem damageShock;
+    [SerializeField]
     private ParticleSystem dust;
     [SerializeField]
     private ParticleSystem lowHP;
@@ -197,6 +199,8 @@ public class EnemyBehaviourDrone : MonoBehaviour
             {
                 ParticleSystem clone = Instantiate(parts, transform.position, transform.rotation, transform);
                 clone.gameObject.SetActive(true);
+                ParticleSystem clone2 = Instantiate(damageShock, transform.position, transform.rotation, transform);
+                clone2.gameObject.SetActive(true);
             }
 
             //reduce timer to set effect once
