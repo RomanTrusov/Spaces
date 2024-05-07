@@ -7,6 +7,7 @@ public class PlayerMovement : MonoBehaviour
 {
 
     public int playerHP;
+    public int playerHPMax;
     public bool isNeedToHeal;
     private bool isInvincible;
     [SerializeField]
@@ -468,10 +469,14 @@ public class PlayerMovement : MonoBehaviour
     {
         //plater no more need to heal
         isNeedToHeal = false;
-        //restore hp
-        playerHP += 1;
-        // play heal animation
-        healAnimator.Play("Base Layer.Heal", 0, 0);
+        //restore hp if it's not maxed
+        if (playerHP < playerHPMax)
+        {
+            playerHP += 1;
+            // play heal animation
+            healAnimator.Play("Base Layer.Heal", 0, 0);
+        }
+        
     }
 
 }

@@ -335,6 +335,8 @@ public class Grapling : MonoBehaviour
         Vector3 destination = (grapplePoint - transform.position).normalized;
         //move player to the grapple point
         PlayerRB.AddForce(destination * grapplingOnHoldForce,ForceMode.Force);
+        //adding more force to grappled enemy
+        if (state == GrapplingStates.enemy) PlayerRB.AddForce((destination * grapplingOnHoldForce) / 3, ForceMode.Force);
         //regulate upward force depends on Y of destination // yVelocityMoodifier 0 if grapped enemy
         if (destination.y > -0.5f)
         {

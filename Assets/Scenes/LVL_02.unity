@@ -1196,7 +1196,6 @@ GameObject:
   m_Component:
   - component: {fileID: 82547707}
   - component: {fileID: 82547706}
-  - component: {fileID: 82547708}
   m_Layer: 0
   m_Name: CameraHolder
   m_TagString: Untagged
@@ -1233,19 +1232,6 @@ Transform:
   m_Father: {fileID: 48649899}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: -176.445, z: 0}
---- !u!114 &82547708
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 82547705}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 44be8d1ba00043c43b655b6827440ef3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _tiltAmount: 5
 --- !u!1001 &83493214
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -12847,6 +12833,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerHP: 4
+  playerHPMax: 4
   isNeedToHeal: 0
   healAnimator: {fileID: 1780029914}
   damageAnimator: {fileID: 1275277824}
@@ -13760,7 +13747,7 @@ MonoBehaviour:
   player: {fileID: 931899294}
   orientation: {fileID: 1662591321}
   target: 120
-  yTiltGoal: 5
+  yTiltGoal: 3
   yTiltSpeed: 10
 --- !u!1 &964619383
 GameObject:

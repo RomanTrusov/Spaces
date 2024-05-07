@@ -61,7 +61,7 @@ public class EnemyBehaviourDrone : MonoBehaviour
     float damagedCD = 1f;
     float damagedCDTimer;
 
-    float decideToAttackCD = 1f;
+    float decideToAttackCD = 0.7f;
     float decideToAttackCDTimer = 0;
 
     public AudioSource sfxBeforeAttack;
