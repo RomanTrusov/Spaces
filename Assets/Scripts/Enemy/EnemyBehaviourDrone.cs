@@ -56,6 +56,8 @@ public class EnemyBehaviourDrone : MonoBehaviour
     [SerializeField]
     private GameObject brokenDrone;
 
+
+
     float damagedCD = 1f;
     float damagedCDTimer;
 
@@ -295,6 +297,11 @@ public class EnemyBehaviourDrone : MonoBehaviour
         state = EnemyStates.attack;
         // back to alert state after two seconds of rushing
         Invoke(nameof(AlertAfterAttack), 2f);
+
+        //create a UI arrow if player is near
+        if (Vector3.Distance(transform.position,player.transform.position) < 20)
+            player.GetComponent<AttackCircleUI>().CreateUIArrow(transform);
+
     }
 
     private void AttackPlayer()
