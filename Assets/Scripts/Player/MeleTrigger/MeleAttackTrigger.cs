@@ -84,7 +84,7 @@ public class MeleAttackTrigger : MonoBehaviour
 
     private void InitiateAttackOnEnemy(Collider other)
     {
-        other.GetComponent<EnemyBehaviourDrone>().GetDamage(playerMeleAttack.playerDamage * playerMeleAttack.playerDamageGrappleModifier);
+        other.GetComponent<EnemyBehaviourDrone>().GetDamage(playerMeleAttack.playerDamage);
         /*other.GetComponent<EnemyBehaviourDrone>().enemyHealth -= 1;
         other.GetComponent<EnemyBehaviourDrone>().state = EnemyBehaviourDrone.EnemyStates.damaged;
         other.GetComponent<EnemyBehaviourDrone>().ResetAttackedTimer();*/

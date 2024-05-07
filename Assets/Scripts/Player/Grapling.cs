@@ -206,8 +206,6 @@ public class Grapling : MonoBehaviour
 
         //grappling starts
         grappling = true;
-        // set the damage scaler while grapple (NOW TURNED OFF)
-        gameObject.GetComponent<MeleAttack>().playerDamageGrappleModifier = 1;
         yVelocityMoodifier = 1;
 
         //--------GRAPPLE STATES
@@ -376,8 +374,6 @@ public class Grapling : MonoBehaviour
         pm.grappleSpeedModifier = 1f;
         // reset Y velocity while grapple
         yVelocityMoodifier = 1;
-        // reset the damage scaler while grapple
-        gameObject.GetComponent<MeleAttack>().playerDamageGrappleModifier = 1;
         // reset point 1 position
         lr.SetPosition(1, lr.GetPosition(0));
         

@@ -22,7 +22,6 @@ public class MeleAttack : MonoBehaviour
     private float attackCD = 0.3f;
     private float attackCDtimer = 0;
     public int playerDamage = 1;
-    public int playerDamageGrappleModifier = 1; //10 when turn on
 
     [Header("Input")]
     public KeyCode meleKey = KeyCode.Mouse0;

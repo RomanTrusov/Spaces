@@ -1196,6 +1196,7 @@ GameObject:
   m_Component:
   - component: {fileID: 82547707}
   - component: {fileID: 82547706}
+  - component: {fileID: 82547708}
   m_Layer: 0
   m_Name: CameraHolder
   m_TagString: Untagged
@@ -1216,6 +1217,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cameraPosition: {fileID: 63797666}
+  _tiltAmount: 5
 --- !u!4 &82547707
 Transform:
   m_ObjectHideFlags: 0
@@ -1231,6 +1233,19 @@ Transform:
   m_Father: {fileID: 48649899}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: -176.445, z: 0}
+--- !u!114 &82547708
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 82547705}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 44be8d1ba00043c43b655b6827440ef3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _tiltAmount: 5
 --- !u!1001 &83493214
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -12775,6 +12790,7 @@ GameObject:
   - component: {fileID: 931899302}
   - component: {fileID: 931899303}
   - component: {fileID: 931899304}
+  - component: {fileID: 931899305}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -12806,7 +12822,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 931899294}
   m_LocalRotation: {x: -0, y: 0.7253028, z: -0, w: 0.68842995}
-  m_LocalPosition: {x: -1.98, y: -1.04, z: -3.51}
+  m_LocalPosition: {x: -3.83, y: 1.21, z: -4.52}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1557405273}
@@ -12961,7 +12977,6 @@ MonoBehaviour:
   meleDirection: 0
   timeForCombo: 1
   playerDamage: 1
-  playerDamageGrappleModifier: 10
   meleKey: 323
 --- !u!114 &931899302
 MonoBehaviour:
@@ -13005,6 +13020,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   text: {fileID: 782019894}
   pm: {fileID: 931899297}
+--- !u!114 &931899305
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 931899294}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d75c42cee8267d4c9687e755dc92356, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tiltScale: 2
+  tiltSpeed: 5
+  cameraTransform: {fileID: 82547707}
 --- !u!4 &932679530 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1689006188770751979, guid: aeb9eb6714be6d64590c2d2fb7421a02, type: 3}
@@ -13487,10 +13517,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Drone
       objectReference: {fileID: 0}
-    - target: {fileID: 100108, guid: 8c00db5be83e04b4c88b073e10fba9b9, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 400108, guid: 8c00db5be83e04b4c88b073e10fba9b9, type: 3}
       propertyPath: m_RootOrder
       value: 1
@@ -13729,10 +13755,10 @@ MonoBehaviour:
   sensX: 300
   sensY: 300
   player: {fileID: 931899294}
-  playerVelocity: 0
-  swayInWalk: 0
   orientation: {fileID: 1662591321}
   target: 120
+  yTiltGoal: 5
+  yTiltSpeed: 10
 --- !u!1 &964619383
 GameObject:
   m_ObjectHideFlags: 0
