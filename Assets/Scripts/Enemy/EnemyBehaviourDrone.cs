@@ -146,6 +146,8 @@ public class EnemyBehaviourDrone : MonoBehaviour
             lamp.GetComponent<Renderer>().material.SetColor("_Color", alertLamp);
             //little air up force
             GetComponent<Rigidbody>().AddForce(Vector3.up * 10f, ForceMode.Force);
+            //lift drone if its below player
+            if (player.transform.position.y > transform.position.y) GetComponent<Rigidbody>().AddForce(Vector3.up * 10f, ForceMode.Force);
             //turn on gravity
             GetComponent<Rigidbody>().useGravity = true;
             //rotate to the player
