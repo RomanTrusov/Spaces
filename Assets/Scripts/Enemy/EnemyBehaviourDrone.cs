@@ -58,7 +58,7 @@ public class EnemyBehaviourDrone : MonoBehaviour
 
 
 
-    float damagedCD = 1f;
+    float damagedCD = 0.5f;
     float damagedCDTimer;
 
     float decideToAttackCD = 0.7f;
@@ -145,7 +145,7 @@ public class EnemyBehaviourDrone : MonoBehaviour
             //set lamp to blue in alert state
             lamp.GetComponent<Renderer>().material.SetColor("_Color", alertLamp);
             //little air up force
-            GetComponent<Rigidbody>().AddForce(Vector3.up * 9f, ForceMode.Force);
+            GetComponent<Rigidbody>().AddForce(Vector3.up * 10f, ForceMode.Force);
             //turn on gravity
             GetComponent<Rigidbody>().useGravity = true;
             //rotate to the player
@@ -179,7 +179,7 @@ public class EnemyBehaviourDrone : MonoBehaviour
             //calculate players'face position
             Vector3 PlayerFace = PlayerDirection() + new Vector3(0,0.5f,0);
             //little air up force
-            GetComponent<Rigidbody>().AddForce(Vector3.up * 9f, ForceMode.Force);
+            GetComponent<Rigidbody>().AddForce(Vector3.up * 10f, ForceMode.Force);
             //rush on player with more speed
             GetComponent<Rigidbody>().AddForce(PlayerFace.normalized * enemySpeed * 3f);
             //rotate to the player
@@ -195,9 +195,14 @@ public class EnemyBehaviourDrone : MonoBehaviour
             //set lamp to damaged
             lamp.GetComponent<Renderer>().material.SetColor("_Color", damagedtLamp);
 
-            //stop the velocity and off gravity
-            GetComponent<Rigidbody>().velocity = Vector3.zero;
-            GetComponent<Rigidbody>().useGravity = false;
+            //stop the velocity and off gravity OLD
+            //GetComponent<Rigidbody>().useGravity = false;
+
+            //add some jitter after take damage
+            float jitter = Random.Range(-0.1f, 0.1f);
+            transform.position = transform.position + new Vector3(jitter, jitter, jitter);
+
+
 
 
             //activate particle effect
@@ -216,7 +221,6 @@ public class EnemyBehaviourDrone : MonoBehaviour
                 state = EnemyStates.alert;
             }
             else state = EnemyStates.damaged;
-            //if (enemyHealth <= 0) state = EnemyStates.dead;
         }
         else if (state == EnemyStates.grapped)
         {
@@ -282,9 +286,12 @@ public class EnemyBehaviourDrone : MonoBehaviour
 
     public void GetDamage(int damage)
     {
+        //play danage sound
         sfxGetHit.pitch = Random.Range(0.5f, 1.5f);
         sfxGetHit.Play();
+        // reduce health
         enemyHealth -= damage;
+        //set state damaged
         state = EnemyBehaviourDrone.EnemyStates.damaged;
         ResetAttackedTimer();
     }
@@ -338,16 +345,6 @@ public class EnemyBehaviourDrone : MonoBehaviour
 
     private void DestroyEnemy()
     {
-        /*
-        //make a lot of patricles
-        ParticleSystem clone = Instantiate(parts, transform.position, transform.rotation);
-        clone.gameObject.SetActive(true);
-        //scale down enemy
-        transform.localScale = Vector3.Scale(transform.localScale, new Vector3(0.85f, 0.85f, 0.85f));
-
-        //destroy parent after second
-        Destroy(transform.parent.gameObject,0.5f);
-        */
 
         if (wholeDrone.activeSelf) wholeDrone.SetActive(false);
         if (!brokenDrone.activeSelf) brokenDrone.SetActive(true);

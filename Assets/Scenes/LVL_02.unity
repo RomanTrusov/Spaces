@@ -997,8 +997,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerMeleAttack: {fileID: 931899301}
   orientation: {fileID: 1662591321}
-  forwardPush: 7
-  upwardPush: 5
+  forwardPush: 5
+  upwardPush: 1
   meleAttackModifier: 2
   punchEffect: {fileID: 739664573680825631, guid: 963e75b2f6b2ce047bc310acb32d4f4d, type: 3}
   meleState: 0
@@ -3036,7 +3036,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh20608
+  m_Name: pb_Mesh20628
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2

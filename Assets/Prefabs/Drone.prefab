@@ -53624,7 +53624,7 @@ MonoBehaviour:
   enemyHealth: 3
   noticeDistance: 20
   alertMovingDistance: 7
-  enemySpeed: 10
+  enemySpeed: 15
   pushForce: 10
   playerLayer:
     serializedVersion: 2
@@ -53633,7 +53633,6 @@ MonoBehaviour:
   attackCD: 2
   wholeDrone: {fileID: 1957090031}
   brokenDrone: {fileID: 1951105808843999854}
-  myAttackIndicator: {fileID: 0}
   sfxBeforeAttack: {fileID: 112281268842791539}
   sfxGetHit: {fileID: 4503540274527396303}
 --- !u!114 &1434485792
