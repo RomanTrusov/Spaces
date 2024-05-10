@@ -27,6 +27,8 @@ public class EnemyBehaviourDrone : MonoBehaviour
     [ColorUsage(true, true)]
     public Color attacktLamp;
     [ColorUsage(true, true)]
+    public Color preAttacktLamp;
+    [ColorUsage(true, true)]
     public Color damagedtLamp;
 
     public int enemyHealth;
@@ -71,6 +73,7 @@ public class EnemyBehaviourDrone : MonoBehaviour
     {
         idle,
         alert,
+        preattack,
         attack,
         grapped,
         damaged,
@@ -153,9 +156,9 @@ public class EnemyBehaviourDrone : MonoBehaviour
             //rotate to the player
             transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(PlayerDirection()), Time.deltaTime * 5);
             //get lightly random distance to player to follow
-            float alertMovingDistanceRand = Random.Range(alertMovingDistance-1f, alertMovingDistance+1f);
+            float alertMovingDistanceRand = Random.Range(alertMovingDistance-2f, alertMovingDistance+2f);
 
-            //stay at the distance
+            //stay at the distance from player
             if (Vector3.Distance(transform.position,player.transform.position) < alertMovingDistanceRand)
                 {
                     GetComponent<Rigidbody>().AddForce(PlayerDirection().normalized * -enemySpeed);
@@ -172,8 +175,15 @@ public class EnemyBehaviourDrone : MonoBehaviour
                 DecidingToAttack();
             }
 
-        //if decided to attack
-        } 
+        //if decided to attack - wiggle
+        }
+        else if (state == EnemyStates.preattack)
+        {
+            //rotate to the player
+            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(PlayerDirection()), Time.deltaTime * 5);
+
+        }
+        //attack
         else if (state == EnemyStates.attack)
         {
             // red light indocation
@@ -272,7 +282,7 @@ public class EnemyBehaviourDrone : MonoBehaviour
             //activate sfx
             sfxBeforeAttack.pitch = Random.Range(0.5f,1.5f);
             sfxBeforeAttack.Play();
-            Invoke(nameof(ActivateAttackState),0.5f);
+            Invoke(nameof(ActivatePreAttackState),0.5f);
             
         } else
         {
@@ -284,6 +294,17 @@ public class EnemyBehaviourDrone : MonoBehaviour
     {
         //reset the alert state
         state = EnemyStates.alert;
+    }
+    
+    private void AttackAfterPreAttack()
+    {
+        
+        // back to alert state after two seconds of rushing
+        Invoke(nameof(AlertAfterAttack), 2f);
+        //turn on gravity
+        GetComponent<Rigidbody>().useGravity = true;
+        //reset the alert state
+        state = EnemyStates.attack;
     }
 
     public void GetDamage(int damage)
@@ -298,18 +319,29 @@ public class EnemyBehaviourDrone : MonoBehaviour
         ResetAttackedTimer();
     }
 
-    private void ActivateAttackState()
+    private void ActivatePreAttackState()
     {
         //stop velocity
         GetComponent<Rigidbody>().velocity = Vector3.zero;
-        //change state to attack
-        state = EnemyStates.attack;
-        // back to alert state after two seconds of rushing
-        Invoke(nameof(AlertAfterAttack), 2f);
+
+        // orange light indocation
+        lamp.GetComponent<Renderer>().material.SetColor("_Color", preAttacktLamp);
+
+        //gravity off
+        GetComponent<Rigidbody>().useGravity = false;
+
+        //wiggle drone
+        GetComponent<Animator>().Play("Base Layer.Wiggle", 0, 0);
+        Invoke(nameof(AttackAfterPreAttack), 0.8f);
 
         //create a UI arrow if player is near
-        if (Vector3.Distance(transform.position,player.transform.position) < 20)
+        if (Vector3.Distance(transform.position, player.transform.position) < 20)
             player.GetComponent<AttackCircleUI>().CreateUIArrow(transform);
+
+        //change state to attack
+        state = EnemyStates.preattack;
+
+        
 
     }
 
