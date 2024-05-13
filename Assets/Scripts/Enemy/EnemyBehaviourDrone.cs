@@ -144,10 +144,10 @@ public class EnemyBehaviourDrone : MonoBehaviour
             //if the velocity is high enough - decrease it
             if (GetComponent<Rigidbody>().velocity.magnitude > 0)
             {
-                GetComponent<Rigidbody>().velocity = Vector3.Lerp(GetComponent<Rigidbody>().velocity,Vector3.zero,Time.deltaTime * 2f);
+                GetComponent<Rigidbody>().velocity = Vector3.Lerp(GetComponent<Rigidbody>().velocity, Vector3.zero, Time.deltaTime * 2f);
             }
             //if noticed player
-        } 
+        }
         else if (state == EnemyStates.alert)
         {
             //set lamp to blue in alert state
@@ -161,16 +161,17 @@ public class EnemyBehaviourDrone : MonoBehaviour
             //rotate to the player
             transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(PlayerDirection()), Time.deltaTime * 5);
             //get lightly random distance to player to follow
-            float alertMovingDistanceRand = Random.Range(alertMovingDistance-2f, alertMovingDistance+2f);
+            float alertMovingDistanceRand = Random.Range(alertMovingDistance - 2f, alertMovingDistance + 2f);
 
             //stay at the distance from player
-            if (Vector3.Distance(transform.position,player.transform.position) < alertMovingDistanceRand)
-                {
-                    GetComponent<Rigidbody>().AddForce(PlayerDirection().normalized * -enemySpeed);
-                } else if (Vector3.Distance(transform.position, player.transform.position) > alertMovingDistanceRand)
-                {
-                    GetComponent<Rigidbody>().AddForce(PlayerDirection().normalized * enemySpeed);
-                } 
+            if (Vector3.Distance(transform.position, player.transform.position) < alertMovingDistanceRand)
+            {
+                GetComponent<Rigidbody>().AddForce(PlayerDirection().normalized * -enemySpeed);
+            }
+            else if (Vector3.Distance(transform.position, player.transform.position) > alertMovingDistanceRand)
+            {
+                GetComponent<Rigidbody>().AddForce(PlayerDirection().normalized * enemySpeed);
+            }
 
             //deciding to attack or not every second of alerting
             decideToAttackCDTimer -= Time.deltaTime;
@@ -183,26 +184,24 @@ public class EnemyBehaviourDrone : MonoBehaviour
             //check the distance to player to leave or not it
             if (playerFarawayCD < 0)
             {
-                Debug.Log("Tried to leave!");
                 LeavePlayer();
             }
             else playerFarawayCD -= Time.deltaTime;
 
-        //if decided to attack - wiggle
+            //if decided to attack - wiggle
         }
         else if (state == EnemyStates.preattack)
         {
             //rotate to the player
             transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(PlayerDirection()), Time.deltaTime * 5);
 
-        }
-        //attack
+        } 
         else if (state == EnemyStates.attack)
         {
             // red light indocation
             lamp.GetComponent<Renderer>().material.SetColor("_Color", attacktLamp);
             //calculate players'face position
-            Vector3 PlayerFace = PlayerDirection() + new Vector3(0,0.5f,0);
+            Vector3 PlayerFace = PlayerDirection() + new Vector3(0, 0.5f, 0);
             //little air up force
             GetComponent<Rigidbody>().AddForce(Vector3.up * 10f, ForceMode.Force);
             //rush on player with more speed
@@ -315,7 +314,6 @@ public class EnemyBehaviourDrone : MonoBehaviour
         if (!Physics.Raycast(transform.position, PlayerDirection(), out hit, noticeDistance * 1.5f, playerLayer))
         {
             state = EnemyStates.idle;
-            Debug.Log("FAR AWAY!");
         }
         //reset timer in any case
         playerFarawayCD = 1f;

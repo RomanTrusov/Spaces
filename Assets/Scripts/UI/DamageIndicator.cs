@@ -18,6 +18,12 @@ public class DamageIndicator : MonoBehaviour
     public float fadeStartTime, fadeTime;
     float maxFadeTime;
 
+    public Color alertColor; //alert color
+    public Color attackColor; //attack color after 0.8f time
+    private float colorChangeCD = 0.8f;
+
+    Transform childImage;
+
     //enemyObject
     public GameObject enemy;
 
@@ -26,6 +32,10 @@ public class DamageIndicator : MonoBehaviour
     {
         // reset timer var
         maxFadeTime = fadeTime;
+        //get child image
+        childImage = this.gameObject.transform.GetChild(0);
+        //set alert color of it
+        childImage.gameObject.GetComponent<Image>().color = alertColor;
     }
 
     // Update is called once per frame
@@ -55,5 +65,9 @@ public class DamageIndicator : MonoBehaviour
         float angle = (Vector3.SignedAngle(direction, orientation.forward, Vector3.up));
         // set angle for the pivot
         damageImagePivot.transform.localEulerAngles = new Vector3(0,0, angle);
+
+        //change color by timer
+        if (colorChangeCD < 0) childImage.gameObject.GetComponent<Image>().color = attackColor;
+        else colorChangeCD -= Time.deltaTime;
     }
 }
