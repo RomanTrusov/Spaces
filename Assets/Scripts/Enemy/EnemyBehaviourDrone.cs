@@ -62,6 +62,7 @@ public class EnemyBehaviourDrone : MonoBehaviour
 
     float damagedCD = 0.5f;
     float damagedCDTimer;
+    float playerFarawayCD = 1f;
 
     float decideToAttackCD = 0.7f;
     float decideToAttackCDTimer = 0;
@@ -127,9 +128,6 @@ public class EnemyBehaviourDrone : MonoBehaviour
             GetComponent<Rigidbody>().velocity = GetComponent<Rigidbody>().velocity.normalized * 10f;
         }
 
-        //try to notice player every step
-        if (state != EnemyStates.damaged) TryToNoticePlayer();
-
         //if enemy is not alerted - stop invoke
         if (state != EnemyStates.alert) CancelInvoke("DecidingToAttack");
 
@@ -141,6 +139,13 @@ public class EnemyBehaviourDrone : MonoBehaviour
         {
             //stay still with no gravity
             GetComponent<Rigidbody>().useGravity = false;
+            //tyr to nitice player
+            TryToNoticePlayer();
+            //if the velocity is high enough - decrease it
+            if (GetComponent<Rigidbody>().velocity.magnitude > 0)
+            {
+                GetComponent<Rigidbody>().velocity = Vector3.Lerp(GetComponent<Rigidbody>().velocity,Vector3.zero,Time.deltaTime * 2f);
+            }
             //if noticed player
         } 
         else if (state == EnemyStates.alert)
@@ -174,6 +179,14 @@ public class EnemyBehaviourDrone : MonoBehaviour
                 decideToAttackCDTimer = decideToAttackCD; //reset timer
                 DecidingToAttack();
             }
+
+            //check the distance to player to leave or not it
+            if (playerFarawayCD < 0)
+            {
+                Debug.Log("Tried to leave!");
+                LeavePlayer();
+            }
+            else playerFarawayCD -= Time.deltaTime;
 
         //if decided to attack - wiggle
         }
@@ -261,7 +274,7 @@ public class EnemyBehaviourDrone : MonoBehaviour
     private void TryToNoticePlayer()
     {
         //if idle and player close enemy is alerted
-        if (state == EnemyStates.idle && Physics.Raycast(transform.position,PlayerDirection(), out hit, noticeDistance, playerLayer))
+        if (Physics.Raycast(transform.position,PlayerDirection(), out hit, noticeDistance, playerLayer))
         {
             state = EnemyStates.alert;
         } 
@@ -296,6 +309,18 @@ public class EnemyBehaviourDrone : MonoBehaviour
         state = EnemyStates.alert;
     }
     
+    private void LeavePlayer()
+    {
+        //set the idle state if player is out of view
+        if (!Physics.Raycast(transform.position, PlayerDirection(), out hit, noticeDistance * 1.5f, playerLayer))
+        {
+            state = EnemyStates.idle;
+            Debug.Log("FAR AWAY!");
+        }
+        //reset timer in any case
+        playerFarawayCD = 1f;
+    }
+
     private void AttackAfterPreAttack()
     {
         
@@ -384,5 +409,6 @@ public class EnemyBehaviourDrone : MonoBehaviour
         if (!brokenDrone.activeSelf) brokenDrone.SetActive(true);
     }
 
+    
 
 }
