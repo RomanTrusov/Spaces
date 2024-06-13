@@ -44,7 +44,7 @@ public class PlayerMovement : MonoBehaviour
     public bool readyForDoubleJump;
     public float doubleJumpForce;
 
-    //jump, sprint button
+    //jump, sprint, reset button
     [Header("Keybinds")]
     public KeyCode jumpKey = KeyCode.Space;
     public KeyCode sprintKey = KeyCode.LeftShift;
@@ -121,19 +121,19 @@ public class PlayerMovement : MonoBehaviour
             deadSign.SetActive(true);
         }
 
+        //was used for debugging, afraid to delete
         velocity = GetComponent<Rigidbody>().velocity;
 
+        //check if player on slope or not
         onSlope = OnSlope();
         //ground check with raycast down to the ground
         if (readyToJump && grounded) 
-            //old
-            //grounded = Physics.Raycast(transform.position + new Vector3(0.25f,0f,0f), Vector3.down, playerHeight * 0.5f + 0.2f, whatIsGround);
             grounded = Physics.Raycast(transform.position, Vector3.down, playerHeight + 0.15f, whatIsGround);
         else if (readyToJump && !grounded)
         {
-            //sway the weapon from LandSway script
+            //sway the weapon from Sway script
             WeaponSway activateSway = GameObject.FindObjectOfType(typeof(WeaponSway)) as WeaponSway;
-            activateSway.flySway();
+            activateSway.FlySway();
 
             //old
             //grounded = Physics.Raycast(transform.position + new Vector3(0.5f, 0f, 0f), Vector3.down, playerHeight * 0.5f + 0.2f, whatIsGround);

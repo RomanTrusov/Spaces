@@ -8,7 +8,7 @@ public class WeaponSway : MonoBehaviour
 
     public float intensity; // speed of rotating
     public float smooth; // speed of resetting rotation
-    public float jumpSwayForce;
+    public float jumpSwayForce; //force of sway while jumping
     public PlayerMovement player;
 
     private Quaternion origin_rotation;
@@ -16,11 +16,13 @@ public class WeaponSway : MonoBehaviour
     //=======================
     void Start()
     {
-        origin_rotation = Quaternion.AngleAxis(0,Vector3.zero); // hard coding the origin rotation
+        origin_rotation = Quaternion.AngleAxis(0,Vector3.zero); // hard coding the origin rotation of the weapon
 
+        //default settings
+        /*
         intensity = 4;
         smooth = 3;
-        jumpSwayForce = 20;
+        jumpSwayForce = 20;*/
 
     }
 
@@ -30,7 +32,7 @@ public class WeaponSway : MonoBehaviour
         // sway from camera movement
         UpdateSway();
 
-        // walking sway
+        // sway while walking
         if (player.grounded) WalkingSway();
 
         //jumping sway
@@ -104,7 +106,7 @@ public class WeaponSway : MonoBehaviour
 
 
     //=======================
-    public void flySway()
+    public void FlySway()
     {
         //calculate target rotation
         Quaternion t_y_adj = Quaternion.AngleAxis(-intensity* 0.4f * jumpSwayForce, Vector3.right);
