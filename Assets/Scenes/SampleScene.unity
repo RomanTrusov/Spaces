@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.31314224, g: 0.29382282, b: 0.51416165, a: 1}
+  m_IndirectSpecularColor: {r: 0.34713453, g: 0.048330143, b: 0.29485106, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -97,7 +97,7 @@ LightmapSettings:
     m_ExportTrainingData: 0
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
-  m_LightingDataAsset: {fileID: 0}
+  m_LightingDataAsset: {fileID: 112000000, guid: 6d0eee9fe08a9474fb8930356e5cb1d1, type: 2}
   m_LightingSettings: {fileID: 312229229}
 --- !u!196 &4
 NavMeshSettings:
@@ -853,10 +853,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b00f516a47b7704cb5a3b0319d4d3af, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerMeleAttack: {fileID: 0}
   orientation: {fileID: 1662591321}
   forwardPush: 5
   upwardPush: 3
   meleAttackModifier: 5
+  punchEffect: {fileID: 0}
   meleState: 0
   meleDirection: 0
 --- !u!1 &63797665
@@ -1232,6 +1234,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cameraPosition: {fileID: 63797666}
+  _tiltAmount: 5
 --- !u!4 &82547707
 Transform:
   m_ObjectHideFlags: 0
@@ -16006,9 +16009,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3700c58258d566944987e9d71afd3fe2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerHP: 0
+  playerHPMax: 0
+  isNeedToHeal: 0
+  healAnimator: {fileID: 0}
+  damageAnimator: {fileID: 0}
   walkSpeed: 7.5
   sprintSpeed: 15
   dashSpeed: 20
+  grappleSpeedModifier: 0
   velocity: {x: 0, y: 0, z: 0}
   groundDrag: 8
   groundDragStopper: 16
@@ -16021,7 +16030,7 @@ MonoBehaviour:
   doubleJumpForce: 1.4
   jumpKey: 32
   sprintKey: 0
-  reserKey: 114
+  resetKey: 114
   playerHeight: 2
   whatIsGround:
     serializedVersion: 2
@@ -16029,6 +16038,7 @@ MonoBehaviour:
   grounded: 0
   maxSlopeAngle: 60
   orientation: {fileID: 1662591321}
+  deadSign: {fileID: 0}
   collider: {fileID: 1557405270}
   state: 0
   attacked: 0
@@ -16054,6 +16064,7 @@ MonoBehaviour:
   dashForce: 20
   dashUpwardForce: 0
   dashDuration: 0.25
+  readyForDash: 0
   dashCd: 0.5
   dashKey: 304
   windLeft: {fileID: 1771014895}
@@ -16085,8 +16096,11 @@ MonoBehaviour:
   grappleDelayTime: 0.25
   overshootYaxis: 0
   sphereCastRadius: 0.5
+  isGrappleOnHold: 0
+  grapplingOnHoldForce: 1
   grapplingCd: 0.1
   grapplingKey: 113
+  state: 0
 --- !u!114 &931899300
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -16126,6 +16140,7 @@ MonoBehaviour:
   meleState: 0
   meleDirection: 0
   timeForCombo: 0.7
+  playerDamage: 1
   meleKey: 323
 --- !u!114 &931899302
 MonoBehaviour:
@@ -16578,9 +16593,10 @@ MonoBehaviour:
   sensX: 300
   sensY: 300
   player: {fileID: 931899294}
-  playerVelocity: 0
-  swayInWalk: 0
   orientation: {fileID: 1662591321}
+  target: 60
+  yTiltGoal: 0
+  yTiltSpeed: 0
 --- !u!1 &966669350
 GameObject:
   m_ObjectHideFlags: 0
