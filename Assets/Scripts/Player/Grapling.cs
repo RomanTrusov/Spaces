@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Grapling : MonoBehaviour
 {
@@ -12,6 +13,7 @@ public class Grapling : MonoBehaviour
     public LayerMask whatIsGrappable;
     public LayerMask enemy;
     public LineRenderer lr; //line component
+    [SerializeField] private Slider _cooldownSlider; //line component
 
 
     [Header("Grappling")]
@@ -22,7 +24,8 @@ public class Grapling : MonoBehaviour
     public bool isGrappleOnHold; // is grappling requres holding ab utton
     public float grapplingOnHoldForce = 1f;
     private int yVelocityMoodifier = 1; // modifier that goes 0 when grapple enemy to not uplift player
-
+    [SerializeField] private float _cooldown = 3f;
+    
     //====== vars for drawing grapling line
     private bool isDrawLineNeeded; //check if the line should be drawn
     private bool isPredrawFinished; //is predraw actions were finished
@@ -42,12 +45,15 @@ public class Grapling : MonoBehaviour
 
     //is grapple
     private bool grappling;
+    private float _cooldownTimer;
 
     //if player was grappling the enemy
     //private bool isGrappedEnemy;
     private GameObject grappedEnemy;
 
     public GrapplingStates state;
+
+    public bool CooldownFinished => _cooldownTimer >= _cooldown;
 
     public enum GrapplingStates
     {
@@ -62,11 +68,18 @@ public class Grapling : MonoBehaviour
         pm = GetComponent<PlayerMovement>();
         // get player rigid body
         PlayerRB = GetComponent<Rigidbody>();
-
+        
+        _cooldownTimer = _cooldown;
     }
 
     private void Update()
     {
+        if (!grappling)
+            IterateTimer();
+        
+        if (!CooldownFinished)
+            return;
+        
         // grappling on pressing a button
         if (!isGrappleOnHold)
         {
@@ -96,7 +109,17 @@ public class Grapling : MonoBehaviour
                 StopGrapple();
             }
         }
+    }
 
+    private void IterateTimer()
+    {
+        _cooldownTimer += Time.deltaTime;
+
+        var normalizedValue = _cooldownTimer / _cooldown;
+        if (normalizedValue < 1)
+            _cooldownSlider.value = normalizedValue;
+        else
+            _cooldownSlider.value = 0;
     }
 
     private void FixedUpdate()
@@ -378,6 +401,7 @@ public class Grapling : MonoBehaviour
         yVelocityMoodifier = 1;
         // reset point 1 position
         lr.SetPosition(1, lr.GetPosition(0));
-        
+
+        _cooldownTimer = 0;
     }
 }
