@@ -44,7 +44,7 @@ public class Grapling : MonoBehaviour
     public KeyCode grapplingKey = KeyCode.Mouse1;
 
     //is grapple
-    private bool grappling;
+    public bool Grappling { get; private set; }
     private float _cooldownTimer;
 
     //if player was grappling the enemy
@@ -74,7 +74,7 @@ public class Grapling : MonoBehaviour
 
     private void Update()
     {
-        if (!grappling)
+        if (!Grappling)
             IterateTimer();
         
         if (!CooldownFinished)
@@ -135,7 +135,7 @@ public class Grapling : MonoBehaviour
     private void LateUpdate()
     {
         //if grapple - update start position of the line
-        if (grappling)
+        if (Grappling)
         {
             lr.SetPosition(0, gunTip.position);
         }
@@ -166,7 +166,7 @@ public class Grapling : MonoBehaviour
         if (grapplingCdTimer > 0) return; 
 
         //grappling starts
-        grappling = true; 
+        Grappling = true; 
 
         //throw spherecast to get grappling point
         RaycastHit hit;
@@ -228,7 +228,7 @@ public class Grapling : MonoBehaviour
         if (grapplingCdTimer > 0) return;
 
         //grappling starts
-        grappling = true;
+        Grappling = true;
         yVelocityMoodifier = 1;
 
         //--------GRAPPLE STATES
@@ -382,7 +382,7 @@ public class Grapling : MonoBehaviour
     {
         pm.activeGrapple = false;
         // stop grappling
-        grappling = false;
+        Grappling = false;
         //reset enemy grapple
         state = GrapplingStates.nothing;
         //reset enemy state
