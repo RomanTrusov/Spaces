@@ -11399,6 +11399,37 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 67c55ba466177204287d21122576b3aa, type: 3}
   m_PrefabInstance: {fileID: 727851733}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &730646356
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 730646357}
+  m_Layer: 7
+  m_Name: ShootingPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &730646357
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 730646356}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.072, y: 0.12, z: 0.669}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1641605282}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &743322474
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -13129,6 +13160,7 @@ GameObject:
   - component: {fileID: 931899303}
   - component: {fileID: 931899304}
   - component: {fileID: 931899305}
+  - component: {fileID: 931899306}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -13375,6 +13407,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   myAttackIndicator: {fileID: 1858713165}
+--- !u!114 &931899306
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 931899294}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3e5cba8612d716e49920f1c660bea8c1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  weaponHold: {fileID: 730646357}
+  Guns:
+  - {fileID: 114000013420835318, guid: 9991b02c075b992448b27e5ac45904b3, type: 3}
 --- !u!4 &932679530 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1689006188770751979, guid: aeb9eb6714be6d64590c2d2fb7421a02, type: 3}
