@@ -635,7 +635,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 29beb8fc3b88a1748a41dc4a098bba4e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MuzzleVelocity: 30
+  MuzzleVelocity: 50
   fireMode: 0
   burstCount: 1
   msBetweenShots: 100

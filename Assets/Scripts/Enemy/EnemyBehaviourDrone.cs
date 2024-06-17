@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyBehaviourDrone : MonoBehaviour
+public class EnemyBehaviourDrone : MonoBehaviour, IDamageable
 {
     [SerializeField]
     GameObject avoidIstantDestroy;
@@ -107,7 +107,6 @@ public class EnemyBehaviourDrone : MonoBehaviour
 
     void FixedUpdate()
     {
-
         if (enemyHealth <= 0)
         {
             // !! change to dead state
@@ -119,8 +118,6 @@ public class EnemyBehaviourDrone : MonoBehaviour
         {
             lowHP.gameObject.SetActive(true);
         }
-
-        
 
         //limit the speed
         if (GetComponent<Rigidbody>().velocity.magnitude > 10f && state == EnemyStates.alert)
@@ -330,13 +327,13 @@ public class EnemyBehaviourDrone : MonoBehaviour
         state = EnemyStates.attack;
     }
 
-    public void GetDamage(int damage)
+    public void TakeHit(float damage)
     {
         //play danage sound
         sfxGetHit.pitch = Random.Range(0.5f, 1.5f);
         sfxGetHit.Play();
         // reduce health
-        enemyHealth -= damage;
+        enemyHealth -= (int)damage;
         //set state damaged
         state = EnemyBehaviourDrone.EnemyStates.damaged;
         ResetAttackedTimer();
@@ -406,7 +403,4 @@ public class EnemyBehaviourDrone : MonoBehaviour
         if (wholeDrone.activeSelf) wholeDrone.SetActive(false);
         if (!brokenDrone.activeSelf) brokenDrone.SetActive(true);
     }
-
-    
-
 }

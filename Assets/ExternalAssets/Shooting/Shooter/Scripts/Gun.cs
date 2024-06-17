@@ -1,7 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
-public class Gun : MonoBehaviour {
+public class Gun : MonoBehaviour 
+{
 
     public enum FireMode
     {
@@ -21,6 +23,7 @@ public class Gun : MonoBehaviour {
     [Header("Projectile")]
     public Projectile projectile;
     public Transform[] ProjectileSpawns;
+    public List<Vector3> InitialProjectileSpawnRotations = new List<Vector3>();
 
     [Header("Effects")]
     public Transform shell;
@@ -56,13 +59,17 @@ public class Gun : MonoBehaviour {
         shotsRemainingInBurst = burstCount;
         projectilesRemainingInMag = ProjectilesPerMag;
         source = GetComponent<AudioSource>();
+
+        SetInitialSpawnRotations();
     }
-	
-	// Update is called once per frame
-	void Update ()
+
+    private void SetInitialSpawnRotations()
     {
-	    
-	}
+        for (int i = 0; i < ProjectileSpawns.Length; i++)
+        {
+            InitialProjectileSpawnRotations.Add(ProjectileSpawns[i].localRotation.eulerAngles);
+        }       
+    }
 
     void LateUpdate()
     {
@@ -100,11 +107,22 @@ public class Gun : MonoBehaviour {
 
             nextShotTime = Time.time + msBetweenShots / 1000f;
             // Spawn projectiles
-            foreach (Transform spawn in ProjectileSpawns)
+            for (int i = 0; i < ProjectileSpawns.Length; i++)
             {
                 if (projectilesRemainingInMag == 0) break;
                 projectilesRemainingInMag--;
-                Projectile newProjectile = Instantiate(projectile, spawn.position, spawn.rotation) as Projectile;
+
+                if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out RaycastHit hitInfo, 2000f))
+                {
+                    Vector3 direction = hitInfo.point - ProjectileSpawns[i].transform.position;
+                    ProjectileSpawns[i].transform.rotation = Quaternion.LookRotation(direction);
+                }
+                else
+                {
+                    ProjectileSpawns[i].transform.localRotation = Quaternion.Euler(InitialProjectileSpawnRotations[i]);
+                }
+                
+                Projectile newProjectile = Instantiate(projectile, ProjectileSpawns[i].position, ProjectileSpawns[i].rotation) as Projectile;
                 newProjectile.SetSpeed(MuzzleVelocity);
             }
 

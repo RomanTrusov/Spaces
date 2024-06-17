@@ -87,7 +87,7 @@ public class MeleAttackTrigger : MonoBehaviour
     private void InitiateAttackOnEnemy(Collider other)
     {
         float damageMultiplier = _grapling.Grappling ? _grapplingDamageMult : 1;
-        other.GetComponent<EnemyBehaviourDrone>().GetDamage(playerMeleAttack.playerDamage * (int)damageMultiplier);
+        other.GetComponent<EnemyBehaviourDrone>().TakeHit(playerMeleAttack.playerDamage * (int)damageMultiplier);
     }
 
     private void InitiatePunchEffect()

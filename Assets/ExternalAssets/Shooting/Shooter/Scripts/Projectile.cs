@@ -1,12 +1,13 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Projectile : MonoBehaviour {
-
+public class Projectile : MonoBehaviour 
+{
+    [SerializeField] float _damage = 100;
+    
     public LayerMask collisionMask;
     public Color trailColour;
     float speed = 10;
-    float damage = 100;
 
     float lifetime = 3;
     float skinWidth = .1f;
@@ -53,7 +54,7 @@ public class Projectile : MonoBehaviour {
         IDamageable damageableObject = c.GetComponent<IDamageable>();
         if (damageableObject != null)
         {
-            damageableObject.TakeHit(damage, hitPoint, transform.forward);
+            damageableObject.TakeHit(_damage);
         }
         GameObject.Destroy(gameObject);
     }

@@ -2,7 +2,7 @@
 using System.Collections;
 
 
-public class Enemy : MonoBehaviour, IDamageable
+public class Enemy : MonoBehaviour
 {
     public ParticleSystem deathEffect;
     
