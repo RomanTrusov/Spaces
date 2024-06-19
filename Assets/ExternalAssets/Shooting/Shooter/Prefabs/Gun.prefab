@@ -635,7 +635,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 29beb8fc3b88a1748a41dc4a098bba4e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MuzzleVelocity: 50
+  MuzzleVelocity: 500
   fireMode: 0
   burstCount: 1
   msBetweenShots: 100
@@ -644,6 +644,7 @@ MonoBehaviour:
   projectile: {fileID: 114000010543870110, guid: 96cb88e5e25b2aa4b8f6a0a89fb6e5da, type: 3}
   ProjectileSpawns:
   - {fileID: 4000011944110928}
+  InitialProjectileSpawnRotations: []
   shell: {fileID: 4000012824094314, guid: 3a0969d2c6e6e7d4fb1d8e4760601800, type: 3}
   shellEjection: {fileID: 4000010949131638}
   shootAudio: {fileID: 8300000, guid: 548b1d118a7bad643a93cf932b583859, type: 3}
