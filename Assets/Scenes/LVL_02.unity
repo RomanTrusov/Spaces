@@ -13307,7 +13307,7 @@ MonoBehaviour:
   sphereCastRadius: 0.5
   isGrappleOnHold: 1
   grapplingOnHoldForce: 40
-  _cooldown: 2
+  _cooldown: 1
   grapplingCd: 0.01
   grapplingKey: 325
   state: 0

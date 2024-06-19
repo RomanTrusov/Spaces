@@ -24,7 +24,7 @@ public class Grapling : MonoBehaviour
     public bool isGrappleOnHold; // is grappling requres holding ab utton
     public float grapplingOnHoldForce = 1f;
     private int yVelocityMoodifier = 1; // modifier that goes 0 when grapple enemy to not uplift player
-    [SerializeField] private float _cooldown = 3f;
+    [SerializeField] private float _cooldown = 1f;
     
     //====== vars for drawing grapling line
     private bool isDrawLineNeeded; //check if the line should be drawn
@@ -380,6 +380,9 @@ public class Grapling : MonoBehaviour
     //Stop Grapple
     public void StopGrapple()
     {
+        if (state != GrapplingStates.nothing)
+            _cooldownTimer = 0;
+        
         pm.activeGrapple = false;
         // stop grappling
         Grappling = false;
@@ -401,7 +404,5 @@ public class Grapling : MonoBehaviour
         yVelocityMoodifier = 1;
         // reset point 1 position
         lr.SetPosition(1, lr.GetPosition(0));
-
-        _cooldownTimer = 0;
     }
 }
