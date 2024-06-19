@@ -3497,8 +3497,12 @@ MonoBehaviour:
 
     shift+wsad - dash
 
-    RMB - grappling
-    hook
+    LMB - shoot
+
+    RMB
+    - grappling hook
+
+    F - kick
 
     R - restart'
 --- !u!222 &435031398
@@ -13309,7 +13313,7 @@ MonoBehaviour:
   grapplingOnHoldForce: 40
   _cooldown: 1
   grapplingCd: 0.01
-  grapplingKey: 325
+  grapplingKey: 324
   state: 0
 --- !u!114 &931899300
 MonoBehaviour:
@@ -13351,7 +13355,7 @@ MonoBehaviour:
   meleDirection: 0
   timeForCombo: 1
   playerDamage: 1
-  meleKey: 324
+  meleKey: 102
 --- !u!114 &931899302
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -21,7 +21,7 @@ public class MeleAttack : MonoBehaviour
     // cooldown for attacks to avoid button mashing
     private float attackCD = 0.3f;
     private float attackCDtimer = 0;
-    public int playerDamage = 1;
+    public int playerDamage = 2;
 
     [Header("Input")]
     public KeyCode meleKey = KeyCode.Mouse0;

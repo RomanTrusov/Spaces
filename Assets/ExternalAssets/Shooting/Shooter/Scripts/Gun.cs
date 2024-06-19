@@ -46,7 +46,7 @@ public class Gun : MonoBehaviour
     Muzzleflash muzzleFlash;
 
     float nextShotTime;
-    bool triggerReleasedSinceLastShot;
+    bool triggerReleasedSinceLastShot = true;
     int shotsRemainingInBurst;
     int projectilesRemainingInMag;
 
