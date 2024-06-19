@@ -14,14 +14,17 @@ public class Gun : MonoBehaviour
 
     [Header("Stats")]
     public float MuzzleVelocity;
+    public float ChargedMuzzleVelocity;
     public FireMode fireMode = FireMode.Single;
     public int burstCount;
     public float msBetweenShots = 100;
     public int ProjectilesPerMag;
     public float reloadTime = 0.3f;
+    public float chargedShootTime = 2f;
     
     [Header("Projectile")]
     public Projectile projectile;
+    public Projectile projectileCharged;
     public Transform[] ProjectileSpawns;
     public List<Vector3> InitialProjectileSpawnRotations = new List<Vector3>();
 
@@ -30,7 +33,8 @@ public class Gun : MonoBehaviour
     public Transform shellEjection;
     public AudioClip shootAudio;
     public AudioClip reloadAudio;
-
+    public Transform chargedShoot;
+    
     AudioSource source;
 
     [Header("Recoil")]
@@ -51,6 +55,9 @@ public class Gun : MonoBehaviour
     int projectilesRemainingInMag;
 
     bool isReloading;
+    
+    //TFG
+    private float _chargedShootTimer;
 
     // Use this for initialization
     void Start ()
@@ -59,6 +66,7 @@ public class Gun : MonoBehaviour
         shotsRemainingInBurst = burstCount;
         projectilesRemainingInMag = ProjectilesPerMag;
         source = GetComponent<AudioSource>();
+        chargedShoot.localScale = Vector3.zero;
 
         SetInitialSpawnRotations();
     }
@@ -106,37 +114,48 @@ public class Gun : MonoBehaviour
 
 
             nextShotTime = Time.time + msBetweenShots / 1000f;
-            // Spawn projectiles
-            for (int i = 0; i < ProjectileSpawns.Length; i++)
-            {
-                if (projectilesRemainingInMag == 0) break;
-                projectilesRemainingInMag--;
+            
+            SpawnProjectile(projectile);
+            ShootEffect();
+        }
+    }
 
-                if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out RaycastHit hitInfo, 2000f))
-                {
-                    Vector3 direction = hitInfo.point - ProjectileSpawns[i].transform.position;
-                    ProjectileSpawns[i].transform.rotation = Quaternion.LookRotation(direction);
-                }
-                else
-                {
-                    ProjectileSpawns[i].transform.localRotation = Quaternion.Euler(InitialProjectileSpawnRotations[i]);
-                }
-                
-                Projectile newProjectile = Instantiate(projectile, ProjectileSpawns[i].position, ProjectileSpawns[i].rotation) as Projectile;
-                newProjectile.SetSpeed(MuzzleVelocity);
+    private void ShootEffect()
+    {
+        // Eject shell
+        Instantiate(shell, shellEjection.position, shellEjection.rotation);
+        // Muzzleflash
+        muzzleFlash.Activate();
+
+        // Initiate Recoil
+        transform.localPosition -= Vector3.forward * Random.Range(kickMinMax.x, kickMinMax.y);
+        recoilAngle += Random.Range(recoilAngleMinMax.x, recoilAngleMinMax.y);
+        recoilAngle = Mathf.Clamp(recoilAngle, 0, 30);
+
+        source.PlayOneShot(shootAudio, 1);
+    }
+
+    private void SpawnProjectile(Projectile projectileToSpawn)
+    {
+        for (int i = 0; i < ProjectileSpawns.Length; i++)
+        {
+            if (projectilesRemainingInMag == 0) break;
+            projectilesRemainingInMag--;
+
+            if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out RaycastHit hitInfo,
+                    2000f))
+            {
+                Vector3 direction = hitInfo.point - ProjectileSpawns[i].transform.position;
+                ProjectileSpawns[i].transform.rotation = Quaternion.LookRotation(direction);
+            }
+            else
+            {
+                ProjectileSpawns[i].transform.localRotation = Quaternion.Euler(InitialProjectileSpawnRotations[i]);
             }
 
-            // Eject shell
-            Instantiate(shell, shellEjection.position, shellEjection.rotation);
-            // Muzzleflash
-            muzzleFlash.Activate();
-
-            // Initiate Recoil
-            transform.localPosition -= Vector3.forward * Random.Range(kickMinMax.x, kickMinMax.y);
-            recoilAngle += Random.Range(recoilAngleMinMax.x, recoilAngleMinMax.y);
-            recoilAngle = Mathf.Clamp(recoilAngle, 0, 30);
-
-            source.PlayOneShot(shootAudio, 1);
+            Projectile newProjectile =
+                Instantiate(projectileToSpawn, ProjectileSpawns[i].position, ProjectileSpawns[i].rotation) as Projectile;
+            //newProjectile.SetSpeed(MuzzleVelocity);
         }
     }
 
@@ -179,6 +198,8 @@ public class Gun : MonoBehaviour
     public void OnTriggerHold()
     {
         Shoot();
+        HandleChargedShoot();
+        
         triggerReleasedSinceLastShot = false;
     }
 
@@ -186,5 +207,33 @@ public class Gun : MonoBehaviour
     {
         triggerReleasedSinceLastShot = true;
         shotsRemainingInBurst = burstCount;
+
+        ResetChargedShoot();
+    }
+    
+    private void HandleChargedShoot()
+    {
+        _chargedShootTimer += Time.deltaTime;
+        float normalizedCharge = _chargedShootTimer / chargedShootTime;
+        chargedShoot.localScale = Vector3.one * normalizedCharge;
+
+        if (_chargedShootTimer >= chargedShootTime)
+        {
+            ChargedShoot();
+        }
+    }
+
+    private void ChargedShoot()
+    {
+        ResetChargedShoot();
+        
+        SpawnProjectile(projectileCharged);
+        ShootEffect();
+    }
+
+    private void ResetChargedShoot()
+    {
+        _chargedShootTimer = 0;
+        chargedShoot.localScale = Vector3.zero;
     }
 }

@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 114000010543870110}
   - component: {fileID: 96000013411106746}
   m_Layer: 9
-  m_Name: Projectile
+  m_Name: ProjectileCharged
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -30,7 +30,7 @@ Transform:
   m_GameObject: {fileID: 1000012739866640}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 1.349, y: 1.315, z: -11.853}
-  m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
+  m_LocalScale: {x: 2, y: 2, z: 2}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -43,7 +43,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1000012739866640}
-  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+  m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!65 &65000013520588360
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -77,7 +77,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 0be752ca7b82f9445a51b7e0ed1a2068, type: 2}
+  - {fileID: 2100000, guid: 9965b5208adcbbb419c29592a7f6ce6c, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -111,12 +111,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 42d2f84da4ba6334aaf50dc3c6a5901f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _damage: 1
+  _damage: 4
   collisionMask:
     serializedVersion: 2
     m_Bits: 4294966783
   trailColour: {r: 1, g: 0, b: 0, a: 1}
-  speed: 500
+  speed: 40
 --- !u!96 &96000013411106746
 TrailRenderer:
   serializedVersion: 2
