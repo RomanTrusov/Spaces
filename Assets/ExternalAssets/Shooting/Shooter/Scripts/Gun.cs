@@ -25,6 +25,10 @@ public class Gun : MonoBehaviour
     [Header("Projectile")]
     public Projectile projectile;
     public Projectile projectileCharged;
+    public int mainShotSpawns = 1;
+    public int chargedShotSpawns = 1;
+    public Vector2 randomShootDeviationX;
+    public Vector2 randomShootDeviationY;
     public Transform[] ProjectileSpawns;
     public List<Vector3> InitialProjectileSpawnRotations = new List<Vector3>();
 
@@ -115,7 +119,7 @@ public class Gun : MonoBehaviour
 
             nextShotTime = Time.time + msBetweenShots / 1000f;
             
-            SpawnProjectile(projectile);
+            SpawnProjectile(projectile, mainShotSpawns);
             ShootEffect();
         }
     }
@@ -135,9 +139,10 @@ public class Gun : MonoBehaviour
         source.PlayOneShot(shootAudio, 1);
     }
 
-    private void SpawnProjectile(Projectile projectileToSpawn)
+    private void SpawnProjectile(Projectile projectileToSpawn, int limit = 1)
     {
-        for (int i = 0; i < ProjectileSpawns.Length; i++)
+        var spawnsCount = Mathf.Clamp(ProjectileSpawns.Length, 0, limit);
+        for (int i = 0; i < spawnsCount; i++)
         {
             if (projectilesRemainingInMag == 0) break;
             projectilesRemainingInMag--;
@@ -153,9 +158,17 @@ public class Gun : MonoBehaviour
                 ProjectileSpawns[i].transform.localRotation = Quaternion.Euler(InitialProjectileSpawnRotations[i]);
             }
 
+            var finalRotation = ProjectileSpawns[i].rotation;
+            if (i > 1)
+            {
+                float randomXDeviation = UnityEngine.Random.Range(randomShootDeviationX.x, randomShootDeviationX.y);
+                float randomYDeviation = UnityEngine.Random.Range(randomShootDeviationY.x, randomShootDeviationY.y);
+                var euler = ProjectileSpawns[i].rotation.eulerAngles;
+                var randomizedAngle = Quaternion.Euler(euler.x + randomXDeviation, euler.y + randomYDeviation, euler.z);
+                finalRotation = randomizedAngle;
+            }
             Projectile newProjectile =
-                Instantiate(projectileToSpawn, ProjectileSpawns[i].position, ProjectileSpawns[i].rotation) as Projectile;
-            //newProjectile.SetSpeed(MuzzleVelocity);
+                Instantiate(projectileToSpawn, ProjectileSpawns[i].position, finalRotation) as Projectile;
         }
     }
 
@@ -227,7 +240,7 @@ public class Gun : MonoBehaviour
     {
         ResetChargedShoot();
         
-        SpawnProjectile(projectileCharged);
+        SpawnProjectile(projectileCharged, chargedShotSpawns);
         ShootEffect();
     }
 

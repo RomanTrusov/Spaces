@@ -1,10 +1,13 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
+
 public class GunController : MonoBehaviour {
 
     public Transform weaponHold;
-    public Gun[] Guns;
+    public List<Gun> Guns;
     Gun equippedGun;
+    private int _currentGunIndex;
 
     public void Start()
     {
@@ -27,13 +30,31 @@ public class GunController : MonoBehaviour {
         if (Input.GetKeyDown(KeyCode.R))
         {
             Reload();
+        }        
+        
+        if (Input.GetKeyDown(KeyCode.G))
+        {
+            EquipNextWeapon();
         }
+    }
+
+    private void EquipNextWeapon()
+    {
+        var nextWeaponIndex = _currentGunIndex + 1;
+        
+        if (nextWeaponIndex > Guns.Count - 1)
+            nextWeaponIndex = 0;
+        
+        EquipGun(nextWeaponIndex);
     }
 
     public void EquipGun(int weaponIndex)
     {
-        if (weaponIndex >= 0 && weaponIndex <= Guns.Length)
+        if (weaponIndex >= 0 && weaponIndex <= Guns.Count)
+        {
             EquipGun(Guns[weaponIndex]);
+            _currentGunIndex = weaponIndex;
+        }
     }
 
 	public void EquipGun(Gun gunToEquip)

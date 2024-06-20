@@ -13426,6 +13426,7 @@ MonoBehaviour:
   weaponHold: {fileID: 730646357}
   Guns:
   - {fileID: 114000013420835318, guid: 9991b02c075b992448b27e5ac45904b3, type: 3}
+  - {fileID: 114000013420835318, guid: 630181363529b744d85183ebe0a9baf5, type: 3}
 --- !u!4 &932679530 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1689006188770751979, guid: aeb9eb6714be6d64590c2d2fb7421a02, type: 3}
