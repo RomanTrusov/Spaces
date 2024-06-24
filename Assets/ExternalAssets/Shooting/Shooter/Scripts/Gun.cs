@@ -61,7 +61,9 @@ public class Gun : MonoBehaviour
     bool isReloading;
     
     //TFG
+    public Transform gunContainer;
     private float _chargedShootTimer;
+    private Vector3 _initialPosition;
 
     // Use this for initialization
     void Start ()
@@ -72,27 +74,28 @@ public class Gun : MonoBehaviour
         source = GetComponent<AudioSource>();
         chargedShoot.localScale = Vector3.zero;
 
-        SetInitialSpawnRotations();
+        SetInitialPositionsRotations();
     }
 
-    private void SetInitialSpawnRotations()
+    private void SetInitialPositionsRotations()
     {
         for (int i = 0; i < ProjectileSpawns.Length; i++)
         {
             InitialProjectileSpawnRotations.Add(ProjectileSpawns[i].localRotation.eulerAngles);
-        }       
+        }
+
+        _initialPosition = gunContainer.localPosition;
     }
 
     void LateUpdate()
     {
         // animate recoil
-        transform.localPosition = Vector3.SmoothDamp(transform.localPosition, Vector3.zero, ref recoilSmoothDampVelocity, recoilMoveSettleTime);
+        gunContainer.localPosition = Vector3.SmoothDamp(gunContainer.localPosition, _initialPosition, ref recoilSmoothDampVelocity, recoilMoveSettleTime);
         
-
         if (!isReloading)
         {
             recoilAngle = Mathf.SmoothDamp(recoilAngle, 0, ref recoilRotSmoothDampVelocity, recoilRotationSettleTime);
-            transform.localEulerAngles = Vector3.left * recoilAngle;
+            gunContainer.localEulerAngles = Vector3.left * recoilAngle;
             if (projectilesRemainingInMag == 0)
                 Reload();
         }
@@ -132,7 +135,7 @@ public class Gun : MonoBehaviour
         muzzleFlash.Activate();
 
         // Initiate Recoil
-        transform.localPosition -= Vector3.forward * Random.Range(kickMinMax.x, kickMinMax.y);
+        gunContainer.localPosition -= Vector3.forward * Random.Range(kickMinMax.x, kickMinMax.y);
         recoilAngle += Random.Range(recoilAngleMinMax.x, recoilAngleMinMax.y);
         recoilAngle = Mathf.Clamp(recoilAngle, 0, 30);
 

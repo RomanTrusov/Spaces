@@ -3,11 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class GunController : MonoBehaviour {
-
+    
     public Transform weaponHold;
     public List<Gun> Guns;
     Gun equippedGun;
     private int _currentGunIndex;
+    
+    //TFG
+    [SerializeField] private Transform _gunContainer;
 
     public void Start()
     {
@@ -64,6 +67,7 @@ public class GunController : MonoBehaviour {
 
         equippedGun = Instantiate(gunToEquip, weaponHold.position, weaponHold.rotation) as Gun;
         equippedGun.transform.parent = weaponHold;
+        equippedGun.gunContainer = _gunContainer;
     }
 
     public void OnTriggerHold()
