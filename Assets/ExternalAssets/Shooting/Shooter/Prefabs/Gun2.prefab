@@ -641,13 +641,15 @@ MonoBehaviour:
   fireMode: 0
   burstCount: 1
   msBetweenShots: 1000
-  ProjectilesPerMag: 999999
+  ProjectilesPerMag: 4
   reloadTime: 0.3
   chargedShootTime: 2
   projectile: {fileID: 114000010543870110, guid: 24eca099b858739499ce5ed9f30b4c63, type: 3}
   projectileCharged: {fileID: 114000010543870110, guid: 25fa4b317935f9541b5129a7f8703282, type: 3}
   mainShotSpawns: 1
   chargedShotSpawns: 3
+  mainShootCost: 2
+  chargedShootCost: 2
   randomShootDeviationX: {x: -5, y: 5}
   randomShootDeviationY: {x: -5, y: 5}
   ProjectileSpawns:
@@ -655,6 +657,7 @@ MonoBehaviour:
   - {fileID: 4000011944110928}
   - {fileID: 4000011609537954}
   InitialProjectileSpawnRotations: []
+  bulletUIPrefab: {fileID: 3119094411430656436, guid: 90b00365d3cf3624587c87a3ed1f082e, type: 3}
   shell: {fileID: 4000012824094314, guid: 3a0969d2c6e6e7d4fb1d8e4760601800, type: 3}
   shellEjection: {fileID: 4000010949131638}
   shootAudio: {fileID: 8300000, guid: 548b1d118a7bad643a93cf932b583859, type: 3}

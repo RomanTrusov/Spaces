@@ -1,10 +1,14 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UniRx;
+using Random = UnityEngine.Random;
 
-public class Gun : MonoBehaviour 
+public class Gun : MonoBehaviour
 {
-
+    public Action OnShootNoAmmo;
+    
     public enum FireMode
     {
         Single,
@@ -27,10 +31,13 @@ public class Gun : MonoBehaviour
     public Projectile projectileCharged;
     public int mainShotSpawns = 1;
     public int chargedShotSpawns = 1;
+    public int mainShootCost = 1;
+    public int chargedShootCost = 1;
     public Vector2 randomShootDeviationX;
     public Vector2 randomShootDeviationY;
     public Transform[] ProjectileSpawns;
     public List<Vector3> InitialProjectileSpawnRotations = new List<Vector3>();
+    public BulletElement bulletUIPrefab;
 
     [Header("Effects")]
     public Transform shell;
@@ -56,7 +63,8 @@ public class Gun : MonoBehaviour
     float nextShotTime;
     bool triggerReleasedSinceLastShot = true;
     int shotsRemainingInBurst;
-    int projectilesRemainingInMag;
+    ReactiveProperty<int> projectilesRemainingInMag = new();
+    public IReadOnlyReactiveProperty<int> RemainingBullets => projectilesRemainingInMag;
 
     bool isReloading;
     
@@ -64,17 +72,24 @@ public class Gun : MonoBehaviour
     public Transform gunContainer;
     private float _chargedShootTimer;
     private Vector3 _initialPosition;
+    
 
     // Use this for initialization
     void Start ()
     {
         muzzleFlash = GetComponent<Muzzleflash>();
         shotsRemainingInBurst = burstCount;
-        projectilesRemainingInMag = ProjectilesPerMag;
+        projectilesRemainingInMag.Value = ProjectilesPerMag;
         source = GetComponent<AudioSource>();
         chargedShoot.localScale = Vector3.zero;
 
         SetInitialPositionsRotations();
+    }
+
+    public void AddAmmo(int amount)
+    {
+        projectilesRemainingInMag.Value += amount;
+        projectilesRemainingInMag.Value = Mathf.Clamp(projectilesRemainingInMag.Value, 0, ProjectilesPerMag);
     }
 
     private void SetInitialPositionsRotations()
@@ -96,14 +111,20 @@ public class Gun : MonoBehaviour
         {
             recoilAngle = Mathf.SmoothDamp(recoilAngle, 0, ref recoilRotSmoothDampVelocity, recoilRotationSettleTime);
             gunContainer.localEulerAngles = Vector3.left * recoilAngle;
-            if (projectilesRemainingInMag == 0)
-                Reload();
+            /*if (projectilesRemainingInMag.Value == 0)
+                Reload();*/
         }
     }
 
     void Shoot()
     {
-        if (!isReloading && Time.time > nextShotTime && projectilesRemainingInMag > 0)
+        if (projectilesRemainingInMag.Value <= 0)
+        {
+            OnShootNoAmmo?.Invoke();
+            return;
+        }
+        
+        if (!isReloading && Time.time > nextShotTime)
         {
             // Firemodes
             if (fireMode == FireMode.Burst)
@@ -122,7 +143,7 @@ public class Gun : MonoBehaviour
 
             nextShotTime = Time.time + msBetweenShots / 1000f;
             
-            SpawnProjectile(projectile, mainShotSpawns);
+            SpawnProjectile(projectile, mainShotSpawns, mainShootCost);
             ShootEffect();
         }
     }
@@ -142,13 +163,13 @@ public class Gun : MonoBehaviour
         source.PlayOneShot(shootAudio, 1);
     }
 
-    private void SpawnProjectile(Projectile projectileToSpawn, int limit = 1)
+    private void SpawnProjectile(Projectile projectileToSpawn, int limit = 1, int cost = 1)
     {
         var spawnsCount = Mathf.Clamp(ProjectileSpawns.Length, 0, limit);
         for (int i = 0; i < spawnsCount; i++)
         {
-            if (projectilesRemainingInMag == 0) break;
-            projectilesRemainingInMag--;
+            if (projectilesRemainingInMag.Value == 0) break;
+            projectilesRemainingInMag.Value -= cost;
 
             if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out RaycastHit hitInfo,
                     2000f))
@@ -177,7 +198,7 @@ public class Gun : MonoBehaviour
 
     public void Reload()
     {
-        if (!isReloading && projectilesRemainingInMag != ProjectilesPerMag)
+        if (!isReloading && projectilesRemainingInMag.Value != ProjectilesPerMag)
         {
             StartCoroutine(AnimateReload());
         }
@@ -208,7 +229,7 @@ public class Gun : MonoBehaviour
         }
 
         isReloading = false;
-        projectilesRemainingInMag = ProjectilesPerMag;
+        projectilesRemainingInMag.Value = ProjectilesPerMag;
     }
 
     public void OnTriggerHold()
@@ -243,7 +264,13 @@ public class Gun : MonoBehaviour
     {
         ResetChargedShoot();
         
-        SpawnProjectile(projectileCharged, chargedShotSpawns);
+        if (projectilesRemainingInMag.Value - chargedShootCost <= 0)
+        {
+            OnShootNoAmmo?.Invoke();
+            return;
+        }
+        
+        SpawnProjectile(projectileCharged, chargedShotSpawns, chargedShootCost);
         ShootEffect();
     }
 

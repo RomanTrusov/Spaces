@@ -1,12 +1,15 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-public class GunController : MonoBehaviour {
+public class GunController : MonoBehaviour
+{
+    public Action<Gun> OnSwapGun;
     
     public Transform weaponHold;
     public List<Gun> Guns;
-    Gun equippedGun;
+    public Gun equippedGun;
     private int _currentGunIndex;
     
     //TFG
@@ -29,11 +32,6 @@ public class GunController : MonoBehaviour {
         {
             OnTriggerReleased();
         }
-
-        if (Input.GetKeyDown(KeyCode.R))
-        {
-            Reload();
-        }        
         
         if (Input.GetKeyDown(KeyCode.G))
         {
@@ -68,6 +66,8 @@ public class GunController : MonoBehaviour {
         equippedGun = Instantiate(gunToEquip, weaponHold.position, weaponHold.rotation) as Gun;
         equippedGun.transform.parent = weaponHold;
         equippedGun.gunContainer = _gunContainer;
+        
+        OnSwapGun?.Invoke(equippedGun);
     }
 
     public void OnTriggerHold()
@@ -92,5 +92,10 @@ public class GunController : MonoBehaviour {
         {
             equippedGun.Reload();
         }
+    }
+
+    public void AddAmmo(int amount)
+    {
+        equippedGun.AddAmmo(amount);
     }
 }
