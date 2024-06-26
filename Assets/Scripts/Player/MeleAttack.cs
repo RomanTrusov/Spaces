@@ -51,7 +51,7 @@ public class MeleAttack : MonoBehaviour
     }
 
 
-    private void ActivateMeleTrigger ()
+    private void ActivateMeleTrigger()
     {
         // check is it simple punch or a combo attack
         if (meleState == 1)

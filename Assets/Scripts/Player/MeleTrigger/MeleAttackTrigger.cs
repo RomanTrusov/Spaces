@@ -13,6 +13,7 @@ public class MeleAttackTrigger : MonoBehaviour
 
     [SerializeField] private GameObject punchEffect;
     [SerializeField] private Grapling _grapling;
+    [SerializeField] private GunController _gunController;
 
     private Transform enemyTransform;
 
@@ -20,6 +21,7 @@ public class MeleAttackTrigger : MonoBehaviour
     public int meleDirection = 0;
 
     private float _grapplingDamageMult = 2;
+    private int _ammoAddingPerHit = 2;
     
     // on trigger enter
     private void OnTriggerEnter(Collider other)
@@ -87,7 +89,13 @@ public class MeleAttackTrigger : MonoBehaviour
     private void InitiateAttackOnEnemy(Collider other)
     {
         float damageMultiplier = _grapling.Grappling ? _grapplingDamageMult : 1;
-        other.GetComponent<EnemyBehaviourDrone>().TakeHit(playerMeleAttack.playerDamage * (int)damageMultiplier);
+
+        var droneBehaviour = other.GetComponent<EnemyBehaviourDrone>();
+        if (droneBehaviour != null)
+        {
+            droneBehaviour.TakeHit(playerMeleAttack.playerDamage * (int)damageMultiplier);
+            _gunController.AddAmmo(_ammoAddingPerHit);
+        }
     }
 
     private void InitiatePunchEffect()
