@@ -9,7 +9,7 @@ public class GunController : MonoBehaviour
     
     public Transform weaponHold;
     public List<Gun> Guns;
-    public Gun equippedGun;
+    Gun equippedGun;
     private int _currentGunIndex;
     
     //TFG
