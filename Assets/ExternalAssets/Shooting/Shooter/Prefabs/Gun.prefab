@@ -799,8 +799,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _time: 3.4028235e+38
-  _distance: 0.1
+  _distance: 0.04
   _delayBetweenShakes: 0
+  gunContainer: {fileID: 0}
 --- !u!1 &1000013680712946
 GameObject:
   m_ObjectHideFlags: 0

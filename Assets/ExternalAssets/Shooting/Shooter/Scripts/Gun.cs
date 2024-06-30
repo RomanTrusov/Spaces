@@ -62,6 +62,7 @@ public class Gun : MonoBehaviour
 
     float nextShotTime;
     bool triggerReleasedSinceLastShot = true;
+    bool chargedhotTriggerReleased = true;
     int shotsRemainingInBurst;
     ReactiveProperty<int> projectilesRemainingInMag = new();
     public IReadOnlyReactiveProperty<int> RemainingBullets => projectilesRemainingInMag;
@@ -237,7 +238,9 @@ public class Gun : MonoBehaviour
     public void OnTriggerHold()
     {
         Shoot();
-        HandleChargedShoot();
+        
+        if (chargedhotTriggerReleased)
+            HandleChargedShoot();
         
         triggerReleasedSinceLastShot = false;
     }
@@ -245,6 +248,7 @@ public class Gun : MonoBehaviour
     public void OnTriggerReleased()
     {
         triggerReleasedSinceLastShot = true;
+        chargedhotTriggerReleased = true;
         shotsRemainingInBurst = burstCount;
 
         ResetChargedShoot();
@@ -287,6 +291,8 @@ public class Gun : MonoBehaviour
         
         SpawnProjectile(projectileCharged, chargedShotSpawns, chargedShootCost);
         ShootEffect();
+        
+        chargedhotTriggerReleased = false;
     }
 
     private void ResetChargedShoot()
