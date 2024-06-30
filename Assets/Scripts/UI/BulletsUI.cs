@@ -93,8 +93,8 @@ public class BulletsUI : MonoBehaviour
 
     private void NoAmmoIndication()
     {
-        if (_noAmmoTween != null)
-            _noAmmoTween.Kill();
+        if (_noAmmoTween != null && _noAmmoTween.IsPlaying())
+            return;
         
         var duration = 0.25f;
         _noAmmoIndicator.alpha = 0f;

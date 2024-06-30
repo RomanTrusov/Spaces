@@ -252,8 +252,15 @@ public class Gun : MonoBehaviour
     {
         _chargedShootTimer += Time.deltaTime;
         float normalizedCharge = _chargedShootTimer / chargedShootTime;
-        chargedShoot.localScale = Vector3.one * normalizedCharge;
+        
+        if (projectilesRemainingInMag.Value - chargedShootCost < 0)
+        {
+            _chargedShootTimer = 0;
+            OnShootNoAmmo?.Invoke();
+            return;
+        }
 
+        chargedShoot.localScale = Vector3.one * normalizedCharge;
         if (_chargedShootTimer >= chargedShootTime)
         {
             ChargedShoot();
