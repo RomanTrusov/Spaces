@@ -70,8 +70,10 @@ public class Gun : MonoBehaviour
     
     //TFG
     public Transform gunContainer;
+    [SerializeField] private ShakeTransform _shake;
     private float _chargedShootTimer;
     private Vector3 _initialPosition;
+    private float _chargedShotThershold = 0.1f;
     
 
     // Use this for initialization
@@ -260,6 +262,12 @@ public class Gun : MonoBehaviour
             return;
         }
 
+        if (normalizedCharge >= _chargedShotThershold)
+        {
+            _shake.gunContainer = gunContainer;
+            _shake.Begin();
+        }
+
         chargedShoot.localScale = Vector3.one * normalizedCharge;
         if (_chargedShootTimer >= chargedShootTime)
         {
@@ -285,5 +293,6 @@ public class Gun : MonoBehaviour
     {
         _chargedShootTimer = 0;
         chargedShoot.localScale = Vector3.zero;
+        _shake.Stop();
     }
 }
