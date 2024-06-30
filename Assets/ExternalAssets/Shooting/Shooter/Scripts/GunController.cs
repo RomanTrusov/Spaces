@@ -12,11 +12,17 @@ public class GunController : MonoBehaviour
     Gun equippedGun;
     private int _currentGunIndex;
     
+    
     //TFG
     [SerializeField] private Transform _gunContainer;
 
     public void Start()
     {
+        foreach (var gun in Guns)
+        {
+            gun.gameObject.SetActive(false);
+        }
+        
         if (Guns[0] != null)
             EquipGun(0);
     }
@@ -53,21 +59,16 @@ public class GunController : MonoBehaviour
     {
         if (weaponIndex >= 0 && weaponIndex <= Guns.Count)
         {
-            EquipGun(Guns[weaponIndex]);
+            if (equippedGun != null)
+                equippedGun.gameObject.SetActive(false);
+            
+            equippedGun = Guns[weaponIndex];
+            equippedGun.gameObject.SetActive(true);
+            equippedGun.gunContainer = _gunContainer;
             _currentGunIndex = weaponIndex;
+            
+            OnSwapGun?.Invoke(equippedGun);
         }
-    }
-
-	public void EquipGun(Gun gunToEquip)
-    {
-        if (equippedGun != null)
-            Destroy(equippedGun.gameObject);
-
-        equippedGun = Instantiate(gunToEquip, weaponHold.position, weaponHold.rotation) as Gun;
-        equippedGun.transform.parent = weaponHold;
-        equippedGun.gunContainer = _gunContainer;
-        
-        OnSwapGun?.Invoke(equippedGun);
     }
 
     public void OnTriggerHold()

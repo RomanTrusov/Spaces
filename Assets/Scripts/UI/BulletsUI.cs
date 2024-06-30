@@ -26,11 +26,13 @@ public class BulletsUI : MonoBehaviour
     private void OnEnable()
     {
         _gunController.OnSwapGun += InitBullets;
+        _gunController.OnSwapGun += KillAnimations;
     }    
     
     private void OnDisable()
     {
         _gunController.OnSwapGun -= InitBullets;
+        _gunController.OnSwapGun -= KillAnimations;
     }
 
     private void OnDestroy()
@@ -55,8 +57,9 @@ public class BulletsUI : MonoBehaviour
         
         _bulletElements.Reverse();
         currentGun.RemainingBullets.Subscribe(UpdateBullets).AddTo(_disposables);
-        
         currentGun.OnShootNoAmmo = NoAmmoIndication;
+
+        UpdateBullets(currentGun.RemainingBullets.Value);
     }
 
     private void DestroyBullets()
@@ -106,5 +109,14 @@ public class BulletsUI : MonoBehaviour
         var duration = 0.5f;
         _ammoAddedIndicator.alpha = 0f;
         _ammoAddedTween = _ammoAddedIndicator.DOFade(1f, duration).SetLoops(2, LoopType.Yoyo);
+    }
+    
+    private void KillAnimations(Gun currentGun)
+    {
+        if (_noAmmoTween != null)
+            _noAmmoTween.Kill(true);
+        
+        if (_ammoAddedTween != null)
+            _ammoAddedTween.Kill(true);
     }
 }
