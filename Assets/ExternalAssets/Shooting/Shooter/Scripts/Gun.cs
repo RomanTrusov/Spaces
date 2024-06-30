@@ -264,7 +264,7 @@ public class Gun : MonoBehaviour
     {
         ResetChargedShoot();
         
-        if (projectilesRemainingInMag.Value - chargedShootCost <= 0)
+        if (projectilesRemainingInMag.Value - chargedShootCost < 0)
         {
             OnShootNoAmmo?.Invoke();
             return;
