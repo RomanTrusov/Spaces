@@ -2,6 +2,7 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using CameraShake;
 using UniRx;
 using Random = UnityEngine.Random;
 
@@ -75,7 +76,7 @@ public class Gun : MonoBehaviour
     private float _chargedShootTimer;
     private Vector3 _initialPosition;
     private float _chargedShotThershold = 0.1f;
-    
+
 
     // Use this for initialization
     void Start ()
@@ -148,6 +149,7 @@ public class Gun : MonoBehaviour
             
             SpawnProjectile(projectile, mainShotSpawns, mainShootCost);
             ShootEffect();
+            CameraShaker.Instance.ShakePresets.ShortShake3D(0.6f, 25, 1);
         }
     }
 
@@ -291,6 +293,7 @@ public class Gun : MonoBehaviour
         
         SpawnProjectile(projectileCharged, chargedShotSpawns, chargedShootCost);
         ShootEffect();
+        CameraShaker.Instance.ShakePresets.ShortShake3D(0.8f, 40, 2);
         
         chargedhotTriggerReleased = false;
     }
