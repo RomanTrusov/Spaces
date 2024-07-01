@@ -45,6 +45,17 @@ namespace CameraShake
             activeShakes.Add(shake);
         }
 
+        public void StopPerlinShake(ICameraShake shake)
+        {
+            var relevantShake = activeShakes.Find(x => x == shake);
+            if (relevantShake == null)
+                return;
+            
+            var perlinShake = (PerlinShake)relevantShake;
+            if (perlinShake != null)
+                perlinShake.AmplitudeController.FinishImmediately();
+        }
+
         /// <summary>
         /// Sets the transform which will be affected by the shakes.
         /// </summary>

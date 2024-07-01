@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using CameraShake;
 using UnityEngine;
 
 public class MeleAttack : MonoBehaviour
@@ -64,6 +65,9 @@ public class MeleAttack : MonoBehaviour
             meleTrigger.GetComponent<MeleAttackTrigger>().meleState = 2;
             meleTrigger.GetComponent<MeleAttackTrigger>().meleDirection = meleDirection;
         }
+        
+        CameraShaker.Instance.ShakePresets.ShortShake3D(3f, 5.5f, 2);
+        
         meleTrigger.SetActive(true);
         Invoke(nameof(DeactivateMeleTrigger), 0.35f);
     }

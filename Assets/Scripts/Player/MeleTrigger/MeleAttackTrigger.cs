@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using CameraShake;
 using UnityEngine;
 
 public class MeleAttackTrigger : MonoBehaviour

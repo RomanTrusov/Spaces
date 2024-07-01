@@ -90,7 +90,7 @@ namespace CameraShake
         /// </summary>
         /// <param name="strength">Strength of the shake.</param>
         /// <param name="duration">Duration of the shake.</param>
-        public void Explosion3D(
+        public ICameraShake Explosion3D(
             float strength = 8f,
             float duration = 0.7f)
         {
@@ -107,7 +107,33 @@ namespace CameraShake
                 noiseModes = modes,
                 envelope = envelopePars,
             };
-            shaker.RegisterShake(new PerlinShake(pars));
+            var shake = new PerlinShake(pars);
+            shaker.RegisterShake(shake);
+
+            return shake;
+        }
+        
+        public ICameraShake Walking(
+            float strength = 8f,
+            float duration = 0.7f)
+        {
+            PerlinShake.NoiseMode[] modes =
+            {
+                new PerlinShake.NoiseMode(2, 1),
+                new PerlinShake.NoiseMode(6, 0.2f)
+            };
+            Envelope.EnvelopeParams envelopePars = new Envelope.EnvelopeParams();
+            envelopePars.decay = duration <= 0 ? 1 : 1 / duration;
+            PerlinShake.Params pars = new PerlinShake.Params
+            {
+                strength = new Displacement(Vector3.zero, new Vector3(1, 1, 0.5f) * strength),
+                noiseModes = modes,
+                envelope = envelopePars,
+            };
+            var shake = new PerlinShake(pars);
+            shaker.RegisterShake(shake);
+
+            return shake;
         }
     }
 }

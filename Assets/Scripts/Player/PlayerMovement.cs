@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using CameraShake;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -76,6 +77,8 @@ public class PlayerMovement : MonoBehaviour
     public new Collider collider;
 
     Rigidbody rb;
+
+    private ICameraShake _movingShake;
 
     // states creation
     public MovementStates state;
@@ -186,15 +189,13 @@ public class PlayerMovement : MonoBehaviour
         horizontalInput = Input.GetAxisRaw("Horizontal");
         verticalInput = Input.GetAxisRaw("Vertical");
         
-
         //if ready to jump
         if (Input.GetKeyDown(jumpKey) && readyToJump)
         {
             if (grounded)
             {
                 readyToJump = false;
-
-
+                
                 Jump();
                 // cooldown over time
                 Invoke(nameof(ResetJump), jumpCooldown);
@@ -215,7 +216,7 @@ public class PlayerMovement : MonoBehaviour
 
 
     //State handler
-    private void StateHandler ()
+    private void StateHandler()
     {
         //if climb
         if (attacked)
@@ -228,7 +229,6 @@ public class PlayerMovement : MonoBehaviour
             state = MovementStates.climbing;
             collider.enabled = false;
         }
-
         // if dashinng
         else if (dashing)
         {
@@ -259,7 +259,6 @@ public class PlayerMovement : MonoBehaviour
     //Move player function
     private void MovePlayer()
     {
-
         float speedMultiplier = 30f; //10f default
         // calculate movement direction
         moveDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
@@ -295,8 +294,6 @@ public class PlayerMovement : MonoBehaviour
 
         //turn off gravity when slope
         if (!activeGrapple) rb.useGravity = !OnSlope();
-
-
     }
 
 
