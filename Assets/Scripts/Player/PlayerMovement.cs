@@ -452,6 +452,7 @@ public class PlayerMovement : MonoBehaviour
         {
             playerHP -= 1;
             damageAnimator.Play("Base Layer.Cracks",0,0);
+            CameraShaker.Instance.ShakePresets.ShortShake3D(7f, 6f, 2);
         }
             
     }
