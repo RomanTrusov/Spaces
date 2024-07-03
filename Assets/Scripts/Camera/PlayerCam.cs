@@ -93,7 +93,12 @@ public class PlayerCam : MonoBehaviour
 
         //============= Changing FOV
         // while falling
-        if (!player.GetComponent<PlayerMovement>().grounded && player.GetComponent<Rigidbody>().velocity.y < -0.2f)
+        if (player.GetComponent<PlayerMovement>().activeGrapple && player.GetComponent<Grapling>().grapplePoint != Vector3.zero)
+        {
+            fovGoal = GetFOVGoal(fovDefault, -15, out fovGoal);
+            _camera.fieldOfView = Mathf.Lerp(_camera.fieldOfView, fovGoal, Time.deltaTime * 5f);
+        }
+        else if (!player.GetComponent<PlayerMovement>().grounded && player.GetComponent<Rigidbody>().velocity.y < -0.2f)
         {
             // getting FOV goal
             fovGoal = GetFOVGoal(fovDefault, player.GetComponent<Rigidbody>().velocity.y, out fovGoal);

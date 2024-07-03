@@ -34,7 +34,7 @@ public class Grapling : MonoBehaviour
     private float t = 0; // timer for lerping the line
 
     //where to grab
-    private Vector3 grapplePoint;
+    public Vector3 grapplePoint;
 
     [Header("Cooldown")]
     public float grapplingCd;
