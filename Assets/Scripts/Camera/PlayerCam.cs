@@ -30,6 +30,8 @@ public class PlayerCam : MonoBehaviour
     [SerializeField]
     private float yTiltSpeed;
 
+    [SerializeField] private Camera _camera;
+
 
     void Awake()
     {
@@ -43,7 +45,7 @@ public class PlayerCam : MonoBehaviour
     private void Start()
     {
         //get default FOV
-        fovDefault = GetComponent<Camera>().fieldOfView;
+        fovDefault = _camera.fieldOfView;
 
 
         // locked and invisible cursor
@@ -96,16 +98,17 @@ public class PlayerCam : MonoBehaviour
             // getting FOV goal
             fovGoal = GetFOVGoal(fovDefault, player.GetComponent<Rigidbody>().velocity.y, out fovGoal);
             //lerping the FOV
-            GetComponent<Camera>().fieldOfView = Mathf.Lerp(GetComponent<Camera>().fieldOfView, fovGoal, Time.deltaTime * 5f);
+            _camera.fieldOfView = Mathf.Lerp(_camera.fieldOfView, fovGoal, Time.deltaTime * 5f);
         }// if not falling - and FOV is not default - return it back
-        else if (GetComponent<Camera>().fieldOfView != fovDefault) 
-            GetComponent<Camera>().fieldOfView = Mathf.Lerp(GetComponent<Camera>().fieldOfView, fovDefault, Time.deltaTime*5f);
+        else if (_camera.fieldOfView != fovDefault) 
+            _camera.fieldOfView = Mathf.Lerp(_camera.fieldOfView, fovDefault, Time.deltaTime*5f);
     }
 
     //===============
     private float GetFOVGoal (float fovDefalut,float yPlayerVelocity ,out float fovGoal)
     {
-        if (yPlayerVelocity < -30) yPlayerVelocity = -30; // limit the Y velocity
+        if (yPlayerVelocity < -30) 
+            yPlayerVelocity = -30; // limit the Y velocity
 
         fovGoal = fovDefault - yPlayerVelocity * 0.75f;
 

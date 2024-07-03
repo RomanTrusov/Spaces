@@ -47,6 +47,7 @@ namespace CameraShake
         public void Finish()
         {
             finishWhenAmplitudeZero = true;
+            pars.decay = 1f;
             SetTarget(0);
         }
 

@@ -53,7 +53,7 @@ namespace CameraShake
             
             var perlinShake = (PerlinShake)relevantShake;
             if (perlinShake != null)
-                perlinShake.AmplitudeController.FinishImmediately();
+                perlinShake.AmplitudeController.Finish();
         }
 
         /// <summary>
@@ -92,7 +92,7 @@ namespace CameraShake
                     cameraDisplacement += activeShakes[i].CurrentDisplacement;
                 }
             }
-            cameraTransform.localPosition = StrengthMultiplier * cameraDisplacement.position;
+            //cameraTransform.localPosition = StrengthMultiplier * cameraDisplacement.position;
             cameraTransform.localRotation = Quaternion.Euler(StrengthMultiplier * cameraDisplacement.eulerAngles);
         }
 

@@ -114,19 +114,19 @@ namespace CameraShake
         }
         
         public ICameraShake Walking(
-            float strength = 8f,
-            float duration = 0.7f)
+            float strength = 1.2f,
+            float duration =float.MaxValue)
         {
             PerlinShake.NoiseMode[] modes =
             {
-                new PerlinShake.NoiseMode(2, 1),
-                new PerlinShake.NoiseMode(6, 0.2f)
+                new PerlinShake.NoiseMode(3.7f, 1),
             };
             Envelope.EnvelopeParams envelopePars = new Envelope.EnvelopeParams();
             envelopePars.decay = duration <= 0 ? 1 : 1 / duration;
+            envelopePars.attack = 7f;
             PerlinShake.Params pars = new PerlinShake.Params
             {
-                strength = new Displacement(Vector3.zero, new Vector3(1, 1, 0.5f) * strength),
+                strength = new Displacement(Vector3.zero, new Vector3(1, 0.5f, 0.2f) * strength),
                 noiseModes = modes,
                 envelope = envelopePars,
             };

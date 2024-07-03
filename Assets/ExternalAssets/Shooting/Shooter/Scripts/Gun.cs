@@ -176,16 +176,17 @@ public class Gun : MonoBehaviour
             if (projectilesRemainingInMag.Value == 0) break;
             projectilesRemainingInMag.Value -= cost;
 
-            if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out RaycastHit hitInfo,
-                    2000f))
+            Vector3 direction;
+            if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out RaycastHit hitInfo, 2000f))
             {
-                Vector3 direction = hitInfo.point - ProjectileSpawns[i].transform.position;
-                ProjectileSpawns[i].transform.rotation = Quaternion.LookRotation(direction);
+                direction = hitInfo.point - ProjectileSpawns[i].transform.position;
             }
             else
             {
-                ProjectileSpawns[i].transform.localRotation = Quaternion.Euler(InitialProjectileSpawnRotations[i]);
+                var endPoint = Camera.main.transform.position + Camera.main.transform.forward * 100;
+                direction = endPoint - ProjectileSpawns[i].transform.position;
             }
+            ProjectileSpawns[i].transform.rotation = Quaternion.LookRotation(direction);
 
             var finalRotation = ProjectileSpawns[i].rotation;
             if (i > 1)

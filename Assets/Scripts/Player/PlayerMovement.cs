@@ -78,7 +78,8 @@ public class PlayerMovement : MonoBehaviour
 
     Rigidbody rb;
 
-    private ICameraShake _movingShake;
+    private ICameraShake _movingShake = null;
+    private Vector3 _prevMovingDirection;
 
     // states creation
     public MovementStates state;
@@ -218,6 +219,8 @@ public class PlayerMovement : MonoBehaviour
     //State handler
     private void StateHandler()
     {
+        var prevState = state;
+        
         //if climb
         if (attacked)
         {
@@ -253,6 +256,38 @@ public class PlayerMovement : MonoBehaviour
             state = MovementStates.air;
             moveSpeed = walkSpeed;
         }
+        
+        CheckMovementShake(prevState);
+    }
+
+    private void CheckMovementShake(MovementStates prevState)
+    {
+        bool wasMoving = (prevState == MovementStates.walking || prevState == MovementStates.sprinting) && _prevMovingDirection != Vector3.zero;
+        bool nowMoving = (state == MovementStates.walking || state == MovementStates.sprinting) && moveDirection != Vector3.zero;
+        _prevMovingDirection = moveDirection;
+
+        if (!wasMoving && nowMoving && _movingShake == null)
+        {
+            _movingShake = CameraShaker.Instance.ShakePresets.Walking();
+        }
+        else if (wasMoving && !nowMoving)
+        {
+            CameraShaker.Instance.StopPerlinShake(_movingShake);
+            _movingShake = null;
+        }
+    }
+
+    [ContextMenu("Walking shake")]
+    public void WalkShake()
+    {
+        _movingShake = CameraShaker.Instance.ShakePresets.Walking();
+    }
+    
+    [ContextMenu("Stop walking shake")]
+    public void StopWalkShake()
+    {
+        CameraShaker.Instance.StopPerlinShake(_movingShake);
+        _movingShake = null;
     }
 
 
