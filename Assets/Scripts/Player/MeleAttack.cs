@@ -66,7 +66,7 @@ public class MeleAttack : MonoBehaviour
             meleTrigger.GetComponent<MeleAttackTrigger>().meleDirection = meleDirection;
         }
         
-        CameraShaker.Instance.ShakePresets.ShortShake3D(3f, 5.5f, 2);
+        CameraShaker.Instance.ShakePresets.ShortShake3D(2f, 5.5f, 2);
         
         meleTrigger.SetActive(true);
         Invoke(nameof(DeactivateMeleTrigger), 0.35f);
