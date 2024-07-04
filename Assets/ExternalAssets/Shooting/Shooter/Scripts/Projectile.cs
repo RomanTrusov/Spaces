@@ -4,6 +4,7 @@ using System.Collections;
 public class Projectile : MonoBehaviour 
 {
     [SerializeField] float _damage = 100;
+    [SerializeField] public ProjectileSource source = ProjectileSource.Player;
     
     public LayerMask collisionMask;
     public Color trailColour;
@@ -51,6 +52,9 @@ public class Projectile : MonoBehaviour
 
     void OnHitObject(Collider c, Vector3 hitPoint)
     {
+        if (c.isTrigger)
+            return;
+        
         IDamageable damageableObject = c.GetComponent<IDamageable>();
         if (damageableObject != null)
         {
@@ -59,4 +63,10 @@ public class Projectile : MonoBehaviour
         GameObject.Destroy(gameObject);
     }
 
+}
+
+public enum ProjectileSource
+{
+    Player,
+    Enemy
 }

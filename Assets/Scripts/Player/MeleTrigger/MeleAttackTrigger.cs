@@ -95,6 +95,7 @@ public class MeleAttackTrigger : MonoBehaviour
         if (droneBehaviour != null)
         {
             droneBehaviour.TakeHit(playerMeleAttack.playerDamage * (int)damageMultiplier);
+            droneBehaviour.Push(other.transform.position - transform.position);
             _gunController.AddAmmo(_ammoAddingPerHit);
         }
     }

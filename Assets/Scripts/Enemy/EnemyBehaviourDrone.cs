@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 using UnityEngine;
 
 public class EnemyBehaviourDrone : MonoBehaviour, IDamageable
@@ -21,7 +22,11 @@ public class EnemyBehaviourDrone : MonoBehaviour, IDamageable
     private ParticleSystem lowHP;
     [SerializeField]
     private GameObject lamp;
-
+    [SerializeField]
+    private Transform _pushBackContainer;
+    [SerializeField]
+    private DroneShootEvasion _shootEvasion;
+    
     [ColorUsage(true, true)]
     public Color alertLamp;
     [ColorUsage(true, true)]
@@ -220,8 +225,8 @@ public class EnemyBehaviourDrone : MonoBehaviour, IDamageable
             //GetComponent<Rigidbody>().useGravity = false;
 
             //add some jitter after take damage
-            float jitter = Random.Range(-0.1f, 0.1f);
-            transform.position = transform.position + new Vector3(jitter, jitter, jitter);
+            float jitter = Random.Range(-0.2f, 0.2f);
+         //   transform.position = transform.position + new Vector3(jitter, jitter, jitter);
 
 
 
@@ -337,6 +342,11 @@ public class EnemyBehaviourDrone : MonoBehaviour, IDamageable
         //set state damaged
         state = EnemyBehaviourDrone.EnemyStates.damaged;
         ResetAttackedTimer();
+    }
+
+    public void Push(Vector3 direction)
+    {
+        GetComponent<Rigidbody>().AddForce(direction * 5f, ForceMode.Impulse);
     }
 
     private void ActivatePreAttackState()

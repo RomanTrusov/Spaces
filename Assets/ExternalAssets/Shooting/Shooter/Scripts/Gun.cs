@@ -177,7 +177,7 @@ public class Gun : MonoBehaviour
             projectilesRemainingInMag.Value -= cost;
 
             Vector3 direction;
-            if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out RaycastHit hitInfo, 2000f))
+            if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out RaycastHit hitInfo, 2000f, projectileToSpawn.collisionMask, QueryTriggerInteraction.Ignore))
             {
                 direction = hitInfo.point - ProjectileSpawns[i].transform.position;
             }
