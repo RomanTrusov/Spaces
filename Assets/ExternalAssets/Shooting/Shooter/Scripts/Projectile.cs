@@ -59,10 +59,21 @@ public class Projectile : MonoBehaviour
         if (damageableObject != null)
         {
             damageableObject.TakeHit(_damage);
+
+           /* var drone = c.GetComponent<EnemyBehaviourDrone>();
+            if (drone != null)
+                PushTarget(drone, hitPoint);*/
+
         }
         GameObject.Destroy(gameObject);
     }
 
+    private void PushTarget(EnemyBehaviourDrone drone, Vector3 hitPoint)
+    {
+        var direction = drone.transform.position - hitPoint;
+        drone.Push(direction, 7f);
+    }
+    
 }
 
 public enum ProjectileSource

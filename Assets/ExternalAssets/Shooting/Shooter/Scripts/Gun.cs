@@ -180,6 +180,10 @@ public class Gun : MonoBehaviour
             if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out RaycastHit hitInfo, 2000f, projectileToSpawn.collisionMask, QueryTriggerInteraction.Ignore))
             {
                 direction = hitInfo.point - ProjectileSpawns[i].transform.position;
+
+                var drone = hitInfo.collider.gameObject.GetComponent<EnemyBehaviourDrone>();
+                if (drone != null)
+                    drone.DroneShootEvasion.TryEvade();
             }
             else
             {

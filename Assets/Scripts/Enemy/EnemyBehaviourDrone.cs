@@ -75,6 +75,8 @@ public class EnemyBehaviourDrone : MonoBehaviour, IDamageable
     public AudioSource sfxBeforeAttack;
     public AudioSource sfxGetHit;
 
+    public DroneShootEvasion DroneShootEvasion => _shootEvasion;
+    
     public enum EnemyStates
     {
         idle,
@@ -344,9 +346,9 @@ public class EnemyBehaviourDrone : MonoBehaviour, IDamageable
         ResetAttackedTimer();
     }
 
-    public void Push(Vector3 direction)
+    public void Push(Vector3 direction, float force)
     {
-        GetComponent<Rigidbody>().AddForce(direction * 5f, ForceMode.Impulse);
+        GetComponent<Rigidbody>().AddForce(direction * force, ForceMode.Impulse);
     }
 
     private void ActivatePreAttackState()

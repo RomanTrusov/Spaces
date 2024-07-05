@@ -42,6 +42,11 @@ public class GunController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.G))
         {
             EquipNextWeapon();
+        }        
+        
+        if (Input.GetKeyDown(KeyCode.I))
+        {
+            FullReload();
         }
     }
 
@@ -98,5 +103,10 @@ public class GunController : MonoBehaviour
     public void AddAmmo(int amount)
     {
         equippedGun.AddAmmo(amount);
+    }
+
+    private void FullReload()
+    {
+        equippedGun.AddAmmo(99999);
     }
 }
