@@ -185,12 +185,13 @@ public class EnemyBehaviourDrone : MonoBehaviour, IDamageable
                 DecidingToAttack();
             }
 
-            //check the distance to player to leave or not it
-            if (playerFarawayCD < 0)
+            //check the distance to player to lose or not it
+            // DRONE FOLLOW PAYER TO DEATH
+            /*if (playerFarawayCD < 0)
             {
                 LeavePlayer();
             }
-            else playerFarawayCD -= Time.deltaTime;
+            else playerFarawayCD -= Time.deltaTime;*/
 
             //if decided to attack - wiggle
         }
