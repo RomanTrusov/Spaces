@@ -21,6 +21,8 @@ ExportedObj/
 *.unityproj
 *.booproj
 
+*.csproj
+
 # ============ #
 # OS generated #
 # ============ #
@@ -41,4 +43,3 @@ Assets/DialogsData/Day53/Day53_Auction  (Auto-Backup).asset
 Assets/DialogsData/Day53/Day53_Auction  (Auto-Backup).asset.meta
 Builds
 
-.csproj
