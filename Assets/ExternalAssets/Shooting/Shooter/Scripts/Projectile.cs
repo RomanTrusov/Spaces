@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEditor;
 
 public class Projectile : MonoBehaviour 
 {
@@ -53,16 +54,16 @@ public class Projectile : MonoBehaviour
     void OnHitObject(Collider c, Vector3 hitPoint)
     {
         if (c.isTrigger)
-            return;
+        return;
         
         IDamageable damageableObject = c.GetComponent<IDamageable>();
         if (damageableObject != null)
         {
             damageableObject.TakeHit(_damage);
 
-           /* var drone = c.GetComponent<EnemyBehaviourDrone>();
-            if (drone != null)
-                PushTarget(drone, hitPoint);*/
+            /* var drone = c.GetComponent<EnemyBehaviourDrone>();
+             if (drone != null)
+                 PushTarget(drone, hitPoint);*/
 
         }
         GameObject.Destroy(gameObject);
