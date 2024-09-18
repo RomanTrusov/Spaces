@@ -7,12 +7,19 @@ public class DroneBrokenPartsBehaviour : MonoBehaviour
     //for parts throwing
     Vector3 randomDirection;
 
+    [SerializeField] ParticleSystem sparcles;
+
     void Start()
     {
         //invoke destroy after delay
         Invoke(nameof(DestroyParent),3f);
         // get random direction to throw parts
         randomDirection = new Vector3(Random.Range(-2f,2f), Random.Range(-2f, 2f), Random.Range(-2f, 2f));
+
+        //emit sparcles
+        ParticleSystem clone3 = Instantiate(sparcles, transform.position, transform.rotation, transform);
+        clone3.gameObject.SetActive(true);
+
     }
 
 

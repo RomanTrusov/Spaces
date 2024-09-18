@@ -14,6 +14,8 @@ public class EnemyBehaviourDrone : MonoBehaviour, IDamageable
     [SerializeField]
     private ParticleSystem parts;
     [SerializeField]
+    private ParticleSystem sparcles;
+    [SerializeField]
     private ParticleSystem damageShock;
     [SerializeField]
     private ParticleSystem grapplingParticles;
@@ -242,6 +244,8 @@ public class EnemyBehaviourDrone : MonoBehaviour, IDamageable
                 clone.gameObject.SetActive(true);
                 ParticleSystem clone2 = Instantiate(damageShock, transform.position, transform.rotation, transform);
                 clone2.gameObject.SetActive(true);
+                ParticleSystem clone3 = Instantiate(sparcles, transform.position, transform.rotation, transform);
+                clone3.gameObject.SetActive(true);
             }
 
             //reduce timer to set effect once
