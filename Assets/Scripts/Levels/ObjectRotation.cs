@@ -6,15 +6,11 @@ public class ObjectRotation : MonoBehaviour
 {
 
     [SerializeField]
-    private float XRotation;
-    [SerializeField]
-    private float YRotation;
-    [SerializeField]
-    private float ZRotation;
+    private Vector3 XYZRotation;
 
     // Update is called once per frame
     void Update()
     {
-        transform.Rotate(XRotation/100, YRotation/100, ZRotation/100,Space.Self);
+        transform.Rotate(XYZRotation.x/100, XYZRotation.y/100, XYZRotation.z/100, Space.Self);
     }
 }
