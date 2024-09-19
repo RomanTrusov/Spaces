@@ -418,7 +418,9 @@ public class EnemyBehaviourDrone : MonoBehaviour, IDamageable
 
     private void DestroyEnemy()
     {
-
+        //create emitter for coins
+        gameObject.GetComponent<ThrowConsumables>().AddEmitter();
+        //vhange model to obstacles
         if (wholeDrone.activeSelf) wholeDrone.SetActive(false);
         if (!brokenDrone.activeSelf) brokenDrone.SetActive(true);
     }
