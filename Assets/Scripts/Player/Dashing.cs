@@ -37,6 +37,10 @@ public class Dashing : MonoBehaviour
     public ParticleSystem windBackward;
     private ParticleSystem currentWindEffect;
 
+    [Header("SFX")]
+    public bool isSFXEnabled = false;
+    public AudioClip sfx;
+
     //=====================
     private void Start()
     {
@@ -96,6 +100,15 @@ public class Dashing : MonoBehaviour
         //dash wind effect
         ActivateDashWind();
 
+        //play sfx
+        if (!isSFXEnabled)
+        {
+            isSFXEnabled = true;
+            gameObject.GetComponent<AudioSource>().pitch = Random.Range(0.5f, 1f);
+            gameObject.GetComponent<AudioSource>().volume = Random.Range(0.8f, 1f);
+            gameObject.GetComponent<AudioSource>().PlayOneShot(sfx);
+        }
+
         // reset the dash
         Invoke(nameof(ResetDash), dashDuration);
 
@@ -117,6 +130,7 @@ public class Dashing : MonoBehaviour
     private void ResetDash()
     {
         pm.dashing = false;
+        isSFXEnabled = false;
     }
 
     //=====================

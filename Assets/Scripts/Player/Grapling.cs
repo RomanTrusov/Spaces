@@ -43,6 +43,10 @@ public class Grapling : MonoBehaviour
     [Header("Input")]
     public KeyCode grapplingKey = KeyCode.Mouse1;
 
+    [Header("SFX")]
+    public bool isSFXEnabled = false;
+    public AudioClip sfx;
+
     //is grapple
     public bool Grappling { get; private set; }
     private float _cooldownTimer;
@@ -354,6 +358,15 @@ public class Grapling : MonoBehaviour
     {
         pm.activeGrapple = true;// ++set it while holding
 
+        // activate SFX once with random volume and pitch levels
+        if (!isSFXEnabled)
+        {
+            isSFXEnabled = true;
+            gameObject.GetComponent<AudioSource>().pitch = Random.Range(1.5f, 2.5f);
+            gameObject.GetComponent<AudioSource>().volume = Random.Range(0.4f, 0.6f);
+            gameObject.GetComponent<AudioSource>().PlayOneShot(sfx);
+        }
+
         //get direction to the grapple point
         Vector3 destination = (grapplePoint - transform.position).normalized;
         //move player to the grapple point
@@ -382,7 +395,10 @@ public class Grapling : MonoBehaviour
     {
         if (state != GrapplingStates.nothing)
             _cooldownTimer = 0;
-        
+
+        //reload SFX state to enable later activation
+        isSFXEnabled = false;
+
         pm.activeGrapple = false;
         // stop grappling
         Grappling = false;

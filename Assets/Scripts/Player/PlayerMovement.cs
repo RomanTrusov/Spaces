@@ -62,6 +62,10 @@ public class PlayerMovement : MonoBehaviour
     private RaycastHit slopeHit;
     private bool exitingSlope;
 
+    [Header("SFX")]
+    public bool isSFXEnabled = true;
+    public AudioClip sfx;
+
     //for restart
     private Vector3 restartPosition;
 
@@ -485,6 +489,14 @@ public class PlayerMovement : MonoBehaviour
     {
         if (!isInvincible)
         {
+
+            //play SFX once
+
+                //isSFXEnabled = true;
+                gameObject.GetComponent<AudioSource>().pitch = Random.Range(0.5f, 1f);
+                gameObject.GetComponent<AudioSource>().volume = Random.Range(0.8f, 1f);
+                gameObject.GetComponent<AudioSource>().PlayOneShot(sfx);
+
             playerHP -= 1;
             damageAnimator.Play("Base Layer.Cracks",0,0);
             CameraShaker.Instance.ShakePresets.ShortShake3D(6f, 6f, 1);
