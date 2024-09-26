@@ -53975,8 +53975,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   consumableEmitter: {fileID: 4784595444206708241, guid: d21b5c55168efba43b33bce3ae17851c, type: 3}
-  amountOfItems: 5
-  force: 1
+  amountOfItems: 8
+  force: 3
 --- !u!1 &1961858047603273057
 GameObject:
   m_ObjectHideFlags: 0

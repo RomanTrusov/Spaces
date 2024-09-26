@@ -40,8 +40,8 @@ public class ConsumableObject : MonoBehaviour
                 // play sfx once
                 if (!sfxPLayed)
                 {
-                    gameObject.GetComponent<AudioSource>().pitch = Random.Range(0.5f, 1.5f);
-                    gameObject.GetComponent<AudioSource>().volume = Random.Range(0.5f, 1f);
+                    gameObject.GetComponent<AudioSource>().pitch = Random.Range(1.5f, 2.5f);
+                    gameObject.GetComponent<AudioSource>().volume = Random.Range(0.4f, 0.6f);
                     gameObject.GetComponent<AudioSource>().Play();
                     sfxPLayed = true;
                 }
@@ -58,7 +58,7 @@ public class ConsumableObject : MonoBehaviour
             {
 
                 // destroy after delay
-                Destroy(gameObject);
+                Destroy(gameObject,1f);
             }
         }
     }
