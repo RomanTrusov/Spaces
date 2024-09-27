@@ -55,7 +55,7 @@ public class DamageIndicator : MonoBehaviour
             }
         }
 
-        damageLocation = enemy.transform.position;
+        if (enemy != null) damageLocation = enemy.transform.position;
 
         // fix arrow clamp on top and bottom
         damageLocation.y = orientation.position.y;

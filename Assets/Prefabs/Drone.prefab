@@ -53800,6 +53800,8 @@ GameObject:
   - component: {fileID: 1434485792}
   - component: {fileID: 5099215605106149763}
   - component: {fileID: 2698564985263094053}
+  - component: {fileID: 888253546928487022}
+  - component: {fileID: 4039522585986480187}
   m_Layer: 8
   m_Name: BodyCollider
   m_TagString: Untagged
@@ -53977,6 +53979,32 @@ MonoBehaviour:
   consumableEmitter: {fileID: 4784595444206708241, guid: d21b5c55168efba43b33bce3ae17851c, type: 3}
   amountOfItems: 8
   force: 3
+--- !u!114 &888253546928487022
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1957090031}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5707977a50ded0f4aa9682205b9adddd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  EnemyType: 1
+--- !u!114 &4039522585986480187
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1957090031}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1fba96a64452d3d40a447c53516e64c5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  grappleOffset: {x: 0, y: 0, z: 0}
 --- !u!1 &1961858047603273057
 GameObject:
   m_ObjectHideFlags: 0

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEditor;
 
 public class Grapling : MonoBehaviour
 {
@@ -147,8 +148,8 @@ public class Grapling : MonoBehaviour
         //grapped enemy !!change to state enemy
         if (state == GrapplingStates.enemy)
         {
-            //follow grappling hook to the enemy
-            grapplePoint = grappedEnemy.transform.position;
+            //follow grappling hook to the enemy + grapple offset
+            grapplePoint = grappedEnemy.transform.position + grappedEnemy.GetComponent<EnemyGrappleOffset>().grappleOffset;
             lr.SetPosition(1, grapplePoint);
         }
 
@@ -163,7 +164,7 @@ public class Grapling : MonoBehaviour
     //GRAPPLE FUNCTIONS START HERE
     //--------------------------------------------------
 
-    //Start Grapple whlie pressing function
+    //Start Grapple whlie pressing function (OBSOLETTE - DO NOT USE)
     private void StartGrapple()
     {
         //if cooldown
@@ -245,7 +246,25 @@ public class Grapling : MonoBehaviour
             {
                 state = GrapplingStates.enemy;
                 grappedEnemy = hit.transform.gameObject;
-                grappedEnemy.GetComponent<EnemyBehaviourDrone>().state = EnemyBehaviourDrone.EnemyStates.grapped;
+                // *!* This code works only on Drones
+                //grappedEnemy.GetComponent<EnemyBehaviourDrone>().state = EnemyBehaviourDrone.EnemyStates.grapped;
+
+                // Grapplig for different nemey types - get it from script
+                switch (grappedEnemy.GetComponent<GetEnemyType>().EnemyType)
+                {
+                    case GetEnemyType.Types.Drone:
+                        // if enemy drone
+                        grappedEnemy.GetComponent<EnemyBehaviourDrone>().state = EnemyBehaviourDrone.EnemyStates.grapped;
+                        break;
+                    case GetEnemyType.Types.Shadow:
+                        // if enemy drone shadow
+                        grappedEnemy.GetComponent<EnemyBehaviourShadow>().state = EnemyBehaviourShadow.EnemyStates.grapped;
+                        break;
+                    default:
+                        // if enemy os None
+                        break;
+                }
+                
                 pm.grappleSpeedModifier = 0; //do not let to move player to get hin to the enemy directly
                 yVelocityMoodifier = 0; // 0 to not uplift player above enemy
                 pm.GetComponent<Rigidbody>().velocity = Vector3.zero; // stop player
@@ -266,7 +285,24 @@ public class Grapling : MonoBehaviour
                 {
                     state = GrapplingStates.enemy;
                     grappedEnemy = hit.transform.gameObject;
-                    grappedEnemy.GetComponent<EnemyBehaviourDrone>().state = EnemyBehaviourDrone.EnemyStates.grapped;
+                    // *!* This code works only on Drones
+                    //grappedEnemy.GetComponent<EnemyBehaviourDrone>().state = EnemyBehaviourDrone.EnemyStates.grapped;
+
+                    // Grapplig for different nemey types - get it from script
+                    switch (grappedEnemy.GetComponent<GetEnemyType>().EnemyType)
+                    {
+                        case GetEnemyType.Types.Drone:
+                            // if enemy drone
+                            grappedEnemy.GetComponent<EnemyBehaviourDrone>().state = EnemyBehaviourDrone.EnemyStates.grapped;
+                            break;
+                        case GetEnemyType.Types.Shadow:
+                            // if enemy drone shadow
+                            grappedEnemy.GetComponent<EnemyBehaviourShadow>().state = EnemyBehaviourShadow.EnemyStates.grapped;
+                            break;
+                        default:
+                            // if enemy os None
+                            break;
+                    }
                     pm.grappleSpeedModifier = 0; //do not let to move player to get hin to the enemy directly
                     yVelocityMoodifier = 0; // 0 to not uplift player above enemy
                     pm.GetComponent<Rigidbody>().velocity = Vector3.zero; // stop player
@@ -384,10 +420,18 @@ public class Grapling : MonoBehaviour
         }
 
         //if enemy grappled enemy dead - stop grapple
-        if (grappedEnemy && grappedEnemy.GetComponent<EnemyBehaviourDrone>().state == EnemyBehaviourDrone.EnemyStates.dead)
+        if (grappedEnemy)
         {
-            StopGrapple();
+            if ((grappedEnemy.GetComponent<EnemyBehaviourDrone>() && 
+                    grappedEnemy.GetComponent<EnemyBehaviourDrone>().state == EnemyBehaviourDrone.EnemyStates.dead) ||
+                (grappedEnemy.GetComponent<EnemyBehaviourShadow>() && 
+                    grappedEnemy.GetComponent<EnemyBehaviourShadow>().state == EnemyBehaviourShadow.EnemyStates.dead))
+        {
+                StopGrapple();
+            }
         }
+            
+            
     }
 
     //Stop Grapple
@@ -404,8 +448,18 @@ public class Grapling : MonoBehaviour
         Grappling = false;
         //reset enemy grapple
         state = GrapplingStates.nothing;
-        //reset enemy state
-        if (grappedEnemy && grappedEnemy.GetComponent<EnemyBehaviourDrone>().enemyHealth != 0) grappedEnemy.GetComponent<EnemyBehaviourDrone>().state = EnemyBehaviourDrone.EnemyStates.alert;
+
+        //reset enemies states
+        if (grappedEnemy)
+        { //if code component exists and it's health = 0 - end grapple
+            if (grappedEnemy.GetComponent<EnemyBehaviourDrone>() && grappedEnemy.GetComponent<EnemyBehaviourDrone>().enemyHealth != 0) 
+                grappedEnemy.GetComponent<EnemyBehaviourDrone>().state = EnemyBehaviourDrone.EnemyStates.alert;
+            else if (grappedEnemy.GetComponent<EnemyBehaviourShadow>() && grappedEnemy.GetComponent<EnemyBehaviourShadow>().enemyHealth != 0)
+                grappedEnemy.GetComponent<EnemyBehaviourShadow>().state = EnemyBehaviourShadow.EnemyStates.alert;
+
+        } 
+            
+        
         //reset enemygrapple object
         grappedEnemy = null;
         // reset cooldown

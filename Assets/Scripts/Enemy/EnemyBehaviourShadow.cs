@@ -4,15 +4,15 @@ using DG.Tweening;
 using UnityEngine;
 using UnityEditor;
 
-public class EnemyBehaviourDrone : MonoBehaviour, IDamageable
+public class EnemyBehaviourShadow : MonoBehaviour, IDamageable
 {
-    [SerializeField]
-    GameObject avoidIstantDestroy;
+    //[SerializeField]
+    //GameObject avoidIstantDestroy;
 
     [SerializeField]
     private GameObject player;
     [SerializeField]
-    private ParticleSystem parts;
+    /*private ParticleSystem parts;
     [SerializeField]
     private ParticleSystem sparcles;
     [SerializeField]
@@ -25,19 +25,19 @@ public class EnemyBehaviourDrone : MonoBehaviour, IDamageable
     private ParticleSystem lowHP;
     [SerializeField]
     private GameObject lamp;
-    [SerializeField]
-    private Transform _pushBackContainer;
-    [SerializeField]
-    private DroneShootEvasion _shootEvasion;
+    [SerializeField]*/
+    /*private Transform _pushBackContainer;
+    [SerializeField]*/
+    /*private DroneShootEvasion _shootEvasion;*/
     
-    [ColorUsage(true, true)]
+    /*[ColorUsage(true, true)]
     public Color alertLamp;
     [ColorUsage(true, true)]
     public Color attacktLamp;
     [ColorUsage(true, true)]
     public Color preAttacktLamp;
     [ColorUsage(true, true)]
-    public Color damagedtLamp;
+    public Color damagedtLamp;*/
 
     public int enemyHealth;
 
@@ -61,25 +61,24 @@ public class EnemyBehaviourDrone : MonoBehaviour, IDamageable
     float attackCD = 2f;
     float attackCDTimer;
 
-    [SerializeField]
+    /*[SerializeField]
     private GameObject wholeDrone;
     [SerializeField]
-    private GameObject brokenDrone;
+    private GameObject brokenDrone;*/
 
 
 
     float damagedCD = 0.5f;
     float damagedCDTimer;
-    //tuned off right now
     //float playerFarawayCD = 1f;
 
     float decideToAttackCD = 0.7f;
     float decideToAttackCDTimer = 0;
-
+    /*
     public AudioSource sfxBeforeAttack;
     public AudioSource sfxGetHit;
-
-    public DroneShootEvasion DroneShootEvasion => _shootEvasion;
+    */
+    //public DroneShootEvasion DroneShootEvasion => _shootEvasion;
     
     public enum EnemyStates
     {
@@ -95,7 +94,7 @@ public class EnemyBehaviourDrone : MonoBehaviour, IDamageable
     private void Awake()
     {
         //avoid self destrustioc if broken drone is active by accident
-        if (avoidIstantDestroy.activeSelf) avoidIstantDestroy.SetActive(false);
+        //if (avoidIstantDestroy.activeSelf) avoidIstantDestroy.SetActive(false);
     }
 
     void Start()
@@ -125,10 +124,10 @@ public class EnemyBehaviourDrone : MonoBehaviour, IDamageable
         }
 
         //activate smoke particles if 1 HP
-        if (enemyHealth == 1)
+        /*if (enemyHealth == 1)
         {
             lowHP.gameObject.SetActive(true);
-        }
+        }*/
 
         //limit the speed
         if (GetComponent<Rigidbody>().velocity.magnitude > 10f && state == EnemyStates.alert)
@@ -139,7 +138,7 @@ public class EnemyBehaviourDrone : MonoBehaviour, IDamageable
         //if enemy is not alerted - stop invoke
         if (state != EnemyStates.alert) CancelInvoke("DecidingToAttack");
 
-        if (state != EnemyStates.grapped) grapplingParticles.gameObject.SetActive(false);
+        //if (state != EnemyStates.grapped) grapplingParticles.gameObject.SetActive(false);
 
         //=================STATES MACHINE
         //if stay still
@@ -159,15 +158,16 @@ public class EnemyBehaviourDrone : MonoBehaviour, IDamageable
         else if (state == EnemyStates.alert)
         {
             //set lamp to blue in alert state
-            lamp.GetComponent<Renderer>().material.SetColor("_Color", alertLamp);
+            //lamp.GetComponent<Renderer>().material.SetColor("_Color", alertLamp);
             //little air up force
             GetComponent<Rigidbody>().AddForce(Vector3.up * 10f, ForceMode.Force);
             //lift drone if its below player
             if (player.transform.position.y > transform.position.y) GetComponent<Rigidbody>().AddForce(Vector3.up * 10f, ForceMode.Force);
             //turn on gravity
             GetComponent<Rigidbody>().useGravity = true;
-            //rotate to the player
-            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(PlayerDirection()), Time.deltaTime * 5);
+            //rotate to the player exclude Y
+            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(Vector3.Scale(PlayerDirection(), 
+                new Vector3(1, 0, 1))), Time.deltaTime * 5);
             //get lightly random distance to player to follow
             float alertMovingDistanceRand = Random.Range(alertMovingDistance - 2f, alertMovingDistance + 2f);
 
@@ -201,22 +201,24 @@ public class EnemyBehaviourDrone : MonoBehaviour, IDamageable
         }
         else if (state == EnemyStates.preattack)
         {
-            //rotate to the player
-            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(PlayerDirection()), Time.deltaTime * 5);
+            //rotate to the player exclude Y
+            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(Vector3.Scale(PlayerDirection(), 
+                new Vector3(1, 0, 1))), Time.deltaTime * 5);
 
         } 
         else if (state == EnemyStates.attack)
         {
             // red light indocation
-            lamp.GetComponent<Renderer>().material.SetColor("_Color", attacktLamp);
+            //lamp.GetComponent<Renderer>().material.SetColor("_Color", attacktLamp);
             //calculate players'face position
             Vector3 PlayerFace = PlayerDirection() + new Vector3(0, 0.5f, 0);
             //little air up force
             GetComponent<Rigidbody>().AddForce(Vector3.up * 10f, ForceMode.Force);
             //rush on player with more speed
             GetComponent<Rigidbody>().AddForce(PlayerFace.normalized * enemySpeed * 3f);
-            //rotate to the player
-            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(PlayerDirection()), Time.deltaTime * 5);
+            //rotate to the player exclude Y
+            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(Vector3.Scale(PlayerDirection(), 
+                new Vector3(1, 0, 1))), Time.deltaTime * 5);
             //if raycasted player - hit him
             if (Physics.Raycast(transform.position, PlayerDirection(), out hit, 2f, playerLayer))
             {
@@ -226,7 +228,7 @@ public class EnemyBehaviourDrone : MonoBehaviour, IDamageable
         else if (state == EnemyStates.damaged)
         {
             //set lamp to damaged
-            lamp.GetComponent<Renderer>().material.SetColor("_Color", damagedtLamp);
+            //lamp.GetComponent<Renderer>().material.SetColor("_Color", damagedtLamp);
 
             //stop the velocity and off gravity OLD
             //GetComponent<Rigidbody>().useGravity = false;
@@ -237,7 +239,7 @@ public class EnemyBehaviourDrone : MonoBehaviour, IDamageable
 
 
 
-
+            /*
             //activate particle effect
             if (damagedCDTimer == damagedCD)
             {
@@ -247,7 +249,7 @@ public class EnemyBehaviourDrone : MonoBehaviour, IDamageable
                 clone2.gameObject.SetActive(true);
                 ParticleSystem clone3 = Instantiate(sparcles, transform.position, transform.rotation, transform);
                 clone3.gameObject.SetActive(true);
-            }
+            }*/
 
             //reduce timer to set effect once
             damagedCDTimer -= Time.deltaTime;
@@ -260,9 +262,9 @@ public class EnemyBehaviourDrone : MonoBehaviour, IDamageable
         else if (state == EnemyStates.grapped)
         {
             //set lamp to damaged
-            lamp.GetComponent<Renderer>().material.SetColor("_Color", damagedtLamp);
+            //lamp.GetComponent<Renderer>().material.SetColor("_Color", damagedtLamp);
 
-            if (!grapplingParticles.gameObject.activeSelf) grapplingParticles.gameObject.SetActive(true);
+            //if (!grapplingParticles.gameObject.activeSelf) grapplingParticles.gameObject.SetActive(true);
 
             //stop the velocity and off gravity
             GetComponent<Rigidbody>().velocity = Vector3.zero;
@@ -304,8 +306,8 @@ public class EnemyBehaviourDrone : MonoBehaviour, IDamageable
         if (rnd >= 0.75f)
         {
             //activate sfx
-            sfxBeforeAttack.pitch = Random.Range(0.5f,1.5f);
-            sfxBeforeAttack.Play();
+            /*sfxBeforeAttack.pitch = Random.Range(0.5f,1.5f);
+            sfxBeforeAttack.Play();*/
             Invoke(nameof(ActivatePreAttackState),0.5f);
             
         } else
@@ -345,12 +347,13 @@ public class EnemyBehaviourDrone : MonoBehaviour, IDamageable
     public void TakeHit(float damage)
     {
         //play danage sound
+        /*
         sfxGetHit.pitch = Random.Range(0.5f, 1.5f);
-        sfxGetHit.Play();
+        sfxGetHit.Play();*/
         // reduce health
         enemyHealth -= (int)damage;
         //set state damaged
-        state = EnemyBehaviourDrone.EnemyStates.damaged;
+        state = EnemyBehaviourShadow.EnemyStates.damaged;
         ResetAttackedTimer();
     }
 
@@ -365,13 +368,13 @@ public class EnemyBehaviourDrone : MonoBehaviour, IDamageable
         GetComponent<Rigidbody>().velocity = Vector3.zero;
 
         // orange light indocation
-        lamp.GetComponent<Renderer>().material.SetColor("_Color", preAttacktLamp);
+        //lamp.GetComponent<Renderer>().material.SetColor("_Color", preAttacktLamp);
 
         //gravity off
         GetComponent<Rigidbody>().useGravity = false;
 
         //wiggle drone
-        GetComponent<Animator>().Play("Base Layer.Wiggle", 0, 0);
+        //GetComponent<Animator>().Play("Base Layer.Wiggle", 0, 0);
         Invoke(nameof(AttackAfterPreAttack), 0.8f);
 
         //create a UI arrow if player is near
@@ -421,8 +424,10 @@ public class EnemyBehaviourDrone : MonoBehaviour, IDamageable
     {
         //create emitter for coins
         gameObject.GetComponent<ThrowConsumables>().AddEmitter();
+        Destroy(transform.parent.gameObject);
         //vhange model to obstacles
+        /*
         if (wholeDrone.activeSelf) wholeDrone.SetActive(false);
-        if (!brokenDrone.activeSelf) brokenDrone.SetActive(true);
+        if (!brokenDrone.activeSelf) brokenDrone.SetActive(true);*/
     }
 }
