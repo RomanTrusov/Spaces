@@ -25,6 +25,8 @@ public class EnemyBehaviourShadow : MonoBehaviour, IDamageable
     private float laserAttackTimer = 0;
     //bools for laser attck states
     private bool[] laserAttackStates = new bool[6];
+    private float laserZScale;
+    private float defaultLaserBeam = 30f;
     // coordinates for start and end laser
     private Vector3 pointAForlaser;
     private Vector3 pointBForlaser;
@@ -246,10 +248,21 @@ public class EnemyBehaviourShadow : MonoBehaviour, IDamageable
                 if (!laserBeam.activeSelf) laserBeam.SetActive(true);
                 //increase Lazer Z size
                 lerpTime += Time.deltaTime;
-                laserIncreaseSize = Mathf.Lerp(0, 30, Mathf.Clamp01(lerpTime / 0.5f));
+
+                //find end length for the lazer
+                if (Physics.Raycast(laserBeam.transform.position, laserBeam.transform.TransformDirection(Vector3.forward), out hit, defaultLaserBeam, LayerMask.GetMask("whatIsGround")))
+                {
+                    //set Z scale if laser meets the ground
+                    laserZScale = hit.distance;
+                    //else it's defaultLaserBeam
+                }
+                else laserZScale = defaultLaserBeam;
+
+                laserIncreaseSize = Mathf.Lerp(0, laserZScale, Mathf.Clamp01(lerpTime / 0.5f));
                 //apply new scale Z
                 Vector3 currentScale = laserBeam.transform.localScale;
                 laserBeam.transform.localScale = new Vector3(currentScale.x, currentScale.y, laserIncreaseSize);
+
             }
             // Rotate laser to the Point B
             if (laserAttackTimer > 1f && !laserAttackStates[2])
@@ -264,19 +277,40 @@ public class EnemyBehaviourShadow : MonoBehaviour, IDamageable
                 // rotate the laser
                 float rotationSpeed = 35f;
                 laserBeam.transform.rotation = Quaternion.RotateTowards(laserBeam.transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+
+                //cut lazer if collider infront ground
+                RaycastHit hit;
+                //throw raycast along the laser on whole length
+                Vector3 currentScale = laserBeam.transform.localScale;
+                if (Physics.Raycast(laserBeam.transform.position,laserBeam.transform.TransformDirection(Vector3.forward), out hit, defaultLaserBeam, LayerMask.GetMask("whatIsGround")))
+                {
+                    //change Z scale if laser meets the ground
+                    laserBeam.transform.localScale = new Vector3(currentScale.x,currentScale.y, hit.distance);
+                } else
+                {
+                    //set Z default defaultLaserBeam
+                    laserBeam.transform.localScale = new Vector3(currentScale.x, currentScale.y, defaultLaserBeam);
+                }
+
+
             }
+            //decrease the laser
             if (laserAttackTimer > 3f && !laserAttackStates[3])
             {
                 //DO WHILE NEXT STATE
-                //decrease the laser
                 laserAttackStates[2] = true;
                 lerpTime += Time.deltaTime;
-                Debug.Log(lerpTime);
-                laserIncreaseSize = Mathf.Lerp(30, 0, Mathf.Clamp01(lerpTime / 0.2f));
-                Debug.Log(laserIncreaseSize);
+                //find end length for the lazer
+                if (Physics.Raycast(laserBeam.transform.position, laserBeam.transform.TransformDirection(Vector3.forward), out hit, defaultLaserBeam, LayerMask.GetMask("whatIsGround")))
+                {
+                    //set Z scale if laser meets the ground
+                    laserZScale = hit.distance;
+                    //else it's defaultLaserBeam
+                }
+                else laserZScale = defaultLaserBeam;
+                laserIncreaseSize = Mathf.Lerp(laserZScale, 0, Mathf.Clamp01(lerpTime / 0.2f));
                 //apply new scale Z
                 Vector3 currentScale = laserBeam.transform.localScale;
-                Debug.Log(currentScale);
                 laserBeam.transform.localScale = new Vector3(currentScale.x, currentScale.y, laserIncreaseSize);
                 //end decreasing ig lazes Z small
                 if (laserBeam.transform.localScale.z < 0.1f)
@@ -305,56 +339,25 @@ public class EnemyBehaviourShadow : MonoBehaviour, IDamageable
             //rotate to the player exclude Y
             transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(Vector3.Scale(PlayerDirection(), 
                 new Vector3(1, 0, 1))), Time.deltaTime * 5);
-            //OLD attack
-            /*
-            //if raycasted player - hit him
-            if (Physics.Raycast(transform.position, PlayerDirection(), out hit, 2f, playerLayer))
-            {
-                AttackPlayer();
-            }*/
+
         }
         else if (state == EnemyStates.damaged)
         {
-            //set lamp to damaged
-            //lamp.GetComponent<Renderer>().material.SetColor("_Color", damagedtLamp);
 
-            //stop the velocity and off gravity OLD
-            //GetComponent<Rigidbody>().useGravity = false;
+            //add some random jitter after take damage
+            float jitter = Random.Range(-0.1f, 0.1f);
+            transform.position = transform.position + new Vector3(jitter, jitter, jitter);
 
-            //add some jitter after take damage
-            float jitter = Random.Range(-0.2f, 0.2f);
-         //   transform.position = transform.position + new Vector3(jitter, jitter, jitter);
-
-
-
-            /*
-            //activate particle effect
-            if (damagedCDTimer == damagedCD)
-            {
-                ParticleSystem clone = Instantiate(parts, transform.position, transform.rotation, transform);
-                clone.gameObject.SetActive(true);
-                ParticleSystem clone2 = Instantiate(damageShock, transform.position, transform.rotation, transform);
-                clone2.gameObject.SetActive(true);
-                ParticleSystem clone3 = Instantiate(sparcles, transform.position, transform.rotation, transform);
-                clone3.gameObject.SetActive(true);
-            }*/
-
-            //reduce timer to set effect once
+            //set state to alert once
             damagedCDTimer -= Time.deltaTime;
-            if (damagedCDTimer < 0)
-            {
-                state = EnemyStates.alert;
-            }
+            if (damagedCDTimer < 0) state = EnemyStates.alert;
             else state = EnemyStates.damaged;
+
+            Debug.Log("ENEMY IS DAMAGED");
+
         }
         else if (state == EnemyStates.grapped)
         {
-            //set lamp to damaged
-            //lamp.GetComponent<Renderer>().material.SetColor("_Color", damagedtLamp);
-
-            //if (!grapplingParticles.gameObject.activeSelf) grapplingParticles.gameObject.SetActive(true);
-
-            //stop the velocity and off gravity
             GetComponent<Rigidbody>().velocity = Vector3.zero;
             GetComponent<Rigidbody>().useGravity = false;
 
@@ -363,6 +366,8 @@ public class EnemyBehaviourShadow : MonoBehaviour, IDamageable
         {
             
             StopPlayerBeenAttacked();
+
+            StopAttack();
 
             //turn off gravity
             GetComponent<Rigidbody>().useGravity = false;
@@ -441,10 +446,11 @@ public class EnemyBehaviourShadow : MonoBehaviour, IDamageable
         // back to alert state after two seconds of rushing
         //Invoke(nameof(AlertAfterAttack), 2f);
         //turn on gravity
-        GetComponent<Rigidbody>().useGravity = true;
+        //GetComponent<Rigidbody>().useGravity = true;
         //reset the alert state
         state = EnemyStates.attack;
     }
+
 
     public void TakeHit(float damage)
     {
@@ -455,7 +461,8 @@ public class EnemyBehaviourShadow : MonoBehaviour, IDamageable
         // reduce health
         enemyHealth -= (int)damage;
         //set state damaged
-        state = EnemyBehaviourShadow.EnemyStates.damaged;
+        state = EnemyStates.damaged;
+        //initiate damage
         ResetAttackedTimer();
     }
 
@@ -524,6 +531,19 @@ public class EnemyBehaviourShadow : MonoBehaviour, IDamageable
     public void ResetAttackedTimer()
     {//access to other scripts
         damagedCDTimer = damagedCD;
+    }
+
+    public void StopAttack()
+    {
+        //deactivale beam
+        if (laserBeam.activeSelf) laserBeam.SetActive(false);
+        //make conditions to stop laser attack
+        laserAttackTimer = 0;
+        lerpTime = 0;
+        laserAttackStates = new bool[6];
+        //reset laser timer and scale
+        laserIncreaseSize = 0;
+        laserBeam.transform.localScale = Vector3.Scale(laserBeam.transform.localScale, new Vector3(1, 1, 0));
     }
 
     private void DestroyEnemy()

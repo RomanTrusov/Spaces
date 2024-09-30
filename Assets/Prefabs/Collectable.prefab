@@ -99,7 +99,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player: {fileID: 0}
   moveSpeed: 8
-  shrinkSpeed: 5
+  shrinkSpeed: 6
   collectionDistance: 3
 --- !u!82 &2519419838236610938
 AudioSource:

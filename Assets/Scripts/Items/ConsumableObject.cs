@@ -34,7 +34,7 @@ public class ConsumableObject : MonoBehaviour
         if (isMovingToPlayer)
         {
 
-            if (transform.localScale.magnitude >= 0.05f)
+            if (transform.localScale.magnitude >= 0.01f)
             {
 
                 // play sfx once
@@ -56,9 +56,9 @@ public class ConsumableObject : MonoBehaviour
             // Destroy the object when it's small enough
             else
             {
-
+                gameObject.SetActive(false);
                 // destroy after delay
-                Destroy(gameObject,1f);
+                Destroy(gameObject,1);
             }
         }
     }
