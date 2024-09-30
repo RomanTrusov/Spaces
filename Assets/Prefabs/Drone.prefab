@@ -53802,6 +53802,7 @@ GameObject:
   - component: {fileID: 2698564985263094053}
   - component: {fileID: 888253546928487022}
   - component: {fileID: 4039522585986480187}
+  - component: {fileID: 5578063139669783133}
   m_Layer: 8
   m_Name: BodyCollider
   m_TagString: Untagged
@@ -54005,6 +54006,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   grappleOffset: {x: 0, y: 0, z: 0}
+--- !u!114 &5578063139669783133
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1957090031}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8de1edd99d54d2646a15de41074f5560, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pushForce: 5
 --- !u!1 &1961858047603273057
 GameObject:
   m_ObjectHideFlags: 0

@@ -9,13 +9,30 @@ public class EnemyBehaviourShadow : MonoBehaviour, IDamageable
     //[SerializeField]
     //GameObject avoidIstantDestroy;
 
+    [Header("Player object will be set automacally")]
     [SerializeField]
     private GameObject player;
+    [Header("Particles for preattack state")]
     [SerializeField]
-    /*private ParticleSystem parts;
+    private ParticleSystem circleSparkles;
     [SerializeField]
-    private ParticleSystem sparcles;
+    private ParticleSystem centerSegment;
+
+    [Header("Params for laser attack")]
     [SerializeField]
+    private GameObject laserBeam;
+    //Timer for laser attck
+    private float laserAttackTimer = 0;
+    //bools for laser attck states
+    private bool[] laserAttackStates = new bool[6];
+    // coordinates for start and end laser
+    private Vector3 pointAForlaser;
+    private Vector3 pointBForlaser;
+    private float laserIncreaseSize = 0;
+    private float lerpTime = 0;
+
+
+    /*[SerializeField]
     private ParticleSystem damageShock;
     [SerializeField]
     private ParticleSystem grapplingParticles;
@@ -29,7 +46,7 @@ public class EnemyBehaviourShadow : MonoBehaviour, IDamageable
     /*private Transform _pushBackContainer;
     [SerializeField]*/
     /*private DroneShootEvasion _shootEvasion;*/
-    
+
     /*[ColorUsage(true, true)]
     public Color alertLamp;
     [ColorUsage(true, true)]
@@ -160,7 +177,7 @@ public class EnemyBehaviourShadow : MonoBehaviour, IDamageable
             //set lamp to blue in alert state
             //lamp.GetComponent<Renderer>().material.SetColor("_Color", alertLamp);
             //little air up force
-            GetComponent<Rigidbody>().AddForce(Vector3.up * 10f, ForceMode.Force);
+            GetComponent<Rigidbody>().AddForce(Vector3.up * 5f, ForceMode.Force);
             //lift drone if its below player
             if (player.transform.position.y > transform.position.y) GetComponent<Rigidbody>().AddForce(Vector3.up * 10f, ForceMode.Force);
             //turn on gravity
@@ -182,6 +199,7 @@ public class EnemyBehaviourShadow : MonoBehaviour, IDamageable
             }
 
             //deciding to attack or not every second of alerting
+
             decideToAttackCDTimer -= Time.deltaTime;
             if (decideToAttackCDTimer < 0)
             {
@@ -206,24 +224,94 @@ public class EnemyBehaviourShadow : MonoBehaviour, IDamageable
                 new Vector3(1, 0, 1))), Time.deltaTime * 5);
 
         } 
+        // while attacking the player
         else if (state == EnemyStates.attack)
         {
-            // red light indocation
-            //lamp.GetComponent<Renderer>().material.SetColor("_Color", attacktLamp);
-            //calculate players'face position
-            Vector3 PlayerFace = PlayerDirection() + new Vector3(0, 0.5f, 0);
-            //little air up force
-            GetComponent<Rigidbody>().AddForce(Vector3.up * 10f, ForceMode.Force);
-            //rush on player with more speed
-            GetComponent<Rigidbody>().AddForce(PlayerFace.normalized * enemySpeed * 3f);
+            //Increase laser timer
+            laserAttackTimer += Time.deltaTime;
+            // Find Point A: if timer and 1st state isn't done
+            if (laserAttackTimer > 0.1f && !laserAttackStates[0])
+            {
+                //DO ONCE
+                //calculate player's position for Point A
+                pointAForlaser = PlayerDirection();
+                laserBeam.transform.rotation = Quaternion.LookRotation(pointAForlaser);
+                laserAttackStates[0] = true;
+            }
+            // Expand the laser to Point A
+            if (laserAttackTimer > 0.5f && !laserAttackStates[1])
+            {
+                //DO WHILE NEXT STATE
+                //activate object
+                if (!laserBeam.activeSelf) laserBeam.SetActive(true);
+                //increase Lazer Z size
+                lerpTime += Time.deltaTime;
+                laserIncreaseSize = Mathf.Lerp(0, 30, Mathf.Clamp01(lerpTime / 0.5f));
+                //apply new scale Z
+                Vector3 currentScale = laserBeam.transform.localScale;
+                laserBeam.transform.localScale = new Vector3(currentScale.x, currentScale.y, laserIncreaseSize);
+            }
+            // Rotate laser to the Point B
+            if (laserAttackTimer > 1f && !laserAttackStates[2])
+            {
+                //DO WHILE NEXT STATE
+                laserAttackStates[1] = true;
+                lerpTime = 0;
+                // get direction to player position
+                Vector3 diresctionToB = player.transform.position - laserBeam.transform.position;
+                // get target rotation
+                Quaternion targetRotation = Quaternion.LookRotation(diresctionToB);
+                // rotate the laser
+                float rotationSpeed = 35f;
+                laserBeam.transform.rotation = Quaternion.RotateTowards(laserBeam.transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+            }
+            if (laserAttackTimer > 3f && !laserAttackStates[3])
+            {
+                //DO WHILE NEXT STATE
+                //decrease the laser
+                laserAttackStates[2] = true;
+                lerpTime += Time.deltaTime;
+                Debug.Log(lerpTime);
+                laserIncreaseSize = Mathf.Lerp(30, 0, Mathf.Clamp01(lerpTime / 0.2f));
+                Debug.Log(laserIncreaseSize);
+                //apply new scale Z
+                Vector3 currentScale = laserBeam.transform.localScale;
+                Debug.Log(currentScale);
+                laserBeam.transform.localScale = new Vector3(currentScale.x, currentScale.y, laserIncreaseSize);
+                //end decreasing ig lazes Z small
+                if (laserBeam.transform.localScale.z < 0.1f)
+                {
+                    laserAttackStates[3] = true;
+                    //deactivate object
+                    if (laserBeam.activeSelf) laserBeam.SetActive(false);
+                }
+                        
+            }
+
+            //reset the timer and laser attack states
+            if (laserAttackTimer > 10f || laserAttackStates[3])
+            {
+                laserAttackTimer = 0;
+                lerpTime = 0;
+                laserAttackStates = new bool[6];
+                //reset laser timer and scale
+                laserIncreaseSize = 0;
+                laserBeam.transform.localScale = Vector3.Scale(laserBeam.transform.localScale, new Vector3(1, 1, 0));
+                //reset the state to alert
+                state = EnemyStates.alert;
+                
+            }
+
             //rotate to the player exclude Y
             transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(Vector3.Scale(PlayerDirection(), 
                 new Vector3(1, 0, 1))), Time.deltaTime * 5);
+            //OLD attack
+            /*
             //if raycasted player - hit him
             if (Physics.Raycast(transform.position, PlayerDirection(), out hit, 2f, playerLayer))
             {
                 AttackPlayer();
-            }
+            }*/
         }
         else if (state == EnemyStates.damaged)
         {
@@ -273,8 +361,22 @@ public class EnemyBehaviourShadow : MonoBehaviour, IDamageable
         }
         else if (state == EnemyStates.dead)
         {
+            
             StopPlayerBeenAttacked();
-            DestroyEnemy();
+
+            //turn off gravity
+            GetComponent<Rigidbody>().useGravity = false;
+            
+            //shrink enemy
+            if (transform.localScale.x >= 0 && transform.localScale.y >= 0 && transform.localScale.z >= 0)
+            {
+                float sppedOfShrink = 0.95f;
+                transform.localScale = Vector3.Scale(transform.localScale,new Vector3(sppedOfShrink, sppedOfShrink, sppedOfShrink));
+            }
+
+            //destroy after 1 second
+            Invoke(nameof(DestroyEnemy), 0.7f);
+            
         }
     }
 
@@ -337,7 +439,7 @@ public class EnemyBehaviourShadow : MonoBehaviour, IDamageable
     {
         
         // back to alert state after two seconds of rushing
-        Invoke(nameof(AlertAfterAttack), 2f);
+        //Invoke(nameof(AlertAfterAttack), 2f);
         //turn on gravity
         GetComponent<Rigidbody>().useGravity = true;
         //reset the alert state
@@ -370,12 +472,16 @@ public class EnemyBehaviourShadow : MonoBehaviour, IDamageable
         // orange light indocation
         //lamp.GetComponent<Renderer>().material.SetColor("_Color", preAttacktLamp);
 
+        circleSparkles.Play();
+        centerSegment.Play();
+
         //gravity off
         GetComponent<Rigidbody>().useGravity = false;
 
         //wiggle drone
         //GetComponent<Animator>().Play("Base Layer.Wiggle", 0, 0);
-        Invoke(nameof(AttackAfterPreAttack), 0.8f);
+
+        Invoke(nameof(AttackAfterPreAttack), 1.5f);
 
         //create a UI arrow if player is near
         if (Vector3.Distance(transform.position, player.transform.position) < 20)

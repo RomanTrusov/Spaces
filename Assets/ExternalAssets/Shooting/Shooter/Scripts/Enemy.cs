@@ -24,9 +24,9 @@ public class Enemy : MonoBehaviour
 
     public void TakeHit(float damage, Vector3 hitPoint, Vector3 hitDirection)
     {
-        if (damage >= Health)
+        /*if (damage >= Health)
             Destroy(Instantiate(deathEffect.gameObject, hitPoint, Quaternion.FromToRotation(Vector3.forward, hitDirection)) as GameObject, deathEffect.startLifetime);
-        TakeDamage(damage);
+        TakeDamage(damage);*/
     }
 
     public void TakeDamage(float damage)

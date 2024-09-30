@@ -5,6 +5,9 @@ using UnityEditor;
 
 public class ThrowConsumables : MonoBehaviour
 {
+
+    [Header("This script will throw consumables after enemy's death.\n")]
+
     [SerializeField] private GameObject consumableEmitter;
     [SerializeField] int amountOfItems;
     [SerializeField] float force;

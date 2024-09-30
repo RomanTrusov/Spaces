@@ -90,14 +90,23 @@ public class MeleAttackTrigger : MonoBehaviour
     private void InitiateAttackOnEnemy(Collider other)
     {
         float damageMultiplier = _grapling.Grappling ? _grapplingDamageMult : 1;
+        var enemyTakeDamage = other.GetComponent<EnemyTakeHit>();
+        if (enemyTakeDamage != null)
+        {
+            enemyTakeDamage.TakeHit(playerMeleAttack.playerDamage * (int)damageMultiplier, other.transform.position - transform.position);
+            _gunController.AddAmmo(_ammoAddingPerHit);
+        }
 
-        var droneBehaviour = other.GetComponent<EnemyBehaviourDrone>();
+        //this code works with drone only
+        /*var droneBehaviour = other.GetComponent<EnemyBehaviourDrone>();
         if (droneBehaviour != null)
         {
             droneBehaviour.TakeHit(playerMeleAttack.playerDamage * (int)damageMultiplier);
             droneBehaviour.Push(other.transform.position - transform.position, 5f);
             _gunController.AddAmmo(_ammoAddingPerHit);
-        }
+        }*/
+
+
     }
 
     private void InitiatePunchEffect()

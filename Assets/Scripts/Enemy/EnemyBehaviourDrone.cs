@@ -9,6 +9,7 @@ public class EnemyBehaviourDrone : MonoBehaviour, IDamageable
     [SerializeField]
     GameObject avoidIstantDestroy;
 
+    [Header("Player object will be set automacally")]
     [SerializeField]
     private GameObject player;
     [SerializeField]
