@@ -7,6 +7,7 @@ Obj/
 UnityGenerated/
 Library/
 Assets/AssetStoreTools*
+*.dwlt
 
 # ===================================== #
 # Visual Studio / MonoDevelop generated #
