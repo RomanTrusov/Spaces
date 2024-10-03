@@ -308,21 +308,27 @@ public class EnemyBehaviourShadow : MonoBehaviour, IDamageable
 
                 //cut lazer if collider infront ground
                 RaycastHit hit;
+                //set the distance to check if raycast hits the player
+                float playerDistanceHit;
                 //throw raycast along the laser on whole length
                 Vector3 currentScale = laserBeam.transform.localScale;
                 if (Physics.Raycast(laserBeam.transform.position, laserBeam.transform.TransformDirection(Vector3.forward), out hit, defaultLaserBeam, LayerMask.GetMask("whatIsGround")))
                 {
                     //change Z scale if laser meets the ground
                     laserBeam.transform.localScale = new Vector3(currentScale.x, currentScale.y, hit.distance);
+                    //set the attack raycast to HIT distance
+                    playerDistanceHit = hit.distance;
                 }
                 else
                 {
                     //set Z default defaultLaserBeam
                     laserBeam.transform.localScale = new Vector3(currentScale.x, currentScale.y, defaultLaserBeam);
+                    //set the attack raycast to default
+                    playerDistanceHit = defaultLaserBeam;
                 }
 
                 //if lazer hits player - hit th player once
-                if (Physics.Raycast(laserBeam.transform.position, laserBeam.transform.TransformDirection(Vector3.forward), hit.distance, LayerMask.GetMask("Player")))
+                if (Physics.Raycast(laserBeam.transform.position, laserBeam.transform.TransformDirection(Vector3.forward), playerDistanceHit, LayerMask.GetMask("Player")))
                 {
                     laserBeam.GetComponent<HitThePlayer>().HitPlayerOnce();
                 }
