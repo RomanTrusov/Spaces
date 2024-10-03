@@ -26,37 +26,13 @@ public class EnemyBehaviourShadow : MonoBehaviour, IDamageable
     //bools for laser attck states
     private bool[] laserAttackStates = new bool[6];
     private float laserZScale;
-    private float defaultLaserBeam = 30f;
+    private float defaultLaserBeam = 500f;
     // coordinates for start and end laser
     private Vector3 pointAForlaser;
     private Vector3 pointBForlaser;
     private float laserIncreaseSize = 0;
     private float lerpTime = 0;
 
-
-    /*[SerializeField]
-    private ParticleSystem damageShock;
-    [SerializeField]
-    private ParticleSystem grapplingParticles;
-    [SerializeField]
-    private ParticleSystem dust;
-    [SerializeField]
-    private ParticleSystem lowHP;
-    [SerializeField]
-    private GameObject lamp;
-    [SerializeField]*/
-    /*private Transform _pushBackContainer;
-    [SerializeField]*/
-    /*private DroneShootEvasion _shootEvasion;*/
-
-    /*[ColorUsage(true, true)]
-    public Color alertLamp;
-    [ColorUsage(true, true)]
-    public Color attacktLamp;
-    [ColorUsage(true, true)]
-    public Color preAttacktLamp;
-    [ColorUsage(true, true)]
-    public Color damagedtLamp;*/
 
     public int enemyHealth;
 
@@ -80,24 +56,13 @@ public class EnemyBehaviourShadow : MonoBehaviour, IDamageable
     float attackCD = 2f;
     float attackCDTimer;
 
-    /*[SerializeField]
-    private GameObject wholeDrone;
-    [SerializeField]
-    private GameObject brokenDrone;*/
-
-
-
     float damagedCD = 0.5f;
     float damagedCDTimer;
-    //float playerFarawayCD = 1f;
 
     float decideToAttackCD = 0.7f;
     float decideToAttackCDTimer = 0;
-    /*
-    public AudioSource sfxBeforeAttack;
-    public AudioSource sfxGetHit;
-    */
-    //public DroneShootEvasion DroneShootEvasion => _shootEvasion;
+
+    private Coroutine enemyAttackCoroutine;
     
     public enum EnemyStates
     {
@@ -229,7 +194,72 @@ public class EnemyBehaviourShadow : MonoBehaviour, IDamageable
         // while attacking the player
         else if (state == EnemyStates.attack)
         {
-            //Increase laser timer
+
+            //if coroutine wasn't set - set it
+            if (enemyAttackCoroutine == null)
+            {
+                enemyAttackCoroutine = StartCoroutine(DoLaserAttack());
+            }
+
+            //rotate to the player exclude Y
+            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(Vector3.Scale(PlayerDirection(), 
+                new Vector3(1, 0, 1))), Time.deltaTime * 5);
+
+        }
+        else if (state == EnemyStates.damaged)
+        {
+
+            //add some random jitter after take damage
+            float jitter = Random.Range(-0.1f, 0.1f);
+            transform.position = transform.position + new Vector3(jitter, jitter, jitter);
+
+            //set state to alert once
+            damagedCDTimer -= Time.deltaTime;
+            if (damagedCDTimer < 0) state = EnemyStates.alert;
+            else state = EnemyStates.damaged;
+
+            Debug.Log("ENEMY IS DAMAGED");
+
+        }
+        else if (state == EnemyStates.grapped)
+        {
+            GetComponent<Rigidbody>().velocity = Vector3.zero;
+            GetComponent<Rigidbody>().useGravity = false;
+
+        }
+        else if (state == EnemyStates.dead)
+        {
+            
+            StopPlayerBeenAttacked();
+
+            StopAttack();
+
+            //turn off gravity
+            GetComponent<Rigidbody>().useGravity = false;
+            
+            //shrink enemy
+            if (transform.localScale.x >= 0 && transform.localScale.y >= 0 && transform.localScale.z >= 0)
+            {
+                float sppedOfShrink = 0.95f;
+                transform.localScale = Vector3.Scale(transform.localScale,new Vector3(sppedOfShrink, sppedOfShrink, sppedOfShrink));
+            }
+
+            //destroy after 1 second
+            Invoke(nameof(DestroyEnemy), 0.7f);
+            
+        }
+    }
+
+    IEnumerator DoLaserAttack()
+    {
+        //initiate tiers and array states
+        laserAttackTimer = 0f;
+        lerpTime = 0f;
+        laserAttackStates = new bool[6];
+
+        while (laserAttackTimer <= 10f && laserAttackStates[3] == false)
+        {
+            //laser attack procedure
             laserAttackTimer += Time.deltaTime;
             // Find Point A: if timer and 1st state isn't done
             if (laserAttackTimer > 0.1f && !laserAttackStates[0])
@@ -282,11 +312,12 @@ public class EnemyBehaviourShadow : MonoBehaviour, IDamageable
                 RaycastHit hit;
                 //throw raycast along the laser on whole length
                 Vector3 currentScale = laserBeam.transform.localScale;
-                if (Physics.Raycast(laserBeam.transform.position,laserBeam.transform.TransformDirection(Vector3.forward), out hit, defaultLaserBeam, LayerMask.GetMask("whatIsGround")))
+                if (Physics.Raycast(laserBeam.transform.position, laserBeam.transform.TransformDirection(Vector3.forward), out hit, defaultLaserBeam, LayerMask.GetMask("whatIsGround")))
                 {
                     //change Z scale if laser meets the ground
-                    laserBeam.transform.localScale = new Vector3(currentScale.x,currentScale.y, hit.distance);
-                } else
+                    laserBeam.transform.localScale = new Vector3(currentScale.x, currentScale.y, hit.distance);
+                }
+                else
                 {
                     //set Z default defaultLaserBeam
                     laserBeam.transform.localScale = new Vector3(currentScale.x, currentScale.y, defaultLaserBeam);
@@ -319,72 +350,24 @@ public class EnemyBehaviourShadow : MonoBehaviour, IDamageable
                     //deactivate object
                     if (laserBeam.activeSelf) laserBeam.SetActive(false);
                 }
-                        
             }
 
-            //reset the timer and laser attack states
-            if (laserAttackTimer > 10f || laserAttackStates[3])
-            {
-                laserAttackTimer = 0;
-                lerpTime = 0;
-                laserAttackStates = new bool[6];
-                //reset laser timer and scale
-                laserIncreaseSize = 0;
-                laserBeam.transform.localScale = Vector3.Scale(laserBeam.transform.localScale, new Vector3(1, 1, 0));
-                //reset the state to alert
-                state = EnemyStates.alert;
-                
-            }
-
-            //rotate to the player exclude Y
-            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(Vector3.Scale(PlayerDirection(), 
-                new Vector3(1, 0, 1))), Time.deltaTime * 5);
-
+            // Wait for the next frame
+            yield return null;
         }
-        else if (state == EnemyStates.damaged)
-        {
 
-            //add some random jitter after take damage
-            float jitter = Random.Range(-0.1f, 0.1f);
-            transform.position = transform.position + new Vector3(jitter, jitter, jitter);
+        //lereset laser attack vars and states
+        laserAttackTimer = 0;
+        lerpTime = 0;
+        laserAttackStates = new bool[6];
+        //reset laser timer and scale
+        laserIncreaseSize = 0;
+        laserBeam.transform.localScale = Vector3.Scale(laserBeam.transform.localScale, new Vector3(1, 1, 0));
+        //reset the state to alert
+        state = EnemyStates.alert;
+        enemyAttackCoroutine = null;
 
-            //set state to alert once
-            damagedCDTimer -= Time.deltaTime;
-            if (damagedCDTimer < 0) state = EnemyStates.alert;
-            else state = EnemyStates.damaged;
-
-            Debug.Log("ENEMY IS DAMAGED");
-
-        }
-        else if (state == EnemyStates.grapped)
-        {
-            GetComponent<Rigidbody>().velocity = Vector3.zero;
-            GetComponent<Rigidbody>().useGravity = false;
-
-        }
-        else if (state == EnemyStates.dead)
-        {
-            
-            StopPlayerBeenAttacked();
-
-            StopAttack();
-
-            //turn off gravity
-            GetComponent<Rigidbody>().useGravity = false;
-            
-            //shrink enemy
-            if (transform.localScale.x >= 0 && transform.localScale.y >= 0 && transform.localScale.z >= 0)
-            {
-                float sppedOfShrink = 0.95f;
-                transform.localScale = Vector3.Scale(transform.localScale,new Vector3(sppedOfShrink, sppedOfShrink, sppedOfShrink));
-            }
-
-            //destroy after 1 second
-            Invoke(nameof(DestroyEnemy), 0.7f);
-            
-        }
     }
-
 
     private void OnDestroy()
     {// healpp player on destroy (if to avoid errors on closing the game)

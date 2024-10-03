@@ -11,6 +11,10 @@ public class MaterialOffsetMoving : MonoBehaviour
     public Vector2 xSpeedRange = new Vector2(0.05f, 0.2f); // Min and Max X speed
     public Vector2 ySpeedRange = new Vector2(0.05f, 0.2f); // Min and Max Y speed
 
+    //in case Z tiling by Z scaleis needed
+    [Header("If we need to Tile material by Z scale")]
+    public bool isZTilingNeeded;
+
     private Vector2 scrollSpeed;
     private Vector2 newScrollSpeed;
     private Vector2 currentOffset = Vector2.zero;
@@ -50,6 +54,14 @@ public class MaterialOffsetMoving : MonoBehaviour
         if (scrollSpeed != newScrollSpeed)
         {
             scrollSpeed = Vector2.Lerp(scrollSpeed,newScrollSpeed,Time.deltaTime);
+        }
+
+        //if Z tiling is needed
+        if (isZTilingNeeded)
+        {
+            float materialZScale;
+            materialZScale = gameObject.transform.localScale.z;
+            material.mainTextureScale = new Vector3(material.mainTextureScale.x, materialZScale);
         }
 
     }
