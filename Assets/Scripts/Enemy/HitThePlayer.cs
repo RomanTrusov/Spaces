@@ -4,15 +4,26 @@ using UnityEngine;
 
 public class HitThePlayer : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+
+    //player obj
+    private GameObject player;
+    public bool wasPlayerDamaged;
+
+    private void Start()
     {
-        
+        //find the player object
+        player = GameObject.Find("Player");
     }
 
-    // Update is called once per frame
-    void Update()
+    public void HitPlayerOnce()
     {
-        
+        if (!wasPlayerDamaged)
+        {
+            //hit player once if delay is near zero
+            player.GetComponent<PlayerMovement>().PlayerGetHit();
+            wasPlayerDamaged = true;
+        }
     }
+
+
 }

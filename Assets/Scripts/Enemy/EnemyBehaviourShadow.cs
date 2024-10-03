@@ -218,8 +218,6 @@ public class EnemyBehaviourShadow : MonoBehaviour, IDamageable
             if (damagedCDTimer < 0) state = EnemyStates.alert;
             else state = EnemyStates.damaged;
 
-            Debug.Log("ENEMY IS DAMAGED");
-
         }
         else if (state == EnemyStates.grapped)
         {
@@ -294,7 +292,7 @@ public class EnemyBehaviourShadow : MonoBehaviour, IDamageable
                 laserBeam.transform.localScale = new Vector3(currentScale.x, currentScale.y, laserIncreaseSize);
 
             }
-            // Rotate laser to the Point B
+            // Rotate laser to the Player
             if (laserAttackTimer > 1f && !laserAttackStates[2])
             {
                 //DO WHILE NEXT STATE
@@ -323,6 +321,11 @@ public class EnemyBehaviourShadow : MonoBehaviour, IDamageable
                     laserBeam.transform.localScale = new Vector3(currentScale.x, currentScale.y, defaultLaserBeam);
                 }
 
+                //if lazer hits player - hit th player once
+                if (Physics.Raycast(laserBeam.transform.position, laserBeam.transform.TransformDirection(Vector3.forward), hit.distance, LayerMask.GetMask("Player")))
+                {
+                    laserBeam.GetComponent<HitThePlayer>().HitPlayerOnce();
+                }
 
             }
             //decrease the laser
@@ -349,6 +352,8 @@ public class EnemyBehaviourShadow : MonoBehaviour, IDamageable
                     laserAttackStates[3] = true;
                     //deactivate object
                     if (laserBeam.activeSelf) laserBeam.SetActive(false);
+                    //reset played damage delay
+                    laserBeam.GetComponent<HitThePlayer>().wasPlayerDamaged = false;
                 }
             }
 
