@@ -13,10 +13,7 @@ public class EnemyBehaviourShadow : MonoBehaviour, IDamageable
     [SerializeField]
     private GameObject player;
     [Header("Particles for preattack state")]
-    [SerializeField]
-    private ParticleSystem circleSparkles;
-    [SerializeField]
-    private ParticleSystem centerSegment;
+    
 
     [Header("Defeat parameters")]
     //object for enemy parts
@@ -27,6 +24,20 @@ public class EnemyBehaviourShadow : MonoBehaviour, IDamageable
     [Header("VFX")]
     [SerializeField]
     private ParticleSystem damageEffect;
+    [SerializeField]
+    private ParticleSystem auraEffect;
+    [SerializeField]
+    private ParticleSystem circleSparkles;
+    [SerializeField]
+    private ParticleSystem centerSegment;
+    [SerializeField]
+    private ParticleSystem laserRootEffect;
+
+    [Header("SFX")]
+    [SerializeField]
+    private AudioClip laserAudio;
+    [SerializeField]
+    private AudioClip damageAudio;
 
     [Header("Params for laser attack")]
     [SerializeField]
@@ -244,11 +255,15 @@ public class EnemyBehaviourShadow : MonoBehaviour, IDamageable
         }
         else if (state == EnemyStates.dead)
         {
-            
+
+            //turn off aura vfx
+            auraEffect.enableEmission = false;
+
             StopPlayerBeenAttacked();
             StopAttack();
 
             //turn off gravity
+            GetComponent<Rigidbody>().useGravity = false;
             GetComponent<Rigidbody>().useGravity = false;
             
             if (!shadowParts.gameObject.activeSelf)
@@ -260,7 +275,8 @@ public class EnemyBehaviourShadow : MonoBehaviour, IDamageable
                     gameObject.GetComponent<ThrowConsumables>().AddEmitter();
                     isConsumablesDropped = true;
                 }
-                //desable main obj
+                //disable main obj
+                
                 gameObject.SetActive(false);
             }
 
@@ -396,8 +412,6 @@ public class EnemyBehaviourShadow : MonoBehaviour, IDamageable
         //reset the state to alert
         state = EnemyStates.alert;
         enemyAttackCoroutine = null;
-        //deactivate sfx
-        GetComponent<AudioSource>().enabled = false;
 
     }
 
@@ -474,6 +488,9 @@ public class EnemyBehaviourShadow : MonoBehaviour, IDamageable
         ParticleSystem clone = Instantiate(damageEffect, offsetPostition, gameObject.transform.rotation);
         if (!clone.gameObject.activeSelf) clone.gameObject.SetActive(true);
 
+        //play sfx
+        GetComponent<AudioSource>().PlayOneShot(damageAudio,0.2f);
+
         // reduce health
         enemyHealth -= (int)damage;
         //set state damaged
@@ -497,15 +514,11 @@ public class EnemyBehaviourShadow : MonoBehaviour, IDamageable
 
 
         //activate laser sfx
-        if (!GetComponent<AudioSource>().enabled)
-        {
-            GetComponent<AudioSource>().enabled = true;
-            GetComponent<AudioSource>().pitch = Random.Range(0.9f,1.1f);
-            GetComponent<AudioSource>().volume = Random.Range(0.8f, 1f);
-        }
+        GetComponent<AudioSource>().PlayOneShot(laserAudio,1);
 
         circleSparkles.Play();
         centerSegment.Play();
+        laserRootEffect.Play();
 
         //gravity off
         GetComponent<Rigidbody>().useGravity = false;

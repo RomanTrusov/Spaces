@@ -26,6 +26,7 @@ public class Gun : MonoBehaviour
     public int ProjectilesPerMag;
     public float reloadTime = 0.3f;
     public float chargedShootTime = 2f;
+    public float ammoRestoreTimer = 0;
     
     [Header("Projectile")]
     public Projectile projectile;
@@ -45,6 +46,7 @@ public class Gun : MonoBehaviour
     public Transform shellEjection;
     public AudioClip shootAudio;
     public AudioClip reloadAudio;
+    public AudioClip noAmmoAudio;
     public Transform chargedShoot;
     
     AudioSource source;
@@ -118,12 +120,27 @@ public class Gun : MonoBehaviour
             /*if (projectilesRemainingInMag.Value == 0)
                 Reload();*/
         }
+
+        RestoreAmmoByTime();
+
+    }
+
+    private void RestoreAmmoByTime()
+    {
+        ammoRestoreTimer += Time.deltaTime;
+        if (ammoRestoreTimer > 3)
+        {
+            AddAmmo(1);
+            ammoRestoreTimer = 0;
+        } 
     }
 
     void Shoot()
     {
         if (projectilesRemainingInMag.Value <= 0)
         {
+            //play no ammo sfx
+            if(!GetComponent<AudioSource>().isPlaying) source.PlayOneShot(noAmmoAudio, 1);
             OnShootNoAmmo?.Invoke();
             return;
         }

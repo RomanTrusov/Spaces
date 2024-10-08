@@ -53978,7 +53978,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   consumableEmitter: {fileID: 4784595444206708241, guid: d21b5c55168efba43b33bce3ae17851c, type: 3}
-  amountOfItems: 8
+  amountOfItems: 0
   force: 3
 --- !u!114 &888253546928487022
 MonoBehaviour:

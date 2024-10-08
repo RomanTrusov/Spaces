@@ -17,8 +17,11 @@ public class ShadowPiecesBehaviour : MonoBehaviour
     //rotaion array
     Vector3[] randomRotations;
 
-    private bool isAllPartsSmall;
-    
+    private bool isSFXPlayed;
+
+    [Header("SFX")]
+    [SerializeField]
+    private AudioClip damageAudio;
 
     // Start is called before the first frame update
     void Start()
@@ -27,22 +30,29 @@ public class ShadowPiecesBehaviour : MonoBehaviour
         pushForce = 1;
         rotationSpeed = 1;
 
-        //getting all child objs
+        //get all child objs
         children = GetAllChildren(gameObject);
-
-        //setting random speed and rotations for every child
+        //set random speed and rotations for every child
         randomSpeeds = GetRandomSpeeds(gameObject);
-
         //get random rotations
         randomRotations = GetRandomRotations(gameObject);
 
         //activate effect
         sparckles.gameObject.SetActive(true);
+
+        
     }
 
     // Update is called once per frame
     void Update()
     {
+
+        if (!isSFXPlayed)
+        {
+            //play sfx
+            GetComponent<AudioSource>().PlayOneShot(damageAudio, 0.5f);
+            isSFXPlayed = true;
+        }
 
         //move and rotate parts
         ExplodeParts(children, randomSpeeds, randomRotations);
