@@ -24,6 +24,10 @@ public class EnemyBehaviourShadow : MonoBehaviour, IDamageable
     private GameObject shadowParts;
     private bool isConsumablesDropped;
 
+    [Header("VFX")]
+    [SerializeField]
+    private ParticleSystem damageEffect;
+
     [Header("Params for laser attack")]
     [SerializeField]
     private GameObject laserBeam;
@@ -205,6 +209,8 @@ public class EnemyBehaviourShadow : MonoBehaviour, IDamageable
         else if (state == EnemyStates.attack)
         {
 
+                
+
             //if coroutine wasn't set - set it
             if (enemyAttackCoroutine == null)
             {
@@ -218,6 +224,7 @@ public class EnemyBehaviourShadow : MonoBehaviour, IDamageable
         }
         else if (state == EnemyStates.damaged)
         {
+            
 
             //add some random jitter after take damage
             float jitter = Random.Range(-0.1f, 0.1f);
@@ -244,7 +251,6 @@ public class EnemyBehaviourShadow : MonoBehaviour, IDamageable
             //turn off gravity
             GetComponent<Rigidbody>().useGravity = false;
             
-            //TODO activate effects of parts, delete parent
             if (!shadowParts.gameObject.activeSelf)
             {
                 shadowParts.SetActive(true);
@@ -390,6 +396,8 @@ public class EnemyBehaviourShadow : MonoBehaviour, IDamageable
         //reset the state to alert
         state = EnemyStates.alert;
         enemyAttackCoroutine = null;
+        //deactivate sfx
+        GetComponent<AudioSource>().enabled = false;
 
     }
 
@@ -461,10 +469,11 @@ public class EnemyBehaviourShadow : MonoBehaviour, IDamageable
 
     public void TakeHit(float damage)
     {
-        //play danage sound
-        /*
-        sfxGetHit.pitch = Random.Range(0.5f, 1.5f);
-        sfxGetHit.Play();*/
+        //instantiate vfx
+        Vector3 offsetPostition = gameObject.transform.position + new Vector3(0, 2, 0);
+        ParticleSystem clone = Instantiate(damageEffect, offsetPostition, gameObject.transform.rotation);
+        if (!clone.gameObject.activeSelf) clone.gameObject.SetActive(true);
+
         // reduce health
         enemyHealth -= (int)damage;
         //set state damaged
@@ -485,6 +494,15 @@ public class EnemyBehaviourShadow : MonoBehaviour, IDamageable
 
         // orange light indocation
         //lamp.GetComponent<Renderer>().material.SetColor("_Color", preAttacktLamp);
+
+
+        //activate laser sfx
+        if (!GetComponent<AudioSource>().enabled)
+        {
+            GetComponent<AudioSource>().enabled = true;
+            GetComponent<AudioSource>().pitch = Random.Range(0.9f,1.1f);
+            GetComponent<AudioSource>().volume = Random.Range(0.8f, 1f);
+        }
 
         circleSparkles.Play();
         centerSegment.Play();
