@@ -8,6 +8,8 @@ public class ShadowPiecesBehaviour : MonoBehaviour
     public float pushForce;
     public float rotationSpeed;
 
+    public ParticleSystem sparckles;
+
     //childs array
     GameObject[] children;
     //speed array
@@ -33,6 +35,9 @@ public class ShadowPiecesBehaviour : MonoBehaviour
 
         //get random rotations
         randomRotations = GetRandomRotations(gameObject);
+
+        //activate effect
+        sparckles.gameObject.SetActive(true);
     }
 
     // Update is called once per frame
@@ -106,7 +111,7 @@ public class ShadowPiecesBehaviour : MonoBehaviour
         }
 
         //check for destroy obj
-        if (children[0].transform.localScale.x < 0.1f) Destroy(transform.parent.gameObject, 0);
+        if (children[0].transform.localScale.x < 0.1f && !sparckles.gameObject.activeSelf) Destroy(transform.parent.gameObject, 0);
 
 
     }
