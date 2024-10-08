@@ -18,6 +18,12 @@ public class EnemyBehaviourShadow : MonoBehaviour, IDamageable
     [SerializeField]
     private ParticleSystem centerSegment;
 
+    [Header("Defeat parameters")]
+    //object for enemy parts
+    [SerializeField]
+    private GameObject shadowParts;
+    private bool isConsumablesDropped;
+
     [Header("Params for laser attack")]
     [SerializeField]
     private GameObject laserBeam;
@@ -96,6 +102,10 @@ public class EnemyBehaviourShadow : MonoBehaviour, IDamageable
         decideToAttackCDTimer = decideToAttackCD;
         attackCDTimer = attackCD;
         damagedCDTimer = damagedCD; // !!change to damaged timer
+
+
+        //deactivate parts on start
+        if (shadowParts.gameObject.activeSelf) shadowParts.SetActive(false);
     }
 
 
@@ -229,22 +239,25 @@ public class EnemyBehaviourShadow : MonoBehaviour, IDamageable
         {
             
             StopPlayerBeenAttacked();
-
             StopAttack();
 
             //turn off gravity
             GetComponent<Rigidbody>().useGravity = false;
             
-            //shrink enemy
-            if (transform.localScale.x >= 0 && transform.localScale.y >= 0 && transform.localScale.z >= 0)
+            //TODO activate effects of parts, delete parent
+            if (!shadowParts.gameObject.activeSelf)
             {
-                float sppedOfShrink = 0.95f;
-                transform.localScale = Vector3.Scale(transform.localScale,new Vector3(sppedOfShrink, sppedOfShrink, sppedOfShrink));
+                shadowParts.SetActive(true);
+                //throw cons once
+                if (!isConsumablesDropped)
+                {
+                    gameObject.GetComponent<ThrowConsumables>().AddEmitter();
+                    isConsumablesDropped = true;
+                }
+                //desable main obj
+                gameObject.SetActive(false);
             }
 
-            //destroy after 1 second
-            Invoke(nameof(DestroyEnemy), 0.7f);
-            
         }
     }
 
