@@ -40601,18 +40601,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 0}
-  circleSparkles: {fileID: 3023745541911090144}
-  centerSegment: {fileID: 7477422522444438112}
   shadowParts: {fileID: 3447182959650491922}
   damageEffect: {fileID: 6216224397283613458}
   auraEffect: {fileID: 1821087135775858798}
+  circleSparkles: {fileID: 3023745541911090144}
+  centerSegment: {fileID: 7477422522444438112}
   laserRootEffect: {fileID: 4351730346366669666}
   laserAudio: {fileID: 8300000, guid: b8595c8fcc2e6bb42b0ac309a3bc8120, type: 3}
   damageAudio: {fileID: 8300000, guid: 658bb805cba670d4ca9beb28a97e6080, type: 3}
   laserBeam: {fileID: 4634646695478781575}
-  enemyHealth: 5
+  enemyHealth: 10
   noticeDistance: 30
-  alertMovingDistance: 2
+  alertMovingDistance: 5
   enemySpeed: 10
   pushForce: 5
   playerLayer:
