@@ -19,7 +19,8 @@ public class RotateAroundCenter : MonoBehaviour
     public float rotationSpeedAroundAxis = 30.0f;
 
     // Скорость вращения вокруг собственной оси
-    public float selfRotationSpeed = 90.0f;
+    private float selfRotationSpeed;
+    public float selfRotationSpeedAmount;
 
     // Изменение радиуса во времени
     public float radiusChangeSpeed = 1.0f;
@@ -34,6 +35,8 @@ public class RotateAroundCenter : MonoBehaviour
         currentRadius = initialRadius;
         // Устанавливаем начальный угол
         angle = Random.Range(-180f,180f);
+        selfRotationSpeed = Random.Range(-selfRotationSpeedAmount, selfRotationSpeedAmount);
+
     }
 
     void Update()
@@ -49,7 +52,7 @@ public class RotateAroundCenter : MonoBehaviour
         transform.position = rotationCenter.position + offset;
 
         // Вращаем объект вокруг своей оси
-        transform.Rotate(Vector3.up, selfRotationSpeed * Time.deltaTime * Random.Range(-1, 1));
-        transform.Rotate(Vector3.left, selfRotationSpeed * Time.deltaTime * Random.Range(-1, 1));
+        transform.Rotate(Vector3.up, selfRotationSpeed * Time.deltaTime);
+        transform.Rotate(Vector3.left, selfRotationSpeed * Time.deltaTime);
     }
 }
