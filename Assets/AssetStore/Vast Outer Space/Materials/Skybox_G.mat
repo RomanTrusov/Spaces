@@ -102,7 +102,7 @@ Material:
     - _EmissionScaleUI: 1
     - _EnableFog: 0
     - _EnableRotation: 0
-    - _Exposure: 0.87
+    - _Exposure: 0.75
     - _FogFill: 0.5
     - _FogHeight: 1
     - _FogIntensity: 1
@@ -121,7 +121,7 @@ Material:
     - _Mode: 0
     - _OcclusionStrength: 0
     - _Parallax: 0.02
-    - _Rotation: 11210.134
+    - _Rotation: 37.832233
     - _RotationSpeed: 1
     - _Rotationn: 1
     - _SkyboxExtended: 1
