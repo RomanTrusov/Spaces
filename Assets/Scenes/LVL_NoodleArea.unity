@@ -33330,6 +33330,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Planet_Ring_C1
       objectReference: {fileID: 0}
+    - target: {fileID: 139060, guid: 564b158b8ca9183439e9a07768e84d4e, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 478758, guid: 564b158b8ca9183439e9a07768e84d4e, type: 3}
       propertyPath: m_RootOrder
       value: 4

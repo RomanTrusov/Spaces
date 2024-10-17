@@ -15,6 +15,8 @@ public class PlayerMovement : MonoBehaviour
     private Animator healAnimator;
     [SerializeField]
     private Animator damageAnimator;
+    //is deatch challenge active
+    public bool isAfterLifeActive;
 
     [Header("Movement")]
     // movespeed calculates inside, other speeds - puts manually
@@ -106,6 +108,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void Start()
     {
+        isAfterLifeActive = true;
 
         //set restart position
         restartPosition = transform.position;
@@ -123,6 +126,12 @@ public class PlayerMovement : MonoBehaviour
 
         if (playerHP <= 0)
         {
+            if (isAfterLifeActive)
+            {
+                playerHP = 4;
+                SceneManager.LoadScene("LVL_AfterLife");
+                return;
+            }
             state = MovementStates.dead;
             moveSpeed = 0f;
             rb.drag = 0;

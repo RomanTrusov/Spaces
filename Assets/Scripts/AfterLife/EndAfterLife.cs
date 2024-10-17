@@ -17,6 +17,6 @@ public class EndAfterLife : MonoBehaviour
 
     private void ResetLevel()
     {
-        SceneManager.LoadScene("LVL_AfterLife");
+        SceneManager.LoadScene("LVL_NoodleArea");
     }
 }
