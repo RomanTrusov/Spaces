@@ -12,6 +12,9 @@ public class PlayerSkillRaiseUp : MonoBehaviour
     public float skillCD;
     private float skillCDTimer;
 
+    //particle effect
+    public ParticleSystem dustEffect;
+
     //sphere object
     public GameObject sphere;
     //triggerzone
@@ -75,8 +78,13 @@ public class PlayerSkillRaiseUp : MonoBehaviour
     {
         //activate trigger after delay
         yield return new WaitForSeconds(triggerDelay);
+        ParticleSystem clone = Instantiate(dustEffect, dustEffect.gameObject.transform.position, dustEffect.gameObject.transform.rotation);
+        if (!clone.gameObject.activeSelf) clone.gameObject.SetActive(true);
         triggerZone.SetActive(true);
         yield return new WaitForSeconds(0.2f);
         triggerZone.SetActive(false);
+
+        
+
     }
 }

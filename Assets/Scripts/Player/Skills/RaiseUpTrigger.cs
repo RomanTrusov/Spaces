@@ -11,7 +11,7 @@ public class RaiseUpTrigger : MonoBehaviour
             var enemyTakeDamage = other.GetComponent<EnemyTakeHit>();
             if (enemyTakeDamage != null)
             {
-                enemyTakeDamage.TakeHit(1, other.transform.up * 10);
+                enemyTakeDamage.TakeHit(1, other.transform.up * 3);
             }
         }
     }
