@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using CameraShake;
 
 public class PlayerSkillRaiseUp : MonoBehaviour
 {
@@ -76,11 +77,17 @@ public class PlayerSkillRaiseUp : MonoBehaviour
 
     private IEnumerator EnableTriggerAfterDelay()
     {
-        //activate trigger after delay
+        //wait for delay
         yield return new WaitForSeconds(triggerDelay);
+        //activate trigger after delay
+        triggerZone.SetActive(true);
+        //play vfx
         ParticleSystem clone = Instantiate(dustEffect, dustEffect.gameObject.transform.position, dustEffect.gameObject.transform.rotation);
         if (!clone.gameObject.activeSelf) clone.gameObject.SetActive(true);
-        triggerZone.SetActive(true);
+        //shake camera
+        CameraShaker.Instance.ShakePresets.ShortShake3D(2f, 25, 5);
+
+        //wait to deactivate trigger
         yield return new WaitForSeconds(0.2f);
         triggerZone.SetActive(false);
 

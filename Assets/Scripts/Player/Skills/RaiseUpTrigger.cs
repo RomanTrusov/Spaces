@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class RaiseUpTrigger : MonoBehaviour
 {
+
+    public float RaiseUpDamage;
+
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.layer == 8)
@@ -11,7 +14,7 @@ public class RaiseUpTrigger : MonoBehaviour
             var enemyTakeDamage = other.GetComponent<EnemyTakeHit>();
             if (enemyTakeDamage != null)
             {
-                enemyTakeDamage.TakeHit(1, other.transform.up * 3);
+                enemyTakeDamage.TakeHit(10, other.transform.up * 3);
             }
         }
     }
