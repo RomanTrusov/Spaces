@@ -6,11 +6,20 @@ using UnityEngine;
 public class MeleAttackTrigger : MonoBehaviour
 {
     public MeleAttack playerMeleAttack;
+    private GameObject player;
+    private PlayerMovement playerMove;
+    private Grapling playerGr;
+    private Rigidbody playerRB;
 
     public Transform orientation;
     public float forwardPush;
     public float upwardPush;
     public float meleAttackModifier;
+
+    [Header("Vars for push from attack while in grapple")]
+    public float pushFromEnemyForce;
+    public float yPush;
+    public float secWithoutSpeedLimit;
 
     [SerializeField] private GameObject punchEffect;
     [SerializeField] private Grapling _grapling;
@@ -23,7 +32,16 @@ public class MeleAttackTrigger : MonoBehaviour
 
     private float _grapplingDamageMult = 2;
     private int _ammoAddingPerHit = 2;
-    
+
+    private void Start()
+    {
+        //get player obj and components
+        player = playerMeleAttack.gameObject;
+        playerMove = player.GetComponent<PlayerMovement>();
+        playerRB = player.GetComponent<Rigidbody>();
+        playerGr = player.GetComponent<Grapling>();
+    }
+
     // on trigger enter
     private void OnTriggerEnter(Collider other)
     {
@@ -35,6 +53,20 @@ public class MeleAttackTrigger : MonoBehaviour
 
             InitiatePunchEffect();
             InitiateAttackOnEnemy(other);
+
+            //if player grappled while attacking
+            if (playerMove.activeGrapple)
+            {
+                //stop grapple
+                playerGr.StopGrapple();
+                //push direction
+                Vector3 pushDirection = (playerRB.position - other.transform.position).normalized;
+                pushDirection.y = yPush;
+                //stop speed limit for a short time
+                playerMove.DisableMoveSpeed(secWithoutSpeedLimit);
+                //push
+                playerRB.AddForce(pushDirection * pushFromEnemyForce, ForceMode.Impulse);
+            }
 
             switch (meleDirection)
             {

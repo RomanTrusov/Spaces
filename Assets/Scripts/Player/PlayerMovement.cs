@@ -26,6 +26,11 @@ public class PlayerMovement : MonoBehaviour
     public float dashSpeed;
     public float grappleSpeedModifier; //modifier that reduces speed during the grapple
 
+    // bool for disable speed limiter
+    private bool stopSpeedLimit;
+    // speed multiplier for stop speed limit code
+    private float speedMultiplier;
+
     [SerializeField]
     private Vector3 velocity;
 
@@ -351,6 +356,8 @@ public class PlayerMovement : MonoBehaviour
     private void SpeedControl()
        
     {
+        //if speed limit off
+        if (stopSpeedLimit) return;
         //limit speed on slopes
         if (activeGrapple && !attacked) return;
 
@@ -492,6 +499,44 @@ public class PlayerMovement : MonoBehaviour
         }
         
 
+    }
+
+    public void DisableMoveSpeed(float duration)
+    {
+        //start coroutine
+        StartCoroutine(DisableMoveSpeedCoroutine(duration));
+        //stop the player
+        rb.velocity = rb.velocity * 0;
+    }
+
+    //lerping the max speed after the push
+    private IEnumerator DisableMoveSpeedCoroutine(float duration)
+    {
+        //stop speed limit
+        stopSpeedLimit = true;
+        //time counter
+        float elapsed = 0f;
+
+        while (elapsed < duration)
+        {
+            //increase timer
+            elapsed += Time.deltaTime;
+            //get t between 0 and 1
+            float t = elapsed / duration;
+            //lerp mutliplier
+            speedMultiplier = Mathf.Lerp(5f, 1f, t);
+            //get new max speed
+            float maxSpeed = walkSpeed * speedMultiplier;
+            //limit the speed
+            if (rb.velocity.magnitude > maxSpeed)
+            {
+                rb.velocity = rb.velocity.normalized * maxSpeed;
+            }
+            yield return null;
+        }
+        //activate speed limit
+        stopSpeedLimit = false;
+        speedMultiplier = 1f;
     }
 
     public void PlayerGetHit()

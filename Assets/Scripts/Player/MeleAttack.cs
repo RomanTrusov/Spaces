@@ -40,6 +40,7 @@ public class MeleAttack : MonoBehaviour
             MeleAttacking();
             ActivateMeleTrigger();
 
+
             attackCDtimer = attackCD;
 
         } else if (attackCDtimer <= 0 && Input.GetKeyDown(meleKey) && meleState == 1) // if press mele key during combo delay - do combo
