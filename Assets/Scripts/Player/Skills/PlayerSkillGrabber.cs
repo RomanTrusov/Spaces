@@ -19,6 +19,10 @@ public class PlayerSkillGrabber : MonoBehaviour
     [Header("Input")]
     public KeyCode skillKey = KeyCode.E;
 
+    [Header("Visual Effects")]
+    public ParticleSystem grabberEffect;
+    private ParticleSystem.EmissionModule grabberEffectEmmission;
+
     [Header("Vars for raycasting")]
     public Camera playerCamera;
     public float maxDistance = 100f;
@@ -35,6 +39,10 @@ public class PlayerSkillGrabber : MonoBehaviour
 
         //check for active pointObject
         if (pointObject.activeSelf) pointObject.SetActive(false);
+
+        //check if effect is on
+        if (grabberEffect.gameObject.activeSelf) grabberEffect.gameObject.SetActive(false);
+        grabberEffectEmmission = grabberEffect.emission;
 
     }
 
@@ -55,6 +63,8 @@ public class PlayerSkillGrabber : MonoBehaviour
             //throw raycast to find an enemy
             CastRayAndCreateTargetPoint();
 
+            //activate vfx after delay
+            Invoke(nameof(ActivateVFX),0.3f);
         }
 
 
@@ -75,6 +85,9 @@ public class PlayerSkillGrabber : MonoBehaviour
             //if pointObject active - off it
             if (pointObject.activeSelf) pointObject.SetActive(false);
 
+            //deactivate VFX
+            DeactivateVFXEmission();
+
             //return enemy to alert and clear the var
             if (enemy != null)
             {
@@ -86,6 +99,25 @@ public class PlayerSkillGrabber : MonoBehaviour
 
     }
 
+    private void ActivateVFX()
+    {
+        //activate object and set Emission
+        grabberEffect.gameObject.SetActive(true);
+        grabberEffectEmmission.rateOverTime = 30;
+    }
+
+    private void DeactivateVFXEmission()
+    {
+        //reduce emission and deactivate object after 1 sec
+        grabberEffectEmmission.rateOverTime = 0;
+        Invoke(nameof(DeactivateVFX),1f);
+    }
+
+    private void DeactivateVFX()
+    {
+        //deactivate object
+        grabberEffect.gameObject.SetActive(false);
+    }
 
     void CastRayAndCreateTargetPoint()
     {

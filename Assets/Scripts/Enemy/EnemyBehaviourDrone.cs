@@ -21,6 +21,9 @@ public class EnemyBehaviourDrone : MonoBehaviour, IDamageable
     [SerializeField]
     private ParticleSystem grapplingParticles;
     [SerializeField]
+    private ParticleSystem grabberParticles;
+    private ParticleSystem.EmissionModule grabberParticlesEmission;
+    [SerializeField]
     private ParticleSystem dust;
     [SerializeField]
     private ParticleSystem lowHP;
@@ -104,7 +107,9 @@ public class EnemyBehaviourDrone : MonoBehaviour, IDamageable
     void Start()
     {
 
-        
+        //check for enabled particles
+        if (!grabberParticles.gameObject.activeSelf) grabberParticles.gameObject.SetActive(true);
+        grabberParticlesEmission = grabberParticles.emission;
 
         //find the player object
         player = GameObject.Find("Player");
@@ -163,6 +168,10 @@ public class EnemyBehaviourDrone : MonoBehaviour, IDamageable
         }
         else if (state == EnemyStates.alert)
         {
+
+            //deactivate grabber VFX
+            grabberParticlesEmission.rateOverTime = 0;
+
             //set lamp to blue in alert state
             lamp.GetComponent<Renderer>().material.SetColor("_Color", alertLamp);
             //little air up force
@@ -280,27 +289,32 @@ public class EnemyBehaviourDrone : MonoBehaviour, IDamageable
             //set lamp to damaged
             lamp.GetComponent<Renderer>().material.SetColor("_Color", damagedtLamp);
 
+            //activate grabber VFX
+            grabberParticlesEmission.rateOverTime = 60f;
+
             //stop the velocity and off gravity
             //GetComponent<Rigidbody>().velocity = Vector3.zero;
             GetComponent<Rigidbody>().useGravity = false;
 
-            //TODO use it as force multiplier
             //get distance to grabberPoint
             Vector3 grabberDirection = grabberPoint.transform.position - transform.position;
             float grabberDistance = grabberDirection.magnitude;
             gameObject.GetComponent<Rigidbody>().AddForce(grabberDirection.normalized * grabberDistance * 10, ForceMode.Force);
 
-            //TODO damage by walls and enemies
-
 
         }
         else if (state == EnemyStates.dead)
         {
+
+            //deactivate grabber VFX
+            grabberParticlesEmission.rateOverTime = 0;
+
             StopPlayerBeenAttacked();
             DestroyEnemy();
         }
     }
 
+    //damage by collision with world while grabbed
     private void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.layer == 6 && state == EnemyStates.grabbed && gameObject.GetComponent<Rigidbody>().velocity.magnitude > 3)
