@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PlayerSkillGrabber : MonoBehaviour
 {
-    //check if skill is available
+    //check if skill is available and activated
     public bool isSkillAvailable;
     private bool isSkillActivated;
 
@@ -17,39 +17,120 @@ public class PlayerSkillGrabber : MonoBehaviour
 
     //key for skill
     [Header("Input")]
-    public KeyCode skillKey = KeyCode.Q;
+    public KeyCode skillKey = KeyCode.E;
+
+    [Header("Vars for raycasting")]
+    public Camera playerCamera;
+    public float maxDistance = 100f;
+    public LayerMask raycastLayerMask; //enemy mask
+    private Transform targetPoint; // following point
+    public GameObject pointObject; //object with target position
+    private float fixedDistanceToCamera; // distance to the camera
+    private GameObject enemy; //GO for enemy
 
     private void Start()
     {
         //reset timer
         skillCDTimer = skillCD;
+
+        //check for active pointObject
+        if (pointObject.activeSelf) pointObject.SetActive(false);
+
     }
+
+
 
     private void Update()
     {
+        //STATE SETTER
         //activate skill if possible by pressing button
         if (isSkillAvailable && !isSkillActivated && Input.GetKeyDown(skillKey))
         {
-            //play anim
+            //anim params to tart the animation
             playerAnimator.SetBool("SkillGrabber", true);
+            playerAnimator.SetBool("SkillGrabberEnd", false);
             //skill activated
             isSkillActivated = true;
-            //set cooldown
-            skillCDTimer = 0;
+
+            //throw raycast to find an enemy
+            CastRayAndCreateTargetPoint();
+
         }
 
-        //TODO: skill cooldown - rework it with timer or IEnumerator
-        if (skillCDTimer < skillCD)
+
+        if (isSkillActivated && pointObject.activeSelf)
         {
-            skillCDTimer += Time.deltaTime;
+            //point follows the camera if grab the enemy and skill is activated
+            UpdateTargetPointPosition();
         }
-        else if (isSkillActivated)
+
+        //if skill activated and button relesaed
+        if (isSkillAvailable && isSkillActivated && Input.GetKeyUp(skillKey))
         {
-            skillCDTimer = skillCD;
+            //anim params to finish the animation
             playerAnimator.SetBool("SkillGrabber", false);
+            playerAnimator.SetBool("SkillGrabberEnd", true);
             isSkillActivated = false;
+
+            //if pointObject active - off it
+            if (pointObject.activeSelf) pointObject.SetActive(false);
+
+            //return enemy to alert and clear the var
+            if (enemy != null)
+            {
+                enemy.GetComponent<EnemyBehaviourDrone>().state = EnemyBehaviourDrone.EnemyStates.alert;
+                enemy = null;
+            }
+
         }
 
     }
+
+
+    void CastRayAndCreateTargetPoint()
+    {
+        // ray from the middle of the screen
+        Ray ray = playerCamera.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2, 0));
+
+        //check ray collisions with enemy
+        if (Physics.Raycast(ray, out RaycastHit hitInfo, maxDistance, raycastLayerMask))
+        {
+            //if pointObject is not acive
+            if (!pointObject.activeSelf)
+            {
+                //activate it
+                pointObject.SetActive(true);
+                //target point equals new object positions
+                targetPoint = pointObject.transform;
+            }
+
+            //get gameobject and make it Grabbed state
+            enemy = hitInfo.transform.gameObject;
+            
+
+            //get fixed distance from target point to camera
+            fixedDistanceToCamera = Vector3.Distance(playerCamera.transform.position, hitInfo.point);
+
+            //set target point position
+            targetPoint.position = hitInfo.point;
+        } 
+    }
+
+    void UpdateTargetPointPosition()
+    {
+        //update if exists
+        if (targetPoint != null)
+        {
+
+            enemy.GetComponent<EnemyBehaviourDrone>().state = EnemyBehaviourDrone.EnemyStates.grabbed;
+
+            //get forward direction
+            Vector3 direction = playerCamera.transform.forward;
+
+            //set new position for target position
+            targetPoint.position = playerCamera.transform.position + direction * fixedDistanceToCamera;
+        }
+    }
+
 
 }

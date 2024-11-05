@@ -67,7 +67,8 @@ public class EnemyBehaviourDrone : MonoBehaviour, IDamageable
     [SerializeField]
     private GameObject brokenDrone;
 
-
+    [Header("Point to follow whle grabbed by skill")]
+    public GameObject grabberPoint;
 
     float damagedCD = 0.5f;
     float damagedCDTimer;
@@ -89,6 +90,7 @@ public class EnemyBehaviourDrone : MonoBehaviour, IDamageable
         preattack,
         attack,
         grapped,
+        grabbed,
         damaged,
         dead
     }
@@ -106,6 +108,8 @@ public class EnemyBehaviourDrone : MonoBehaviour, IDamageable
 
         //find the player object
         player = GameObject.Find("Player");
+        //find the grabberPoint
+        grabberPoint = GameObject.Find("TargetPoint");
 
         //default idle state
         state = EnemyStates.idle;
@@ -270,6 +274,26 @@ public class EnemyBehaviourDrone : MonoBehaviour, IDamageable
             GetComponent<Rigidbody>().useGravity = false;
 
         }
+        else if (state == EnemyStates.grabbed)
+        {
+            
+            //set lamp to damaged
+            lamp.GetComponent<Renderer>().material.SetColor("_Color", damagedtLamp);
+
+            //stop the velocity and off gravity
+            //GetComponent<Rigidbody>().velocity = Vector3.zero;
+            GetComponent<Rigidbody>().useGravity = false;
+
+            //TODO use it as force multiplier
+            //get distance to grabberPoint
+            Vector3 grabberDirection = grabberPoint.transform.position - transform.position;
+            float grabberDistance = grabberDirection.magnitude;
+            gameObject.GetComponent<Rigidbody>().AddForce(grabberDirection.normalized * grabberDistance * 10, ForceMode.Force);
+
+            //TODO damage by walls and enemies
+
+
+        }
         else if (state == EnemyStates.dead)
         {
             StopPlayerBeenAttacked();
@@ -277,6 +301,13 @@ public class EnemyBehaviourDrone : MonoBehaviour, IDamageable
         }
     }
 
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.layer == 6 && state == EnemyStates.grabbed && gameObject.GetComponent<Rigidbody>().velocity.magnitude > 3)
+        {
+            TakeHit(20f);
+        }
+    }
 
     private void OnDestroy()
     {// healpp player on destroy (if to avoid errors on closing the game)
