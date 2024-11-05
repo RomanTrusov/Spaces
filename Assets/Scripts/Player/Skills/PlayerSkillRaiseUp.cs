@@ -20,7 +20,7 @@ public class PlayerSkillRaiseUp : MonoBehaviour
     public GameObject sphere;
     //triggerzone
     public GameObject triggerZone;
-    private float triggerDelay = 1.9f;
+    private float triggerDelay = 1.6f;
 
     //player animator
     public Animator playerAnimator;
@@ -35,9 +35,6 @@ public class PlayerSkillRaiseUp : MonoBehaviour
         skillCDTimer = skillCD;
         //check if trigger is off
         if (triggerZone.activeSelf) triggerZone.SetActive(false);
-
-        
-
     }
 
     private void Update()
@@ -57,7 +54,6 @@ public class PlayerSkillRaiseUp : MonoBehaviour
             StartCoroutine(EnableTriggerAfterDelay());
         }
 
-        //TODO: skill cooldown - rework it with timer or IEnumerator
         if (skillCDTimer < skillCD)
         {
             skillCDTimer += Time.deltaTime;
