@@ -113,8 +113,7 @@ public class EnemyBehaviourDrone : MonoBehaviour, IDamageable
 
         //find the player object
         player = GameObject.Find("Player");
-        //find the grabberPoint
-        grabberPoint = GameObject.Find("TargetPoint");
+        
 
         //default idle state
         state = EnemyStates.idle;
@@ -128,6 +127,13 @@ public class EnemyBehaviourDrone : MonoBehaviour, IDamageable
 
     void FixedUpdate()
     {
+
+        if (grabberPoint == null)
+        {
+            //find the grabberPoint
+            grabberPoint = GameObject.Find("TargetPoint");
+        }
+
         if (enemyHealth <= 0)
         {
             // !! change to dead state
@@ -299,7 +305,7 @@ public class EnemyBehaviourDrone : MonoBehaviour, IDamageable
             //get distance to grabberPoint
             Vector3 grabberDirection = grabberPoint.transform.position - transform.position;
             float grabberDistance = grabberDirection.magnitude;
-            gameObject.GetComponent<Rigidbody>().AddForce(grabberDirection.normalized * grabberDistance * 10, ForceMode.Force);
+            gameObject.GetComponent<Rigidbody>().AddForce(grabberDirection.normalized * grabberDistance * 50, ForceMode.Force);
 
 
         }
